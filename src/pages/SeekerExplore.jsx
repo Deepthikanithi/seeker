@@ -48,7 +48,9 @@ const SeekerExplore = ({ darkMode }) => {
 
   // Additional states for new functionality
   const [likedSolvers, setLikedSolvers] = useState(new Set())
-  const [showPodcastModal, setShowPodcastModal] = useState(false)
+  const [selectedGiftAmount, setSelectedGiftAmount] = useState(null)
+  const [customGiftAmount, setCustomGiftAmount] = useState('')
+  const [showPodcastSection, setShowPodcastSection] = useState(false)
 
 
   // Mock data for solvers
@@ -107,11 +109,7 @@ const SeekerExplore = ({ darkMode }) => {
     }
   ])
 
-  const categories = [
-    'All', 'Frontend Development', 'Backend Development', 'AI & Machine Learning',
-    'DevOps', 'Mobile Development', 'Data Science', 'Cybersecurity',
-    'Game Development', 'UI/UX Design', 'Database Management', 'Cloud Computing'
-  ]
+
 
   const sortOptions = [
     'Most Relevant', 'Highest Rated', 'Price: Low to High',
@@ -136,9 +134,7 @@ const SeekerExplore = ({ darkMode }) => {
     setSearchQuery(e.target.value)
   }
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategoryFilter(category)
-  }
+
 
   const handleSortSelect = (option) => {
     setSortBy(option)
@@ -146,24 +142,57 @@ const SeekerExplore = ({ darkMode }) => {
   }
 
   const handleBookNow = (solverId) => {
-    navigate(`/seeker/sessions?book=${solverId}`)
+    navigate(`/sessions?book=${solverId}`)
   }
 
   const handleViewProfile = (solverId) => {
-    navigate(`/seeker/profile/${solverId}`)
+    navigate(`/profile/${solverId}`)
   }
 
   const handleGiftSession = (solver = null) => {
     setSelectedSolver(solver)
+    setSelectedGiftAmount(null)
+    setCustomGiftAmount('')
     setShowGiftModal(true)
+  }
+
+  const handleGiftAmountSelect = (amount) => {
+    setSelectedGiftAmount(amount)
+    setCustomGiftAmount('')
+  }
+
+  const handleCustomAmountChange = (e) => {
+    const value = e.target.value
+    if (value === '' || /^\d+$/.test(value)) {
+      setCustomGiftAmount(value)
+      setSelectedGiftAmount('custom')
+    }
+  }
+
+  const processGift = () => {
+    const amount = selectedGiftAmount === 'custom' ? customGiftAmount : selectedGiftAmount
+    if (!amount || (selectedGiftAmount === 'custom' && !customGiftAmount)) {
+      alert('Please select or enter a gift amount')
+      return
+    }
+
+    // Simulate gift processing
+    const recipientName = selectedSolver ? selectedSolver.name : 'a solver'
+    alert(`Successfully gifted $${amount} to ${recipientName}! They will be notified via email.`)
+    setShowGiftModal(false)
+    setSelectedGiftAmount(null)
+    setCustomGiftAmount('')
+    setSelectedSolver(null)
   }
 
   const handleSharePlatform = () => {
     setShowShareModal(true)
   }
 
-  const handleBrowsePodcasts = () => {
-    setShowPodcastModal(true)
+
+
+  const handleExplorePodcasts = () => {
+    navigate('/sessions?tab=podcast')
   }
 
   const handleLikeSolver = (solverId) => {
@@ -212,17 +241,17 @@ const SeekerExplore = ({ darkMode }) => {
   }, [])
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
+    <div className={`min-h-screen overflow-x-hidden ${
       darkMode ? 'bg-[#00001a]' : 'bg-white'
     }`}>
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="w-full max-w-none px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <div className="min-w-0 flex-1">
+            <h1 className={`text-lg sm:text-xl md:text-2xl font-bold truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Discover Expert Solvers
             </h1>
-            <p className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+            <p className={`text-xs sm:text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
               3 solvers available • 2 online now
             </p>
           </div>
@@ -230,19 +259,19 @@ const SeekerExplore = ({ darkMode }) => {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <div className="relative">
-            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${
+            <Search className={`absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 ${
               darkMode ? 'text-gray-400' : 'text-[#00001a]/40'
-            }`} size={20} />
+            }`} size={18} />
             <input
               type="text"
               placeholder="Search by name, skills, topics, or expertise..."
               value={searchQuery}
               onChange={handleSearch}
-              className={`w-full pl-12 pr-4 py-3 rounded-lg border text-sm focus:outline-none ${
+              className={`w-full pl-10 sm:pl-12 pr-4 md:pr-32 py-2.5 sm:py-3 rounded-lg border text-sm focus:outline-none ${
                 darkMode
-                  ? 'bg-[#00001a]/80 border-white/30 text-white placeholder-white/60 focus:border-white/50 focus:bg-[#00001a]/90'
+                  ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/60 focus:border-gray-700'
                   : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/40 focus:border-[#00001a]/40 focus:shadow-lg'
               }`}
               style={darkMode ? {
@@ -267,15 +296,15 @@ const SeekerExplore = ({ darkMode }) => {
                 }
               }}
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+            <div className="hidden md:flex absolute right-3 top-1/2 transform -translate-y-1/2 items-center gap-2">
               <div className="relative">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded border text-sm font-medium ${
                     darkMode
-                      ? 'bg-[#00001a]/80 border-white/30 text-white hover:bg-[#00001a] hover:border-white/50'
+                      ? 'bg-[#00001a] border-gray-800 text-white'
                       : 'border-[#00001a]/20 text-[#00001a] hover:bg-[#00001a]/5 hover:shadow-lg'
-                  } ${showFilters ? (darkMode ? 'bg-[#00001a] border-white/50' : 'bg-[#00001a]/5') : ''}`}
+                  } ${showFilters ? (darkMode ? 'bg-[#00001a] border-gray-700' : 'bg-[#00001a]/5') : ''}`}
                   style={darkMode ? {
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                     transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -308,9 +337,9 @@ const SeekerExplore = ({ darkMode }) => {
                   onClick={() => setShowSortDropdown(!showSortDropdown)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded border text-sm font-medium ${
                     darkMode
-                      ? 'bg-[#00001a]/80 border-white/30 text-white hover:bg-[#00001a] hover:border-white/50'
+                      ? 'bg-[#00001a] border-gray-800 text-white'
                       : 'border-[#00001a]/20 text-[#00001a] hover:bg-[#00001a]/5 hover:shadow-lg'
-                  } ${showSortDropdown ? (darkMode ? 'bg-[#00001a] border-white/50' : 'bg-[#00001a]/5') : ''}`}
+                  } ${showSortDropdown ? (darkMode ? 'bg-[#00001a] border-gray-700' : 'bg-[#00001a]/5') : ''}`}
                   style={darkMode ? {
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                     transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -342,7 +371,7 @@ const SeekerExplore = ({ darkMode }) => {
                   <div
                     className={`absolute right-0 top-full mt-2 w-48 rounded-lg border z-50 ${
                       darkMode
-                        ? 'bg-[#00001a] border-white/20'
+                        ? 'bg-[#00001a] border-gray-800'
                         : 'bg-white border-[#00001a]/20'
                     }`}
                     style={darkMode ? {
@@ -355,7 +384,7 @@ const SeekerExplore = ({ darkMode }) => {
                       <button
                         key={option}
                         onClick={() => handleSortSelect(option)}
-                        className={`w-full text-left px-4 py-2 text-sm transition-all duration-200 first:rounded-t-lg last:rounded-b-lg ${
+                        className={`w-full text-left px-4 py-2 text-sm first:rounded-t-lg last:rounded-b-lg ${
                           sortBy === option
                             ? (darkMode ? 'bg-white/20 text-white' : 'bg-[#00001a] text-white')
                             : (darkMode
@@ -370,6 +399,33 @@ const SeekerExplore = ({ darkMode }) => {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Mobile Filter Buttons */}
+          <div className="flex md:hidden items-center gap-2 mt-3">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium flex-1 justify-center ${
+                darkMode
+                  ? 'bg-[#00001a] border-gray-800 text-white'
+                  : 'border-[#00001a]/20 text-[#00001a]'
+              } ${showFilters ? (darkMode ? 'bg-[#00001a] border-gray-700' : 'bg-[#00001a]/5') : ''}`}
+            >
+              <Filter size={16} />
+              Filters
+              <ChevronDown size={16} className={`transform ${showFilters ? 'rotate-180' : ''}`} />
+            </button>
+            <button
+              onClick={() => setShowSortDropdown(!showSortDropdown)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium flex-1 justify-center ${
+                darkMode
+                  ? 'bg-[#00001a] border-gray-800 text-white'
+                  : 'border-[#00001a]/20 text-[#00001a]'
+              } ${showSortDropdown ? (darkMode ? 'bg-[#00001a] border-gray-700' : 'bg-[#00001a]/5') : ''}`}
+            >
+              <span className="truncate">{sortBy}</span>
+              <ChevronDown size={16} className={`transform transition-transform ${showSortDropdown ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
 
@@ -418,12 +474,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedCategoryFilter(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {categoryOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -440,12 +503,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedCountry(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {countryOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -462,12 +532,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedPricing(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {pricingOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -484,12 +561,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedRating(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {ratingOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -506,12 +590,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedTier(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {tierOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -528,12 +619,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedSpeciality(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {specialityOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -550,12 +648,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedAvailability(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {availabilityOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -572,12 +677,19 @@ const SeekerExplore = ({ darkMode }) => {
                   onChange={(e) => setSelectedLanguage(e.target.value)}
                   className={`w-full px-3 py-2 rounded border text-sm transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
+                      ? 'bg-[#00001a] border-white/20 text-white focus:border-white/40 focus:bg-[#00001a]/90'
                       : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/40'
                   } focus:outline-none`}
+                  style={darkMode ? { colorScheme: 'dark' } : {}}
                 >
                   {languageOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                    <option
+                      key={option}
+                      value={option}
+                      className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}
+                    >
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -608,71 +720,29 @@ const SeekerExplore = ({ darkMode }) => {
           </div>
         )}
 
-        {/* Category Filter Tabs */}
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategorySelect(category)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  selectedCategoryFilter === category
-                    ? (darkMode 
-                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                        : 'bg-[#00001a] text-white')
-                    : (darkMode
-                        ? 'bg-white/5 text-white border border-white/20 hover:bg-white/10'
-                        : 'bg-white text-[#00001a] border border-[#00001a]/20 hover:bg-[#00001a]/5')
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 auto-rows-fr">
           <button
             onClick={() => handleGiftSession()}
-            className={`p-4 rounded-lg border text-left ${
+            className={`p-4 rounded-lg text-left min-w-0 w-full h-full flex flex-col justify-center ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
-                : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
+                ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30 transition-all duration-300'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (darkMode) {
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)';
-              } else {
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (darkMode) {
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)';
-              } else {
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-              }
-            }}
           >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`p-2 rounded-lg flex-shrink-0 ${
                 darkMode ? 'bg-pink-500/20' : 'bg-[#00001a]/10'
               }`}>
-                <Gift className={`${darkMode ? 'text-pink-400' : 'text-[#00001a]'}`} size={20} />
+                <Gift className={`${darkMode ? 'text-pink-400' : 'text-[#00001a]'}`} size={18} />
               </div>
-              <div>
-                <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+              <div className="min-w-0 flex-1">
+                <h3 className={`font-semibold text-base truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Gift / Donate
                 </h3>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                <p className={`text-sm line-clamp-2 ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
                   Support solvers you appreciate
                 </p>
               </div>
@@ -681,44 +751,23 @@ const SeekerExplore = ({ darkMode }) => {
 
           <button
             onClick={handleSharePlatform}
-            className={`p-4 rounded-lg border text-left ${
+            className={`p-4 rounded-lg text-left min-w-0 w-full h-full flex flex-col justify-center ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
-                : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
+                ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30 transition-all duration-300'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (darkMode) {
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)';
-              } else {
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (darkMode) {
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)';
-              } else {
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-              }
-            }}
           >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`p-2 rounded-lg flex-shrink-0 ${
                 darkMode ? 'bg-blue-500/20' : 'bg-[#00001a]/10'
               }`}>
-                <Share2 className={`${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} size={20} />
+                <Share2 className={`${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} size={18} />
               </div>
-              <div>
-                <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+              <div className="min-w-0 flex-1">
+                <h3 className={`font-semibold text-base truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Share Platform
                 </h3>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                <p className={`text-sm line-clamp-2 ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
                   Invite friends to join
                 </p>
               </div>
@@ -726,55 +775,35 @@ const SeekerExplore = ({ darkMode }) => {
           </button>
 
           <button
-            onClick={handleBrowsePodcasts}
-            className={`p-4 rounded-lg border text-left ${
+            onClick={handleExplorePodcasts}
+            className={`p-4 rounded-lg text-left min-w-0 w-full h-full flex flex-col justify-center ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
-                : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
+                ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30 transition-all duration-300'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (darkMode) {
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)';
-              } else {
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (darkMode) {
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)';
-              } else {
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-              }
-            }}
           >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`p-2 rounded-lg flex-shrink-0 ${
                 darkMode ? 'bg-purple-500/20' : 'bg-[#00001a]/10'
               }`}>
-                <Headphones className={`${darkMode ? 'text-purple-400' : 'text-[#00001a]'}`} size={20} />
+                <Headphones className={`${darkMode ? 'text-purple-400' : 'text-[#00001a]'}`} size={18} />
               </div>
-              <div>
-                <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+              <div className="min-w-0 flex-1">
+                <h3 className={`font-semibold text-base truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Browse Podcasts
                 </h3>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                <p className={`text-sm line-clamp-2 ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
                   Discover solver library
                 </p>
               </div>
+
             </div>
           </button>
         </div>
 
         {/* Discover Solvers Section */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Discover Solvers
             </h2>
@@ -785,52 +814,32 @@ const SeekerExplore = ({ darkMode }) => {
         </div>
 
         {/* Solver Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           {solvers.map((solver) => (
             <div
               key={solver.id}
-              className={`p-6 rounded-lg border cursor-pointer ${
+              className={`p-6 rounded-lg cursor-pointer min-w-0 w-full h-full flex flex-col ${
                 darkMode
-                  ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
-                  : 'bg-white border-[#00001a]/20 hover:shadow-lg hover:bg-[#00001a]/5'
+                  ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30 transition-all duration-300'
+                  : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
               }`}
-              style={darkMode ? {
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-              } : {
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (darkMode) {
-                  e.currentTarget.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)';
-                } else {
-                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (darkMode) {
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)';
-                } else {
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                }
-              }}
             >
               {/* Header with Avatar and Status */}
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-lg ${
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 ${
                     darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-[#00001a]/10 text-[#00001a]'
                   }`}>
-                    <User size={24} />
+                    <User size={20} className="md:hidden" />
+                    <User size={24} className="hidden md:block" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      <h3 className={`font-semibold truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                         {solver.name}
                       </h3>
                       {solver.verified && (
-                        <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                        <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
                           darkMode ? 'bg-blue-500/20' : 'bg-[#00001a]/10'
                         }`}>
                           <div className={`w-2 h-2 rounded-full ${
@@ -839,10 +848,10 @@ const SeekerExplore = ({ darkMode }) => {
                         </div>
                       )}
                     </div>
-                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                    <p className={`text-sm truncate ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
                       {solver.title}
                     </p>
-                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                    <p className={`text-sm truncate ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
                       {solver.company}
                     </p>
                   </div>
@@ -850,8 +859,8 @@ const SeekerExplore = ({ darkMode }) => {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleGiftSession(solver)}
-                    className={`w-4 h-4 rounded-full flex items-center justify-center transition-all duration-200 ${
-                      darkMode ? 'bg-yellow-500/20 hover:bg-yellow-500/30' : 'bg-[#00001a]/10 hover:bg-[#00001a]/20'
+                    className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                      darkMode ? 'bg-yellow-500/20' : 'bg-[#00001a]/10'
                     }`}
                   >
                     <div className={`w-2 h-2 rounded-full ${
@@ -876,9 +885,9 @@ const SeekerExplore = ({ darkMode }) => {
               </div>
 
               {/* Rating and Stats */}
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-4">
                 <div className="flex items-center gap-1">
-                  <Star className={`w-4 h-4 ${darkMode ? 'text-yellow-400 fill-yellow-400' : 'text-[#00001a] fill-[#00001a]'}`} />
+                  <Star className={`w-4 h-4 ${darkMode ? 'text-blue-400 fill-blue-400' : 'text-[#00001a] fill-[#00001a]'}`} />
                   <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                     {solver.rating}
                   </span>
@@ -952,34 +961,34 @@ const SeekerExplore = ({ darkMode }) => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleBookNow(solver.id)}
-                  className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-300 ${
+                  className={`flex-1 py-2 px-4 rounded-lg font-medium ${
                     solver.availableNow
                       ? (darkMode
-                          ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 hover:shadow-lg hover:shadow-green-500/20'
-                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-lg')
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                          : 'bg-[#00001a] text-white')
                       : (darkMode
-                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:shadow-lg hover:shadow-blue-500/20'
-                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-lg')
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                          : 'bg-[#00001a] text-white')
                   }`}
                 >
                   {solver.availableNow ? 'Book Now' : 'Book'}
                 </button>
                 <button
                   onClick={() => handleViewProfile(solver.id)}
-                  className={`px-4 py-2 rounded-lg border transition-all duration-300 ${
+                  className={`px-4 py-2 rounded-lg border ${
                     darkMode
-                      ? 'border-white/20 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-white/10'
-                      : 'border-[#00001a]/20 text-[#00001a] hover:bg-[#00001a]/5 hover:shadow-lg'
+                      ? 'border-white/20 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-white/10 transition-all duration-300'
+                      : 'border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 >
                   View
                 </button>
                 <button
                   onClick={() => handleExternalLink(solver.id)}
-                  className={`px-3 py-2 rounded-lg border transition-all duration-300 ${
+                  className={`px-3 py-2 rounded-lg border ${
                     darkMode
-                      ? 'border-white/20 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-white/10'
-                      : 'border-[#00001a]/20 text-[#00001a] hover:bg-[#00001a]/5 hover:shadow-lg'
+                      ? 'border-white/20 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-white/10 transition-all duration-300'
+                      : 'border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 >
                   <ExternalLink size={16} />
@@ -988,6 +997,138 @@ const SeekerExplore = ({ darkMode }) => {
             </div>
           ))}
         </div>
+
+        {/* Podcast Section */}
+        {showPodcastSection && (
+          <div id="podcast-section" className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                Browse Podcasts
+              </h2>
+              <button
+                onClick={() => setShowPodcastSection(false)}
+                className={`p-2 rounded-lg transition-all duration-300 ${
+                  darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-[#00001a]/10 text-[#00001a]'
+                }`}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+              {[
+                {
+                  id: 1,
+                  title: "Tech Career Insights",
+                  host: "Sarah Johnson",
+                  description: "Weekly discussions about career growth in tech",
+                  duration: "45 min",
+                  episodes: 127,
+                  category: "Career"
+                },
+                {
+                  id: 2,
+                  title: "Code & Coffee",
+                  host: "Mike Chen",
+                  description: "Deep dives into programming concepts and best practices",
+                  duration: "30 min",
+                  episodes: 89,
+                  category: "Programming"
+                },
+                {
+                  id: 3,
+                  title: "Startup Stories",
+                  host: "Alex Rivera",
+                  description: "Interviews with successful entrepreneurs and founders",
+                  duration: "60 min",
+                  episodes: 156,
+                  category: "Business"
+                },
+                {
+                  id: 4,
+                  title: "Design Thinking",
+                  host: "Emma Davis",
+                  description: "Exploring UX/UI design principles and trends",
+                  duration: "40 min",
+                  episodes: 73,
+                  category: "Design"
+                },
+                {
+                  id: 5,
+                  title: "Data Science Daily",
+                  host: "Dr. James Wilson",
+                  description: "Latest trends and techniques in data science",
+                  duration: "25 min",
+                  episodes: 201,
+                  category: "Data Science"
+                },
+                {
+                  id: 6,
+                  title: "AI Frontiers",
+                  host: "Lisa Park",
+                  description: "Cutting-edge developments in artificial intelligence",
+                  duration: "50 min",
+                  episodes: 94,
+                  category: "AI/ML"
+                }
+              ].map((podcast) => (
+                <div
+                  key={podcast.id}
+                  className={`p-6 rounded-lg border ${
+                    darkMode
+                      ? 'bg-[#00001a] border-white/20'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+                  }`}
+                >
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                      darkMode ? 'bg-purple-500/20' : 'bg-[#00001a]/10'
+                    }`}>
+                      <Headphones className={`${darkMode ? 'text-purple-400' : 'text-[#00001a]'}`} size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {podcast.title}
+                      </h3>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                        by {podcast.host}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-[#00001a]/80'}`}>
+                    {podcast.description}
+                  </p>
+
+                  <div className="flex items-center justify-between text-xs mb-4">
+                    <span className={`px-2 py-1 rounded ${
+                      darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-[#00001a]/10 text-[#00001a]'
+                    }`}>
+                      {podcast.category}
+                    </span>
+                    <div className={`${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                      {podcast.episodes} episodes • {podcast.duration}
+                    </div>
+                  </div>
+
+                  <button className={`w-full py-2 px-4 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-white/10 text-white hover:bg-white/20'
+                      : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
+                  }`}>
+                    Listen Now
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center mt-6">
+              <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                Showing 6 of 24 podcasts
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Gift/Donate Modal */}
         {showGiftModal && (
@@ -1029,66 +1170,96 @@ const SeekerExplore = ({ darkMode }) => {
 
               <div className="space-y-3 mb-6">
                 <button
-                  className={`w-full p-3 rounded-lg border text-left ${
-                    darkMode
-                      ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
-                      : 'border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
+                  onClick={() => handleGiftAmountSelect(25)}
+                  className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
+                    selectedGiftAmount === 25
+                      ? (darkMode
+                          ? 'bg-blue-500/20 border-blue-500/50 text-blue-400'
+                          : 'bg-[#00001a]/10 border-[#00001a] text-[#00001a]')
+                      : (darkMode
+                          ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
+                          : 'border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg')
                   }`}
-                  style={darkMode ? {
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-                  } : {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (darkMode) {
-                      e.currentTarget.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.15), 0 4px 15px rgba(0, 0, 0, 0.1)';
-                    } else {
-                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (darkMode) {
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)';
-                    } else {
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                    }
-                  }}
                 >
-                  <div className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <div className={`font-medium ${
+                    selectedGiftAmount === 25
+                      ? (darkMode ? 'text-blue-400' : 'text-[#00001a]')
+                      : (darkMode ? 'text-white' : 'text-[#00001a]')
+                  }`}>
                     $25 Gift Credit
                   </div>
-                  <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                  <div className={`text-sm ${
+                    selectedGiftAmount === 25
+                      ? (darkMode ? 'text-blue-400/70' : 'text-[#00001a]/70')
+                      : (darkMode ? 'text-gray-400' : 'text-[#00001a]/60')
+                  }`}>
                     Perfect for a quick consultation
                   </div>
                 </button>
 
-                <button className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
-                  darkMode
-                    ? 'border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-white/10'
-                    : 'border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
-                }`}>
-                  <div className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                <button
+                  onClick={() => handleGiftAmountSelect(50)}
+                  className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
+                    selectedGiftAmount === 50
+                      ? (darkMode
+                          ? 'bg-blue-500/20 border-blue-500/50 text-blue-400'
+                          : 'bg-[#00001a]/10 border-[#00001a] text-[#00001a]')
+                      : (darkMode
+                          ? 'border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-white/10'
+                          : 'border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg')
+                  }`}
+                >
+                  <div className={`font-medium ${
+                    selectedGiftAmount === 50
+                      ? (darkMode ? 'text-blue-400' : 'text-[#00001a]')
+                      : (darkMode ? 'text-white' : 'text-[#00001a]')
+                  }`}>
                     $50 Gift Credit
                   </div>
-                  <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                  <div className={`text-sm ${
+                    selectedGiftAmount === 50
+                      ? (darkMode ? 'text-blue-400/70' : 'text-[#00001a]/70')
+                      : (darkMode ? 'text-gray-400' : 'text-[#00001a]/60')
+                  }`}>
                     Great for a full session
                   </div>
                 </button>
 
-                <button className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
-                  darkMode
-                    ? 'border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-white/10'
-                    : 'border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
+                <div className={`w-full p-3 rounded-lg border ${
+                  selectedGiftAmount === 'custom'
+                    ? (darkMode
+                        ? 'bg-blue-500/20 border-blue-500/50'
+                        : 'bg-[#00001a]/10 border-[#00001a]')
+                    : (darkMode
+                        ? 'border-white/20'
+                        : 'border-[#00001a]/20')
                 }`}>
-                  <div className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <div className={`font-medium mb-2 ${
+                    selectedGiftAmount === 'custom'
+                      ? (darkMode ? 'text-blue-400' : 'text-[#00001a]')
+                      : (darkMode ? 'text-white' : 'text-[#00001a]')
+                  }`}>
                     Custom Amount
                   </div>
-                  <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
-                    Choose your own amount
+                  <div className="flex items-center gap-2">
+                    <span className={`text-lg ${
+                      selectedGiftAmount === 'custom'
+                        ? (darkMode ? 'text-blue-400' : 'text-[#00001a]')
+                        : (darkMode ? 'text-white' : 'text-[#00001a]')
+                    }`}>$</span>
+                    <input
+                      type="text"
+                      value={customGiftAmount}
+                      onChange={handleCustomAmountChange}
+                      placeholder="Enter amount"
+                      className={`flex-1 px-3 py-2 rounded border text-sm transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 focus:border-blue-400/50'
+                          : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50'
+                      } focus:outline-none`}
+                    />
                   </div>
-                </button>
+                </div>
               </div>
 
               <div className="flex gap-3">
@@ -1103,10 +1274,7 @@ const SeekerExplore = ({ darkMode }) => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    setShowGiftModal(false)
-                    // Handle gift processing here
-                  }}
+                  onClick={processGift}
                   className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/20 text-white hover:bg-white/30 hover:shadow-lg hover:shadow-white/10'
@@ -1203,123 +1371,7 @@ const SeekerExplore = ({ darkMode }) => {
           </div>
         )}
 
-        {/* Podcast Modal */}
-        {showPodcastModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className={`max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg ${
-              darkMode ? 'bg-[#00001a]' : 'bg-white'
-            }`}>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                    Browse Podcasts
-                  </h2>
-                  <button
-                    onClick={() => setShowPodcastModal(false)}
-                    className={`p-2 rounded-lg transition-all duration-300 ${
-                      darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-[#00001a]/10 text-[#00001a]'
-                    }`}
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[
-                    {
-                      id: 1,
-                      title: "React Best Practices",
-                      host: "Alex Chen",
-                      duration: "45 min",
-                      category: "Frontend",
-                      description: "Deep dive into React optimization techniques"
-                    },
-                    {
-                      id: 2,
-                      title: "AI in Modern Development",
-                      host: "Sarah Davis",
-                      duration: "38 min",
-                      category: "AI & ML",
-                      description: "How AI is transforming software development"
-                    },
-                    {
-                      id: 3,
-                      title: "DevOps Automation",
-                      host: "Mike Johnson",
-                      duration: "52 min",
-                      category: "DevOps",
-                      description: "Streamlining deployment pipelines"
-                    },
-                    {
-                      id: 4,
-                      title: "Database Optimization",
-                      host: "Emily Rodriguez",
-                      duration: "41 min",
-                      category: "Backend",
-                      description: "Performance tuning for large-scale databases"
-                    },
-                    {
-                      id: 5,
-                      title: "Mobile Security",
-                      host: "David Kim",
-                      duration: "35 min",
-                      category: "Mobile",
-                      description: "Securing mobile applications"
-                    },
-                    {
-                      id: 6,
-                      title: "Cloud Architecture",
-                      host: "Lisa Wang",
-                      duration: "48 min",
-                      category: "Cloud",
-                      description: "Building scalable cloud solutions"
-                    }
-                  ].map((podcast) => (
-                    <div
-                      key={podcast.id}
-                      className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
-                        darkMode
-                          ? 'bg-white/3 border-white/20 hover:bg-white/8 hover:border-white/30'
-                          : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 hover:shadow-lg'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className={`p-2 rounded-lg ${
-                          darkMode ? 'bg-purple-500/20' : 'bg-[#00001a]/10'
-                        }`}>
-                          <Headphones className={`${darkMode ? 'text-purple-400' : 'text-[#00001a]'}`} size={16} />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className={`font-semibold mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                            {podcast.title}
-                          </h3>
-                          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
-                            by {podcast.host}
-                          </p>
-                        </div>
-                      </div>
-
-                      <p className={`text-sm mb-3 ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
-                        {podcast.description}
-                      </p>
-
-                      <div className="flex items-center justify-between">
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-[#00001a]/10 text-[#00001a]'
-                        }`}>
-                          {podcast.category}
-                        </span>
-                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
-                          {podcast.duration}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

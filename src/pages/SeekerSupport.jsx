@@ -165,16 +165,16 @@ const SeekerSupport = ({ darkMode }) => {
   }
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
+    <div className={`min-h-screen ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
       <div className="p-6 space-y-6">
         
         {/* Header */}
-        <div className={`p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl ${
+        <div className={`p-6 transition-all duration-300 ${
           darkMode
-            ? 'rounded-lg bg-white/3 border-white/20'
-            : 'rounded-lg bg-white border-gray-200'
+            ? 'rounded-lg bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+            : 'rounded-lg bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
           <div className="flex items-center gap-3 mb-4">
             <HelpCircle className={`w-8 h-8 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -187,18 +187,21 @@ const SeekerSupport = ({ darkMode }) => {
           </p>
           
           {/* Contact Info */}
-          <div className={`mt-4 p-4 rounded-lg border ${
-            darkMode ? 'bg-blue-500/10 border-blue-500/20' : 'bg-gray-100 border-gray-200'
+          <div className={`mt-4 p-3 sm:p-4 rounded-lg border ${
+            darkMode ? 'bg-blue-500/10 border-blue-500/20' : 'bg-gray-100 border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
           }`}>
-            <div className="flex items-center gap-2 mb-2">
-              <Mail className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
-              <span className={`font-medium ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`}>
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <Mail className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+              <span className={`font-medium text-sm sm:text-base ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`}>
                 Direct Email Support
               </span>
             </div>
-            <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+            <p className={`text-xs sm:text-sm leading-relaxed ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
               For urgent issues, contact us directly at{' '}
-              <a href="mailto:support@synapmentor.com" className={`font-medium ${darkMode ? 'text-blue-400' : 'text-[#00001a]'} hover:underline`}>
+              <a
+                href="mailto:support@synapmentor.com"
+                className={`font-medium break-all ${darkMode ? 'text-blue-400' : 'text-[#00001a]'} hover:underline transition-colors duration-200`}
+              >
                 support@synapmentor.com
               </a>
             </p>
@@ -206,10 +209,10 @@ const SeekerSupport = ({ darkMode }) => {
         </div>
 
         {/* Tab Navigation */}
-        <div className={`p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl ${
+        <div className={`p-6 transition-all duration-300 ${
           darkMode
-            ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+            ? 'rounded-lg bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+            : 'rounded-lg bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
           <div className="flex flex-wrap gap-2">
             {tabs.map((tab) => {
@@ -233,10 +236,10 @@ const SeekerSupport = ({ darkMode }) => {
         </div>
 
         {/* Content Area */}
-        <div className={`p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl ${
+        <div className={`p-6 transition-all duration-300 ${
           darkMode
-            ? 'rounded-lg bg-white/3 border-white/20'
-            : 'rounded-lg bg-white border-gray-200'
+            ? 'rounded-lg bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+            : 'rounded-lg bg-white border border-gray-200'
         }`}>
           
           {/* FAQ Tab */}
@@ -261,14 +264,14 @@ const SeekerSupport = ({ darkMode }) => {
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                      className={`px-4 py-2 rounded-lg text-sm font-medium ${
                         selectedCategory === category
                           ? darkMode
                             ? 'bg-white text-[#00001a]'
                             : 'bg-[#00001a] text-white'
                           : darkMode
-                            ? 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800'
+                            ? 'bg-white/10 text-white/70'
+                            : 'bg-white text-gray-600 border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                       }`}
                     >
                       {category}
@@ -290,7 +293,7 @@ const SeekerSupport = ({ darkMode }) => {
                   className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
-                      : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                      : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 />
               </div>
@@ -299,36 +302,38 @@ const SeekerSupport = ({ darkMode }) => {
               <div className="space-y-4">
                 {filteredFaqs.map((faq) => (
                   <div key={faq.id} className={`border rounded-lg transition-all duration-300 ${
-                    darkMode ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    darkMode ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <button
                       onClick={() => toggleFaq(faq.id)}
-                      className={`w-full p-4 text-left flex items-center justify-between transition-all duration-300 ${
+                      className={`w-full p-3 sm:p-4 text-left flex items-center justify-between gap-3 sm:gap-4 transition-all duration-300 ${
                         darkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'
                       }`}
                     >
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          <span className={`px-2 py-1 rounded text-xs font-medium flex-shrink-0 ${
                             darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-100 text-gray-600'
                           }`}>
                             {faq.category}
                           </span>
                         </div>
-                        <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        <h4 className={`font-medium text-sm sm:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           {faq.question}
                         </h4>
                       </div>
-                      {expandedFaq === faq.id ? (
-                        <ChevronDown className={`w-5 h-5 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-                      ) : (
-                        <ChevronRight className={`w-5 h-5 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-                      )}
+                      <div className="flex-shrink-0">
+                        {expandedFaq === faq.id ? (
+                          <ChevronDown className={`w-5 h-5 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
+                        ) : (
+                          <ChevronRight className={`w-5 h-5 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
+                        )}
+                      </div>
                     </button>
                     
                     {expandedFaq === faq.id && (
-                      <div className={`p-4 border-t ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
-                        <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                      <div className={`p-3 sm:p-4 border-t ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+                        <p className={`text-sm sm:text-base leading-relaxed ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                           {faq.answer}
                         </p>
                       </div>
@@ -339,7 +344,7 @@ const SeekerSupport = ({ darkMode }) => {
 
               {/* FAQ Information */}
               <div className={`mt-8 p-4 rounded-lg ${
-                darkMode ? 'bg-white/5 border border-white/20' : 'bg-gray-50 border border-gray-200'
+                darkMode ? 'bg-white/5 border border-white/20' : 'bg-white border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
               }`}>
                 <div className="flex items-center gap-2 mb-2">
                   <HelpCircle size={16} className={darkMode ? 'text-white' : 'text-[#00001a]'} />
@@ -388,32 +393,32 @@ const SeekerSupport = ({ darkMode }) => {
                 <div className="lg:col-span-2 flex flex-col">
 
                   {/* Support Agent Info */}
-                  <div className={`p-4 rounded-lg border mb-4 ${
-                    darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'
+                  <div className={`p-3 sm:p-4 rounded-lg border mb-4 transition-all duration-300 ${
+                    darkMode ? 'bg-white/5 border-white/10 hover:bg-white/8' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        <div className="relative flex-shrink-0">
+                          <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center ${
                             darkMode ? 'bg-blue-500/20' : 'bg-gray-100'
                           }`}>
-                            <MessageCircle className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+                            <MessageCircle className={`w-4 sm:w-5 h-4 sm:h-5 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
                           </div>
-                          <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                          <div className={`absolute -bottom-1 -right-1 w-3 sm:w-4 h-3 sm:h-4 rounded-full border-2 border-white ${
                             darkMode ? 'bg-green-500' : 'bg-gray-400'
                           }`}></div>
                         </div>
-                        <div>
-                          <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        <div className="min-w-0 flex-1">
+                          <h4 className={`font-medium text-sm sm:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                             Support Agent
                           </h4>
-                          <p className={`text-sm flex items-center gap-1 ${darkMode ? 'text-green-400' : 'text-gray-600'}`}>
-                            <span className={`w-2 h-2 rounded-full ${darkMode ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                            Online • Typically responds in 5 minutes
+                          <p className={`text-xs sm:text-sm flex items-center gap-1 ${darkMode ? 'text-green-400' : 'text-gray-600'}`}>
+                            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${darkMode ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+                            <span className="truncate">Online • Typically responds in 5 minutes</span>
                           </p>
                         </div>
                       </div>
-                      <button className={`p-2 rounded-lg transition-all duration-300 ${
+                      <button className={`p-2 rounded-lg transition-all duration-300 flex-shrink-0 ${
                         darkMode
                           ? 'text-white/70 hover:text-white hover:bg-white/10'
                           : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
@@ -425,14 +430,13 @@ const SeekerSupport = ({ darkMode }) => {
 
                   {/* Messages Area */}
                   <div className={`flex-1 p-4 rounded-lg border overflow-y-auto custom-scrollbar ${
-                    darkMode ? 'bg-white/3 border-white/10' : 'bg-white border-gray-200'
+                    darkMode ? 'bg-white/3 border-white/10' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="space-y-4">
                       {messages.map((message, index) => (
                         <div
                           key={message.id}
-                          className={`flex animate-slide-in ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                          style={{ animationDelay: `${index * 0.1}s` }}
+                          className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                           {message.sender === 'support' && (
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 mt-1 ${
@@ -450,7 +454,7 @@ const SeekerSupport = ({ darkMode }) => {
                                   : 'bg-[#00001a] text-white')
                                 : (darkMode
                                   ? 'bg-white/10 text-white border border-white/20'
-                                  : 'bg-gray-100 text-gray-800 border border-gray-200')
+                                  : 'bg-white text-gray-800 border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
                             } ${message.sender === 'user' ? 'rounded-br-md' : 'rounded-bl-md'}`}>
                               <p className="text-sm leading-relaxed">{message.text}</p>
                             </div>
@@ -482,7 +486,7 @@ const SeekerSupport = ({ darkMode }) => {
 
                   {/* Message Input */}
                   <div className={`p-4 mt-4 rounded-lg border ${
-                    darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'
+                    darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="flex gap-3 items-end">
                       <div className="flex-1 relative">
@@ -496,7 +500,7 @@ const SeekerSupport = ({ darkMode }) => {
                           className={`w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:outline-none focus:ring-2 ${
                             darkMode
                               ? 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50 focus:ring-blue-400/20'
-                              : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500/20'
+                              : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500/20 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                           }`}
                         />
                       </div>
@@ -530,13 +534,13 @@ const SeekerSupport = ({ darkMode }) => {
                 <div className="space-y-6">
 
                   {/* Chat Features */}
-                  <div className={`p-4 rounded-lg border ${
-                    darkMode ? 'bg-white/3 border-white/10' : 'bg-white border-gray-200'
+                  <div className={`p-3 sm:p-4 rounded-lg transition-all duration-300 ${
+                    darkMode ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30' : 'bg-white border border-gray-200'
                   }`}>
-                    <h4 className={`font-medium mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <h4 className={`font-medium mb-3 sm:mb-4 text-sm sm:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                       Chat Features
                     </h4>
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       {[
                         { icon: MessageCircle, text: 'Real-time messaging' },
                         { icon: HelpCircle, text: 'Dedicated support agent' },
@@ -544,9 +548,9 @@ const SeekerSupport = ({ darkMode }) => {
                       ].map((feature, index) => {
                         const Icon = feature.icon
                         return (
-                          <div key={index} className="flex items-center gap-3">
-                            <Icon className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
-                            <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                          <div key={index} className="flex items-center gap-2 sm:gap-3">
+                            <Icon className={`w-4 h-4 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+                            <span className={`text-xs sm:text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                               {feature.text}
                             </span>
                           </div>
@@ -556,8 +560,8 @@ const SeekerSupport = ({ darkMode }) => {
                   </div>
 
                   {/* Quick Actions */}
-                  <div className={`p-4 rounded-lg border ${
-                    darkMode ? 'bg-white/3 border-white/10' : 'bg-white border-gray-200'
+                  <div className={`p-3 sm:p-4 rounded-lg transition-all duration-300 ${
+                    darkMode ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30' : 'bg-white border border-gray-200'
                   }`}>
                     <h4 className={`font-medium mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                       Quick Actions
@@ -597,18 +601,18 @@ const SeekerSupport = ({ darkMode }) => {
               <h3 className={`text-lg font-semibold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Payment Support
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className={`p-6 rounded-lg border transition-all duration-300 ${
-                  darkMode ? 'bg-white/3 border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className={`p-4 sm:p-6 rounded-lg transition-all duration-300 ${
+                  darkMode ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30' : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                 }`}>
-                  <CreditCard className={`w-8 h-8 mb-4 ${darkMode ? 'text-green-400' : 'text-gray-600'}`} />
-                  <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <CreditCard className={`w-6 sm:w-8 h-6 sm:h-8 mb-3 sm:mb-4 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-gray-600'}`} />
+                  <h4 className={`font-semibold mb-2 text-sm sm:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                     Payment Issues
                   </h4>
-                  <p className={`text-sm mb-4 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                  <p className={`text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                     Having trouble with payments, refunds, or billing?
                   </p>
-                  <ul className={`text-sm space-y-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                  <ul className={`text-xs sm:text-sm space-y-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                     <li>• Failed payment troubleshooting</li>
                     <li>• Refund status inquiries</li>
                     <li>• Billing discrepancies</li>
@@ -616,17 +620,17 @@ const SeekerSupport = ({ darkMode }) => {
                   </ul>
                 </div>
 
-                <div className={`p-6 rounded-lg border transition-all duration-300 ${
-                  darkMode ? 'bg-white/3 border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                <div className={`p-4 sm:p-6 rounded-lg transition-all duration-300 ${
+                  darkMode ? 'bg-white/3 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30' : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                 }`}>
-                  <FileText className={`w-8 h-8 mb-4 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
-                  <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <FileText className={`w-6 sm:w-8 h-6 sm:h-8 mb-3 sm:mb-4 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+                  <h4 className={`font-semibold mb-2 text-sm sm:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                     Refund Policies
                   </h4>
-                  <p className={`text-sm mb-4 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                  <p className={`text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                     Understanding our refund and cancellation policies.
                   </p>
-                  <ul className={`text-sm space-y-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                  <ul className={`text-xs sm:text-sm space-y-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                     <li>• 24-hour cancellation policy</li>
                     <li>• Refund processing times</li>
                     <li>• Partial refund conditions</li>

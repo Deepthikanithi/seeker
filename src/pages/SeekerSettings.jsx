@@ -10,6 +10,7 @@ import {
   Mail,
   Calendar,
   MessageSquare,
+  MessageCircle,
   Eye,
   EyeOff,
   Lock,
@@ -101,13 +102,13 @@ const SeekerSettings = ({ darkMode }) => {
     <div className={`min-h-screen transition-all duration-500 ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="p-6">
 
         {/* Header */}
-        <div className={`p-6 rounded-lg border transition-all duration-500 mb-8 ${
+        <div className={`p-6 rounded-lg mb-8 transition-all duration-300 ${
           darkMode
-            ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+            ? 'border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+            : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
           <div className="flex items-center gap-3 mb-4">
             <Settings className={`w-8 h-8 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -132,14 +133,14 @@ const SeekerSettings = ({ darkMode }) => {
             <button
               key={tab.id}
               onClick={() => setActiveSection(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${
                 activeSection === tab.id
                   ? darkMode
                     ? 'bg-white/20 text-white shadow-lg'
-                    : 'bg-[#00001a] text-white shadow-lg'
+                    : 'bg-[#00001a] text-white shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                   : darkMode
-                    ? 'bg-white/5 text-white/70 hover:bg-white/10'
-                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                    ? 'bg-white/5 text-white/70'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
               }`}
             >
               {React.createElement(tab.icon, { className: 'w-4 h-4' })}
@@ -151,10 +152,10 @@ const SeekerSettings = ({ darkMode }) => {
         {/* Content based on active section */}
         <div className="space-y-8">
           {activeSection === 'language' && (
-            <div className={`p-6 rounded-lg border transition-all duration-500 ${
+            <div className={`p-6 rounded-lg transition-all duration-300 ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="flex items-center gap-3 mb-6">
                 <Globe className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -170,8 +171,8 @@ const SeekerSettings = ({ darkMode }) => {
                     onClick={() => setLanguage(lang.code)}
                     className={`p-3 rounded-lg border text-left transition-all duration-300 ${
                       language === lang.code
-                        ? (darkMode ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-[#00001a] text-white border-[#00001a]')
-                        : (darkMode ? 'border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-gray-200 text-[#00001a] hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]')
+                        ? (darkMode ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-[#00001a] text-white border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                        : (darkMode ? 'border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
                     }`}
                   >
                     <div className="font-medium">{lang.name}</div>
@@ -189,10 +190,10 @@ const SeekerSettings = ({ darkMode }) => {
           )}
 
           {activeSection === 'notifications' && (
-            <div className={`p-6 rounded-lg border transition-all duration-500 ${
+            <div className={`p-6 rounded-lg transition-all duration-300 ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="flex items-center gap-3 mb-6">
                 <Bell className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -203,26 +204,26 @@ const SeekerSettings = ({ darkMode }) => {
 
               <div className="space-y-6">
                 {/* Email Alerts */}
-                <div className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Mail className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                      <div>
-                        <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <div className="flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <Mail className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      <div className="min-w-0 flex-1">
+                        <h4 className={`font-medium text-sm sm:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Email Alerts
                         </h4>
-                        <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                        <p className={`text-xs sm:text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                           Receive important updates via email
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('emailAlerts')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                         notifications.emailAlerts
                           ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -238,15 +239,15 @@ const SeekerSettings = ({ darkMode }) => {
                 </div>
 
                 {/* Calendar Reminders */}
-                <div className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Calendar className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                      <div>
+                  <div className="flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <Calendar className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      <div className="min-w-0 flex-1">
                         <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Calendar Reminders
                         </h4>
@@ -257,7 +258,7 @@ const SeekerSettings = ({ darkMode }) => {
                     </div>
                     <button
                       onClick={() => handleNotificationChange('calendarReminders')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                         notifications.calendarReminders
                           ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -273,15 +274,15 @@ const SeekerSettings = ({ darkMode }) => {
                 </div>
 
                 {/* Push Notifications */}
-                <div className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Bell className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                      <div>
+                  <div className="flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <Bell className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      <div className="min-w-0 flex-1">
                         <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Push Notifications (Browser)
                         </h4>
@@ -292,7 +293,7 @@ const SeekerSettings = ({ darkMode }) => {
                     </div>
                     <button
                       onClick={() => handleNotificationChange('pushNotifications')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                         notifications.pushNotifications
                           ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -308,15 +309,15 @@ const SeekerSettings = ({ darkMode }) => {
                 </div>
 
                 {/* Message Notifications */}
-                <div className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <MessageSquare className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                      <div>
+                  <div className="flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <MessageSquare className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      <div className="min-w-0 flex-1">
                         <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Message Notifications
                         </h4>
@@ -327,7 +328,7 @@ const SeekerSettings = ({ darkMode }) => {
                     </div>
                     <button
                       onClick={() => handleNotificationChange('messageNotifications')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                         notifications.messageNotifications
                           ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -343,15 +344,15 @@ const SeekerSettings = ({ darkMode }) => {
                 </div>
 
                 {/* Weekly Digest */}
-                <div className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Mail className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                      <div>
+                  <div className="flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <Mail className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      <div className="min-w-0 flex-1">
                         <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Weekly Digest
                         </h4>
@@ -362,7 +363,7 @@ const SeekerSettings = ({ darkMode }) => {
                     </div>
                     <button
                       onClick={() => handleNotificationChange('weeklyDigest')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                         notifications.weeklyDigest
                           ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -378,15 +379,15 @@ const SeekerSettings = ({ darkMode }) => {
                 </div>
 
                 {/* Anonymous Pool Response */}
-                <div className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Bell className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                      <div>
+                  <div className="flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <Bell className={`w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      <div className="min-w-0 flex-1">
                         <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Anonymous Pool Response
                         </h4>
@@ -397,7 +398,7 @@ const SeekerSettings = ({ darkMode }) => {
                     </div>
                     <button
                       onClick={() => handleNotificationChange('anonymousPoolResponse')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                         notifications.anonymousPoolResponse
                           ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -416,10 +417,10 @@ const SeekerSettings = ({ darkMode }) => {
           )}
 
           {activeSection === 'privacy' && (
-            <div className={`p-6 rounded-lg border transition-all duration-500 ${
+            <div className={`p-6 rounded-lg transition-all duration-300 ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="flex items-center gap-3 mb-6">
                 <Shield className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -456,17 +457,17 @@ const SeekerSettings = ({ darkMode }) => {
                     icon: EyeOff
                   }
                 ].map((item) => (
-                  <div key={item.key} className={`p-4 rounded-lg border transition-all duration-300 ${
+                  <div key={item.key} className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                      : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between gap-3 sm:gap-4">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                         {React.createElement(item.icon, {
-                          className: `w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`
+                          className: `w-5 h-5 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`
                         })}
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                             {item.label}
                           </h4>
@@ -477,7 +478,7 @@ const SeekerSettings = ({ darkMode }) => {
                       </div>
                       <button
                         onClick={() => handlePrivacyChange(item.key)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
                           privacySettings[item.key]
                             ? (darkMode ? 'bg-blue-500' : 'bg-[#00001a]')
                             : (darkMode ? 'bg-white/20' : 'bg-gray-300')
@@ -514,10 +515,10 @@ const SeekerSettings = ({ darkMode }) => {
           )}
 
           {activeSection === 'policies' && (
-            <div className={`p-6 rounded-lg border transition-all duration-500 ${
+            <div className={`p-6 rounded-lg transition-all duration-300 ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="flex items-center gap-3 mb-6">
                 <FileText className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -559,7 +560,7 @@ const SeekerSettings = ({ darkMode }) => {
                     className={`p-4 rounded-lg border transition-all duration-300 text-left ${
                       darkMode
                         ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] text-white'
-                        : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] text-[#00001a]'
+                        : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)] text-[#00001a]'
                     }`}>
                     <div className="flex items-start gap-3">
                       {React.createElement(policy.icon, {
@@ -579,10 +580,10 @@ const SeekerSettings = ({ darkMode }) => {
           )}
 
           {activeSection === 'mfa' && (
-            <div className={`p-6 rounded-lg border transition-all duration-500 ${
+            <div className={`p-6 rounded-lg transition-all duration-300 ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30'
+                : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="flex items-center gap-3 mb-6">
                 <Lock className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -595,7 +596,7 @@ const SeekerSettings = ({ darkMode }) => {
               <div className={`p-4 rounded-lg border transition-all duration-300 ${
                 darkMode
                   ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                  : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
               }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -647,7 +648,7 @@ const SeekerSettings = ({ darkMode }) => {
                           : 'border-[#00001a] bg-[#00001a]/5'
                         : darkMode
                           ? 'border-white/10 hover:border-white/20'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                     }`}>
                       <div className="flex items-center gap-3">
                         <input
@@ -678,7 +679,7 @@ const SeekerSettings = ({ darkMode }) => {
                           : 'border-[#00001a] bg-[#00001a]/5'
                         : darkMode
                           ? 'border-white/10 hover:border-white/20'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                     }`}>
                       <div className="flex items-center gap-3">
                         <input
@@ -708,7 +709,7 @@ const SeekerSettings = ({ darkMode }) => {
                   <div className={`p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'border-gray-200 hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                      : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div>
@@ -923,7 +924,7 @@ const SeekerSettings = ({ darkMode }) => {
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all duration-300 ${
                           darkMode
                             ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50'
-                            : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-400 focus:border-gray-400'
+                            : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-400 focus:border-gray-400 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       />
                       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -937,7 +938,7 @@ const SeekerSettings = ({ darkMode }) => {
                     <div className="space-y-4">
                       {/* General Category */}
                       <div className={`p-4 rounded-lg border transition-all duration-300 ${
-                        darkMode ? 'border-white/10 bg-white/5 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        darkMode ? 'border-white/10 bg-white/5 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                       }`}>
                         <div className="flex items-center gap-2 mb-3">
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -1025,8 +1026,8 @@ const SeekerSettings = ({ darkMode }) => {
 
                 {showModal === 'chat-support' && (
                   <div className="space-y-6">
-                    <div className="text-center">
-                      <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center ${
+                    <div>
+                      <div className={`w-20 h-20 mb-4 rounded-full flex items-center justify-center ${
                         darkMode ? 'bg-white/10' : 'bg-gray-100'
                       }`}>
                         <MessageSquare className={`w-10 h-10 ${darkMode ? 'text-white/70' : 'text-gray-600'}`} />
@@ -1039,10 +1040,10 @@ const SeekerSettings = ({ darkMode }) => {
                       </p>
                     </div>
 
-                    <button className={`w-full px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    <button className={`w-full px-6 py-3 rounded-lg font-medium ${
                       darkMode
-                        ? 'bg-white/20 text-white hover:bg-white/30'
-                        : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
+                        ? 'bg-white/20 text-white'
+                        : 'bg-[#00001a] text-white'
                     }`}>
                       Start Chat
                     </button>
@@ -1050,12 +1051,57 @@ const SeekerSettings = ({ darkMode }) => {
                     <div className={`p-4 rounded-lg border ${
                       darkMode ? 'border-white/10 bg-white/5' : 'border-gray-200 bg-gray-50'
                     }`}>
-                      <p className={`text-sm text-center ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                        Features: Chat | Delete Chat | Real-time responses
-                      </p>
-                      <p className={`text-sm text-center mt-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                        Average response time: 2-5 minutes
-                      </p>
+                      <h4 className={`font-medium mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Chat Features
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <MessageCircle className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+                          <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                            Real-time messaging
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <HelpCircle className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+                          <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                            Dedicated support agent
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FileText className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-gray-600'}`} />
+                          <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                            Chat history saved
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-white/10">
+                        <h4 className={`font-medium mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          Quick Actions
+                        </h4>
+                        <div className="space-y-2">
+                          <button className={`w-full p-3 rounded-lg border text-left ${
+                            darkMode ? 'border-white/10 bg-white/5 text-white/70' : 'border-gray-200 bg-gray-50 text-gray-600'
+                          }`}>
+                            I need help with my payments
+                          </button>
+                          <button className={`w-full p-3 rounded-lg border text-left ${
+                            darkMode ? 'border-white/10 bg-white/5 text-white/70' : 'border-gray-200 bg-gray-50 text-gray-600'
+                          }`}>
+                            Technical support needed
+                          </button>
+                          <button className={`w-full p-3 rounded-lg border text-left ${
+                            darkMode ? 'border-white/10 bg-white/5 text-white/70' : 'border-gray-200 bg-gray-50 text-gray-600'
+                          }`}>
+                            Account access issue
+                          </button>
+                          <button className={`w-full p-3 rounded-lg border text-left ${
+                            darkMode ? 'border-white/10 bg-white/5 text-white/70' : 'border-gray-200 bg-gray-50 text-gray-600'
+                          }`}>
+                            Feature request
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

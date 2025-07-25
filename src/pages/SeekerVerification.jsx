@@ -223,10 +223,10 @@ const SeekerVerification = ({ darkMode }) => {
     switch (activeStep) {
       case 1:
         return (
-          <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+          <div className={`group p-6 border transition-all duration-300 relative overflow-hidden ${
             darkMode
-              ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Welcome to {selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1)} Verification
@@ -248,7 +248,7 @@ const SeekerVerification = ({ darkMode }) => {
                     className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50 focus:bg-white/15'
-                        : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500 focus:border-[#00001a] focus:ring-1 focus:ring-[#00001a]'
+                        : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                     placeholder="Enter your email address"
                   />
@@ -264,7 +264,7 @@ const SeekerVerification = ({ darkMode }) => {
                     className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50 focus:bg-white/15'
-                        : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500 focus:border-[#00001a] focus:ring-1 focus:ring-[#00001a]'
+                        : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                     placeholder="Enter your phone number"
                   />
@@ -288,8 +288,8 @@ const SeekerVerification = ({ darkMode }) => {
                 disabled={!canProceedToNextStep()}
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                   darkMode
-                    ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.15)]'
                 }`}
               >
                 Continue
@@ -300,10 +300,10 @@ const SeekerVerification = ({ darkMode }) => {
 
       case 2:
         return (
-          <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+          <div className={`group p-6 border transition-all duration-300 relative overflow-hidden ${
             darkMode
-              ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               {selectedLevel === 'light' ? 'Email Verification' : 'ID Upload'}
@@ -323,7 +323,7 @@ const SeekerVerification = ({ darkMode }) => {
                   className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50 focus:bg-white/15'
-                      : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500 focus:border-[#00001a] focus:ring-1 focus:ring-[#00001a]'
+                      : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 />
                 <p className={`text-xs mt-2 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
@@ -339,8 +339,8 @@ const SeekerVerification = ({ darkMode }) => {
                 {!uploadedFileName ? (
                   <div className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 cursor-pointer ${
                     darkMode
-                      ? 'border-white/20 hover:border-blue-400/50 bg-white/5'
-                      : 'border-gray-300 hover:border-[#00001a] bg-gray-50'
+                      ? 'border-gray-800 hover:border-blue-500 bg-[#00001a] hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'border-gray-200 hover:border-gray-300 bg-gray-50 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                   onClick={() => document.getElementById('file-upload').click()}
                   >
@@ -374,7 +374,7 @@ const SeekerVerification = ({ darkMode }) => {
                   </div>
                 ) : (
                   <div className={`border rounded-lg p-4 ${
-                    darkMode ? 'border-green-500/30 bg-green-500/10' : 'border-gray-300 bg-gray-50'
+                    darkMode ? 'border-green-500 bg-[#00001a]' : 'border-gray-300 bg-gray-50'
                   }`}>
                     <div className="flex items-center gap-3">
                       <CheckCircle className={`w-6 h-6 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
@@ -417,7 +417,7 @@ const SeekerVerification = ({ darkMode }) => {
                 disabled={!canProceedToNextStep()}
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                   darkMode
-                    ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                     : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
                 }`}
               >
@@ -429,12 +429,12 @@ const SeekerVerification = ({ darkMode }) => {
 
       case 3:
         return (
-          <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+          <div className={`group p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden ${
             darkMode
-              ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
-            <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+            <h3 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               {selectedLevel === 'light' ? 'Phone Verification' : selectedLevel === 'standard' ? 'Document Review' : 'Face Verification'}
             </h3>
 
@@ -465,7 +465,7 @@ const SeekerVerification = ({ darkMode }) => {
                 <p className={`mb-6 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                   Our team is reviewing your submitted documents. This process typically takes 1-2 business days.
                 </p>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-yellow-500/10 border border-yellow-500/30' : 'bg-yellow-50 border border-yellow-200'}`}>
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-[#00001a] border border-yellow-500' : 'bg-yellow-50 border border-yellow-200'}`}>
                   <p className={`text-sm ${darkMode ? 'text-yellow-400' : 'text-yellow-800'}`}>
                     You will receive an email notification once the review is complete.
                   </p>
@@ -483,8 +483,8 @@ const SeekerVerification = ({ darkMode }) => {
                       onClick={handleStartCamera}
                       className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                         darkMode
-                          ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                          ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.15)]'
                       }`}
                     >
                       Start Face Verification
@@ -493,7 +493,7 @@ const SeekerVerification = ({ darkMode }) => {
                 ) : isCameraActive ? (
                   <div>
                     <div className={`w-64 h-48 mx-auto mb-4 rounded-lg border-2 border-dashed flex items-center justify-center ${
-                      darkMode ? 'border-blue-400/50 bg-blue-500/10' : 'border-[#00001a] bg-gray-100'
+                      darkMode ? 'border-blue-500 bg-[#00001a]' : 'border-[#00001a] bg-gray-100'
                     }`}>
                       <div className="text-center">
                         <Camera className={`w-12 h-12 mx-auto mb-2 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -515,7 +515,7 @@ const SeekerVerification = ({ darkMode }) => {
                   </div>
                 ) : (
                   <div className={`p-6 rounded-lg ${
-                    darkMode ? 'bg-green-500/10 border border-green-500/30' : 'bg-gray-50 border border-gray-200'
+                    darkMode ? 'bg-[#00001a] border border-green-500' : 'bg-gray-50 border border-gray-200'
                   }`}>
                     <CheckCircle className={`w-16 h-16 mx-auto mb-4 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
                     <p className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
@@ -545,7 +545,7 @@ const SeekerVerification = ({ darkMode }) => {
                 disabled={!canProceedToNextStep()}
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                   darkMode
-                    ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                     : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
                 }`}
               >
@@ -574,8 +574,8 @@ const SeekerVerification = ({ darkMode }) => {
                 onClick={handleCompleteVerification}
                 className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 ${
                   darkMode
-                    ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                    ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.15)]'
                 }`}
               >
                 Complete Verification
@@ -593,53 +593,54 @@ const SeekerVerification = ({ darkMode }) => {
     <div className={`min-h-screen transition-all duration-500 ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
-      <div className="p-6 space-y-8">
+      <div className="p-4 sm:p-6 space-y-10 sm:space-y-16 max-w-full overflow-x-hidden">
+        <div className="w-full">
 
         {/* Header */}
-        <div className={`group p-8 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`group p-4 sm:p-6 lg:p-8 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
           darkMode
             ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
-          <div className="flex items-center gap-4 mb-6">
-            <div className={`p-3 rounded-lg ${
-              darkMode ? 'bg-blue-500/20' : 'bg-gray-100'
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className={`p-2 sm:p-3 rounded-lg flex-shrink-0 ${
+              darkMode ? 'bg-blue-500/20' : 'bg-gray-100 border border-gray-200'
             }`}>
-              <Shield className={`w-8 h-8 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+              <Shield className={`w-6 h-6 sm:w-8 sm:h-8 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
             </div>
-            <div>
-              <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+            <div className="min-w-0 flex-1">
+              <h1 className={`text-xl sm:text-2xl lg:text-3xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Identity Verification
               </h1>
-              <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+              <p className={`text-sm sm:text-base mt-1 break-words ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                 Choose your verification level based on your needs
               </p>
             </div>
           </div>
 
           {/* Current Status */}
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${
-            darkMode ? 'bg-white/10 border border-white/20' : 'bg-gray-100 border border-gray-200'
+          <div className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg max-w-full transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
           }`}>
-            <CheckCircle className={`w-4 h-4 ${
+            <CheckCircle className={`w-4 h-4 flex-shrink-0 ${
               currentVerificationLevel !== 'none'
                 ? (darkMode ? 'text-green-400' : 'text-[#00001a]')
                 : (darkMode ? 'text-white/50' : 'text-gray-400')
             }`} />
-            <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+            <span className={`text-xs sm:text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Current Status: {getCurrentStatusText()}
             </span>
           </div>
 
           {/* Progress Steps - Integrated */}
           {selectedLevel && (
-            <div className={`mt-8 p-6 rounded-lg ${
-              darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'
+            <div className={`mt-8 p-6 rounded-lg transition-all duration-300 ${
+              darkMode ? 'bg-[#00001a] border border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="relative flex items-center justify-between">
                 {/* Progress Line Background - Between circles only */}
                 <div className={`absolute top-6 h-0.5 ${
-                  darkMode ? 'bg-white/30' : 'bg-gray-300'
+                  darkMode ? 'bg-gray-800' : 'bg-gray-300'
                 }`}
                 style={{
                   left: 'calc(1.5rem + 24px)',
@@ -658,23 +659,23 @@ const SeekerVerification = ({ darkMode }) => {
                 />
 
                 {steps.map((step, index) => (
-                  <div key={step.id} className="relative flex flex-col items-center z-10">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
+                  <div key={step.id} className="relative flex flex-col items-center z-10 min-w-0">
+                    <div className={`w-8 sm:w-10 md:w-12 h-8 sm:h-10 md:h-12 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base transition-all duration-300 ${
                       step.id <= activeStep
-                        ? (darkMode ? 'bg-blue-500 text-white border-2 border-blue-400' : 'bg-[#00001a] text-white border-2 border-[#00001a]')
-                        : (darkMode ? 'bg-gray-700 text-white border-2 border-gray-600' : 'bg-white text-gray-400 border-2 border-gray-300')
+                        ? (darkMode ? 'bg-blue-500 text-white border-2 border-blue-400' : 'bg-[#00001a] text-white border-2 border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                        : (darkMode ? 'bg-gray-700 text-white border-2 border-gray-600' : 'bg-white text-gray-400 border-2 border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
                     }`}>
                       {step.completed ? (
-                        <CheckCircle className="w-6 h-6" />
+                        <CheckCircle className="w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
                       ) : (
                         step.id
                       )}
                     </div>
-                    <div className="text-center mt-3">
-                      <div className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <div className="text-center mt-2 sm:mt-3 max-w-[80px] sm:max-w-none">
+                      <div className={`text-xs sm:text-sm font-medium break-words leading-tight ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                         {step.title}
                       </div>
-                      <div className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                      <div className={`text-xs break-words leading-tight ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                         {step.subtitle}
                       </div>
                     </div>
@@ -685,15 +686,14 @@ const SeekerVerification = ({ darkMode }) => {
           )}
         </div>
 
-
-
         {/* Verification Levels */}
-        <div>
-          <h2 className={`text-xl font-semibold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+        <div className="mt-8">
+          <div className="mb-6"></div>
+          <h2 className={`text-lg sm:text-xl font-semibold mb-4 sm:mb-6 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
             Choose your verification level to get started
           </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 auto-rows-fr">
             {verificationLevels.map((level) => {
               const IconComponent = level.icon
               const isUnlocked = level.unlocked
@@ -702,72 +702,73 @@ const SeekerVerification = ({ darkMode }) => {
               return (
                 <div
                   key={level.id}
-                  className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden cursor-pointer min-h-[400px] flex flex-col ${
+                  className={`group p-3 sm:p-4 md:p-6 border transition-all duration-300 relative overflow-hidden cursor-pointer min-h-[280px] sm:min-h-[320px] md:min-h-[400px] flex flex-col w-full ${
                     !isUnlocked
-                      ? (darkMode ? 'rounded-lg bg-white/1 border-white/10 opacity-50' : 'rounded-lg bg-gray-50 border-gray-200 opacity-50')
+                      ? (darkMode ? 'rounded-lg bg-[#00001a] border-gray-800 opacity-50' : 'rounded-lg bg-gray-50 border-gray-200 opacity-50')
                       : isCompleted
-                      ? (darkMode ? 'rounded-lg bg-green-500/10 border-green-500/30 hover:border-green-500/50 hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]' : 'rounded-lg bg-white border-gray-300 hover:border-gray-400 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]')
-                      : (darkMode ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]' : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]')
+                      ? (darkMode ? 'rounded-lg bg-[#00001a] border-green-500 hover:shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]')
+                      : (darkMode ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]')
                   }`}
                   onClick={() => isUnlocked && !isCompleted && handleStartVerification(level.id)}
                 >
-
-
                   <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-3 rounded-lg ${
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <div className={`p-2 sm:p-3 rounded-lg flex-shrink-0 border ${
                         isCompleted
-                          ? (darkMode ? 'bg-green-500/20' : 'bg-gray-200')
-                          : (darkMode ? 'bg-blue-500/20' : 'bg-gray-100')
+                          ? (darkMode ? 'bg-[#00001a] border-green-500' : 'bg-gray-100 border-gray-200')
+                          : (darkMode ? 'bg-[#00001a] border-blue-500' : 'bg-gray-100 border-gray-200')
                       }`}>
-                        <IconComponent className={`w-6 h-6 ${
+                        <IconComponent className={`w-5 sm:w-6 h-5 sm:h-6 ${
                           isCompleted
                             ? (darkMode ? 'text-green-400' : 'text-[#00001a]')
                             : (darkMode ? 'text-blue-400' : 'text-[#00001a]')
                         }`} />
                       </div>
                       {isCompleted && (
-                        <CheckCircle className={`w-6 h-6 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
+                        <CheckCircle className={`w-5 sm:w-6 h-5 sm:h-6 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
                       )}
                     </div>
 
-                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <h3 className={`text-sm sm:text-base md:text-lg font-semibold mb-2 break-words leading-tight ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                       {level.title}
                     </h3>
-                    <p className={`text-sm mb-4 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                    <p className={`text-xs sm:text-sm mb-3 sm:mb-4 break-words leading-relaxed ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                       {level.subtitle}
                     </p>
 
-                    <ul className="space-y-3 mb-6 flex-grow">
+                    <ul className="space-y-1.5 sm:space-y-2 md:space-y-3 mb-3 sm:mb-4 md:mb-6 flex-grow">
                       {level.features.map((feature, index) => (
-                        <li key={index} className={`flex items-start gap-3 text-sm leading-relaxed ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                          <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${
+                        <li key={index} className={`flex items-start gap-2 sm:gap-3 text-xs sm:text-sm leading-relaxed break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                          <div className={`w-1.5 h-1.5 rounded-full mt-1 sm:mt-1.5 md:mt-2 flex-shrink-0 ${
                             isCompleted
                               ? (darkMode ? 'bg-green-400' : 'bg-[#00001a]')
                               : (darkMode ? 'bg-blue-400' : 'bg-[#00001a]')
                           }`} />
-                          {feature}
+                          <span className="min-w-0 flex-1">{feature}</span>
                         </li>
                       ))}
                     </ul>
 
                     {isUnlocked && !isCompleted && (
-                      <button className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-white/20 text-white hover:bg-white/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
-                      }`}>
-                        Start Verification
-                        <ArrowRight className="w-4 h-4" />
+                      <button
+                        onClick={() => handleStartVerification(level.id)}
+                        className={`w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 md:py-3 rounded-lg text-xs sm:text-sm md:text-base font-medium transition-all duration-300 ${
+                          darkMode
+                            ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                            : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.15)]'
+                        }`}
+                      >
+                        <span className="truncate">Start Verification</span>
+                        <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                       </button>
                     )}
 
                     {isCompleted && (
-                      <div className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium ${
-                        darkMode ? 'bg-green-500/20 text-green-400' : 'bg-gray-200 text-[#00001a]'
+                      <div className={`w-full flex items-center justify-center gap-2 py-2 sm:py-2.5 md:py-3 rounded-lg text-xs sm:text-sm md:text-base font-medium ${
+                        darkMode ? 'bg-[#00001a] border border-green-500 text-green-400' : 'bg-gray-100 text-[#00001a] border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                       }`}>
-                        <CheckCircle className="w-4 h-4" />
-                        Completed
+                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="truncate">Completed</span>
                       </div>
                     )}
                   </div>
@@ -780,41 +781,39 @@ const SeekerVerification = ({ darkMode }) => {
         {/* Verification Form */}
         {renderVerificationForm()}
 
-
-
         {/* Benefits Section */}
-        <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`group p-4 sm:p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden mt-8 ${
           darkMode
             ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
-          <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+          <h3 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
             Why Verify Your Identity?
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-start gap-3">
-              <Shield className={`w-5 h-5 mt-1 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-              <div>
-                <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Enhanced Security</h4>
-                <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <Shield className={`w-4 sm:w-5 h-4 sm:h-5 mt-1 flex-shrink-0 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+              <div className="min-w-0 flex-1">
+                <h4 className={`font-medium text-sm sm:text-base break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Enhanced Security</h4>
+                <p className={`text-xs sm:text-sm leading-relaxed break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                   Protect your account with multiple layers of verification
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <Star className={`w-5 h-5 mt-1 ${darkMode ? 'text-yellow-400' : 'text-[#00001a]'}`} />
-              <div>
-                <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Premium Features</h4>
-                <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+            <div className="flex items-start gap-2 sm:gap-3">
+              <Star className={`w-4 sm:w-5 h-4 sm:h-5 mt-1 flex-shrink-0 ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
+              <div className="min-w-0 flex-1">
+                <h4 className={`font-medium text-sm sm:text-base break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Premium Features</h4>
+                <p className={`text-xs sm:text-sm leading-relaxed break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                   Unlock advanced features and higher transaction limits
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <CheckCircle className={`w-5 h-5 mt-1 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
-              <div>
-                <h4 className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Trust & Safety</h4>
-                <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+            <div className="flex items-start gap-2 sm:gap-3">
+              <CheckCircle className={`w-4 sm:w-5 h-4 sm:h-5 mt-1 flex-shrink-0 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
+              <div className="min-w-0 flex-1">
+                <h4 className={`font-medium text-sm sm:text-base break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Trust & Safety</h4>
+                <p className={`text-xs sm:text-sm leading-relaxed break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                   Build trust with other users and ensure platform safety
                 </p>
               </div>
@@ -822,6 +821,7 @@ const SeekerVerification = ({ darkMode }) => {
           </div>
         </div>
 
+        </div>
       </div>
     </div>
   )

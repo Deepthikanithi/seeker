@@ -14,10 +14,10 @@ const Modal = ({
   ...props 
 }) => {
   const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
+    sm: 'max-w-sm sm:max-w-md',
+    md: 'max-w-md sm:max-w-lg',
+    lg: 'max-w-lg sm:max-w-xl lg:max-w-2xl',
+    xl: 'max-w-xl sm:max-w-2xl lg:max-w-4xl'
   }
 
   // Handle escape key
@@ -42,8 +42,8 @@ const Modal = ({
   if (!isOpen) return null
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
       {...props}
     >
       {/* Overlay */}
@@ -74,11 +74,11 @@ const Modal = ({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className={`flex items-center justify-between p-6 border-b ${
+          <div className={`flex items-center justify-between p-4 sm:p-6 border-b ${
             darkMode ? 'border-white/10' : 'border-gray-200'
           }`}>
             {title && (
-              <h3 className={`text-lg font-semibold ${
+              <h3 className={`text-base sm:text-lg font-semibold break-words min-w-0 flex-1 pr-2 ${
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}>
                 {title}
@@ -87,20 +87,20 @@ const Modal = ({
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className={`p-2 rounded-lg transition-colors duration-200 ${
-                  darkMode 
-                    ? 'text-white/70 hover:text-white hover:bg-white/10' 
+                className={`p-1.5 sm:p-2 rounded-lg transition-colors duration-200 flex-shrink-0 ${
+                  darkMode
+                    ? 'text-white/70 hover:text-white hover:bg-white/10'
                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <X size={20} />
+                <X size={18} className="sm:w-5 sm:h-5" />
               </button>
             )}
           </div>
         )}
         
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {children}
         </div>
       </div>

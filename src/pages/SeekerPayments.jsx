@@ -21,6 +21,12 @@ const SeekerPayments = ({ darkMode }) => {
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState(null)
   const [filterType, setFilterType] = useState('all')
+  const [addMoneyAmount, setAddMoneyAmount] = useState('')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
+  const [groupSplitAmount, setGroupSplitAmount] = useState('')
+  const [groupSplitPeople, setGroupSplitPeople] = useState(2)
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState([])
+  const [showReferralModal, setShowReferralModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [couponCode, setCouponCode] = useState('')
 
@@ -80,6 +86,15 @@ const SeekerPayments = ({ darkMode }) => {
       addedDate: '2024-01-01',
       conversionRate: 0.01 // 1 point = $0.01
     }
+  ]
+
+  const groupMembers = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', avatar: null },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', avatar: null },
+    { id: 3, name: 'Mike Johnson', email: 'mike@example.com', avatar: null },
+    { id: 4, name: 'Sarah Wilson', email: 'sarah@example.com', avatar: null },
+    { id: 5, name: 'Alex Brown', email: 'alex@example.com', avatar: null },
+    { id: 6, name: 'Emily Davis', email: 'emily@example.com', avatar: null }
   ]
 
   const transactions = [
@@ -281,49 +296,50 @@ const SeekerPayments = ({ darkMode }) => {
     <div className={`min-h-screen transition-all duration-500 ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+        <div className="w-full">
         
         {/* Header */}
-        <div className={`p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl ${
+        <div className={`p-4 sm:p-6 border ${
           darkMode
-            ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg'
+            ? 'rounded-lg bg-[#00001a] border-gray-800'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-lg border transition-all duration-300 ${
-                darkMode ? 'border-white/10 hover:border-blue-400/40 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'border-gray-100 hover:border-gray-200 hover:shadow-md'
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-4 sm:mb-6">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <div className={`p-2 sm:p-3 rounded-lg border flex-shrink-0 transition-all duration-300 ${
+                darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-gray-100 border-gray-200'
               }`}>
-                <Wallet className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
+                <Wallet className={`w-6 h-6 sm:w-8 sm:h-8 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
               </div>
-              <div>
-                <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+              <div className="min-w-0 flex-1">
+                <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Payments & Wallet
                 </h2>
-                <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                <p className={`text-sm sm:text-base break-words ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                   Manage your payments, subscriptions, and wallet balance
                 </p>
               </div>
             </div>
 
             {/* Currency Selection */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <button
                 onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300 ${
-                  darkMode ? 'border-white/20 hover:border-blue-400/40 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] text-white' : 'border-gray-300 hover:border-gray-400 hover:shadow-md text-[#00001a]'
+                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border whitespace-nowrap transition-all duration-300 ${
+                  darkMode ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}
               >
-                <Globe className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
-                <span className="font-medium">
+                <Globe className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                <span className="text-sm sm:text-base font-medium">
                   {getCurrentCurrency().symbol} {selectedCurrency}
                 </span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''} ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                <ChevronDown className={`w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''} ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
               </button>
 
               {showCurrencyDropdown && (
-                <div className={`absolute top-full left-0 mt-2 w-full rounded-lg border shadow-lg z-50 ${
-                  darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+                <div className={`absolute top-full left-0 mt-2 w-full rounded-lg border shadow-lg z-50 transition-all duration-300 ${
+                  darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_4px_8px_rgba(0,0,26,0.15)]'
                 }`}>
                   {currencies.map((currency) => (
                     <button
@@ -352,10 +368,10 @@ const SeekerPayments = ({ darkMode }) => {
           </div>
 
           {/* Navigation Tabs */}
-          <div className={`p-1 rounded-lg border ${
-            darkMode ? 'border-white/10' : 'border-gray-200'
+          <div className={`p-1 rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
           }`}>
-            <div className="flex space-x-1">
+            <div className="flex flex-wrap gap-1">
               {[
                 { id: 'overview', name: 'Overview', icon: BarChart3 },
                 { id: 'methods', name: 'Payment Methods', icon: CreditCard },
@@ -366,29 +382,30 @@ const SeekerPayments = ({ darkMode }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-2 rounded-lg text-sm sm:text-base font-medium whitespace-nowrap border transition-all duration-300 ${
                     activeTab === tab.id
                       ? darkMode
-                        ? 'bg-white/20 text-white shadow-lg'
-                        : 'bg-[#00001a] text-white shadow-lg'
+                        ? 'bg-blue-600/20 text-white border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                        : 'bg-[#00001a] text-white border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                       : darkMode
-                        ? 'text-white/70 hover:text-white hover:bg-white/10 hover:shadow-[0_0_25px_rgba(59,130,246,0.5)]'
-                        : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100 hover:shadow-lg'
+                        ? 'text-white/70 border-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                        : 'text-gray-600 border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.name}
+                  <tab.icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <span className="hidden sm:inline">{tab.name}</span>
+                  <span className="sm:hidden">{tab.name.split(' ')[0]}</span>
                 </button>
               ))}
             </div>
           </div>
-        </div>
 
         {/* Tab Content */}
+        <div className="mt-6">
         {activeTab === 'overview' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Wallet Balance & Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {[
                 {
                   icon: Wallet,
@@ -415,19 +432,19 @@ const SeekerPayments = ({ darkMode }) => {
                   trend: '+45.3%'
                 }
               ].map((item, index) => (
-                <div key={index} className={`group p-4 rounded-lg border transition-all duration-300 ${
+                <div key={index} className={`group p-3 sm:p-4 rounded-lg border min-w-0 transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                    ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                    : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                 }`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <item.icon className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
-                    <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 min-w-0">
+                    <item.icon className={`w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                    <h3 className={`text-lg sm:text-xl lg:text-2xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                       {item.value}
                     </h3>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className={`text-xs sm:text-sm break-words min-w-0 flex-1 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                       {item.label}
                     </p>
                     <span className={`text-xs font-medium px-2 py-1 rounded ${
@@ -443,19 +460,19 @@ const SeekerPayments = ({ darkMode }) => {
             </div>
 
             {/* Quick Actions */}
-            <div className={`p-6 rounded-lg border transition-all duration-300 ${
+            <div className={`p-4 sm:p-6 rounded-lg border transition-all duration-300 ${
               darkMode
-                ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
-              <h3 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+              <h3 className={`text-lg sm:text-xl font-bold mb-3 sm:mb-4 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Quick Actions
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {[
                   { icon: Plus, label: 'Add Money', action: () => setShowAddMoneyModal(true), color: 'primary' },
                   { icon: Users, label: 'Group Split', action: () => setShowGroupSplitModal(true), color: 'green' },
-                  { icon: Gift, label: 'Referral Bonus', action: () => alert('Referral bonus feature coming soon! Invite friends to earn rewards.'), color: 'purple' },
+                  { icon: Gift, label: 'Referral Bonus', action: () => setShowReferralModal(true), color: 'purple' },
                   { icon: Download, label: 'Export Data', action: () => {
                     const data = {
                       walletBalance: getCurrentCurrency().symbol + '125.50',
@@ -476,12 +493,12 @@ const SeekerPayments = ({ darkMode }) => {
                   <button
                     key={index}
                     onClick={action.action}
-                    className={`p-4 rounded-lg border transition-all duration-300 flex items-center gap-3 ${
+                    className={`p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 ${
                       darkMode
-                        ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] text-white'
+                        ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                         : action.color === 'primary'
-                          ? 'border-[#00001a] bg-[#00001a] text-white hover:bg-gray-800 hover:shadow-lg'
-                          : 'border-gray-200 hover:border-gray-300 hover:shadow-lg text-[#00001a]'
+                          ? 'border-[#00001a] bg-[#00001a] text-white shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
+                          : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
                     <action.icon className={`w-5 h-5 ${
@@ -498,18 +515,18 @@ const SeekerPayments = ({ darkMode }) => {
             </div>
 
             {/* Recent Transactions Preview */}
-            <div className={`p-6 rounded-lg border transition-all duration-300 ${
+            <div className={`p-4 sm:p-6 rounded-lg border transition-all duration-300 ${
               darkMode
-                ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-3 sm:mb-4">
+                <h3 className={`text-lg sm:text-xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Recent Transactions
                 </h3>
                 <button
                   onClick={() => setActiveTab('transactions')}
-                  className={`text-sm font-medium transition-colors ${
+                  className={`text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
                     darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-[#00001a] hover:text-gray-700'
                   }`}
                 >
@@ -518,34 +535,34 @@ const SeekerPayments = ({ darkMode }) => {
               </div>
               <div className="space-y-3">
                 {transactions.slice(0, 3).map((transaction) => (
-                  <div key={transaction.id} className={`p-3 rounded-lg border transition-all duration-300 ${
+                  <div key={transaction.id} className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)]'
-                      : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {transaction.type === 'session' && <Video className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'wallet' && <Wallet className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'refund' && <RotateCcw className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'subscription' && <Calendar className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'group' && <Users className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'coupon' && <Tag className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'referral' && <Gift className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        <div>
-                          <p className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        {transaction.type === 'session' && <Video className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'wallet' && <Wallet className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'refund' && <RotateCcw className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'subscription' && <Calendar className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'group' && <Users className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'coupon' && <Tag className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'referral' && <Gift className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        <div className="min-w-0 flex-1">
+                          <p className={`text-sm sm:text-base font-medium break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                             {transaction.description}
                           </p>
-                          <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                          <p className={`text-xs sm:text-sm break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                             {transaction.date} • {transaction.paymentMethod}
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className={`font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      <div className="text-right sm:text-right flex-shrink-0">
+                        <p className={`text-sm sm:text-base font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           {transaction.amount > 0 ? '+' : ''}{getCurrentCurrency().symbol}{Math.abs(transaction.amount).toFixed(2)}
                         </p>
-                        <p className={`text-sm capitalize ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                        <p className={`text-xs sm:text-sm capitalize ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                           {transaction.status}
                         </p>
                       </div>
@@ -561,8 +578,8 @@ const SeekerPayments = ({ darkMode }) => {
         {activeTab === 'methods' && (
           <div className={`p-6 rounded-lg border transition-all duration-300 ${
             darkMode
-              ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-              : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+              ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+              : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <div className="flex items-center justify-between mb-6">
               <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
@@ -572,8 +589,8 @@ const SeekerPayments = ({ darkMode }) => {
                 onClick={() => setShowAddPaymentModal(true)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                   darkMode
-                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]'
-                    : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800 hover:shadow-lg'
+                    ? 'bg-[#00001a] text-blue-400 border border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                    : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                 }`}
               >
                 <Plus className="w-4 h-4" />
@@ -585,13 +602,13 @@ const SeekerPayments = ({ darkMode }) => {
               {paymentMethods.map((method) => (
                 <div key={method.id} className={`p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                    ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className={`p-2 rounded-lg border transition-all duration-300 ${
-                        darkMode ? 'border-white/20 hover:border-blue-400/40 hover:shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                        darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-gray-100 border-gray-200'
                       }`}>
                         {method.type === 'card' && <CreditCard className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
                         {method.type === 'paypal' && <Mail className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
@@ -690,8 +707,8 @@ const SeekerPayments = ({ darkMode }) => {
                 {bulkDiscounts.map((pkg, index) => (
                   <div key={index} className={`p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]'
-                      : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="text-center">
                       <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg mb-3 ${
@@ -718,8 +735,8 @@ const SeekerPayments = ({ darkMode }) => {
                           darkMode
                             ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
                             : index === 1
-                              ? 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800'
-                              : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200'
+                              ? 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
+                              : 'bg-white text-[#00001a] border border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)] shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}>
                         Purchase
                       </button>
@@ -733,18 +750,18 @@ const SeekerPayments = ({ darkMode }) => {
 
         {/* Transactions Tab */}
         {activeTab === 'transactions' && (
-          <div className={`p-6 rounded-lg border transition-all duration-300 ${
+          <div className={`p-4 sm:p-6 rounded-lg border transition-all duration-300 ${
             darkMode
-              ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-              : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+              ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+              : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+              <h3 className={`text-lg sm:text-xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Transaction History
               </h3>
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                <div className="relative flex-1 sm:flex-initial">
+                  <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 ${
                     darkMode ? 'text-white/50' : 'text-gray-400'
                   }`} />
                   <input
@@ -752,9 +769,9 @@ const SeekerPayments = ({ darkMode }) => {
                     placeholder="Search transactions..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`pl-10 pr-4 py-2 rounded-lg border transition-all duration-300 ${
+                    className={`w-full sm:w-auto pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 text-sm sm:text-base rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                        ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                         : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
                     }`}
                   />
@@ -762,9 +779,9 @@ const SeekerPayments = ({ darkMode }) => {
                 <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
-                  className={`px-3 py-2 rounded-lg border transition-all duration-300 ${
+                  className={`px-2 sm:px-3 py-2 text-sm sm:text-base rounded-lg border transition-all duration-300 flex-shrink-0 ${
                     darkMode
-                      ? 'bg-[#00001a] border-white/20 text-white'
+                      ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                       : 'bg-white border-gray-300 text-[#00001a]'
                   }`}
                   style={darkMode ? {
@@ -806,8 +823,8 @@ const SeekerPayments = ({ darkMode }) => {
                   }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800 hover:shadow-lg'
+                      ? 'bg-[#00001a] text-white border border-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                      : 'bg-[#00001a] text-white border border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                   }`}>
                   <Download className="w-4 h-4" />
                   Export
@@ -820,30 +837,30 @@ const SeekerPayments = ({ darkMode }) => {
                 .filter(t => filterType === 'all' || t.type === filterType)
                 .filter(t => searchQuery === '' || t.description.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((transaction) => (
-                <div key={transaction.id} className={`p-4 rounded-lg border transition-all duration-300 ${
+                <div key={transaction.id} className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                    ? 'border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                    : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-lg border transition-all duration-300 ${
-                        darkMode ? 'border-white/20 hover:border-blue-400/40 hover:shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                    <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 flex-1">
+                      <div className={`p-1.5 sm:p-2 rounded-lg border flex-shrink-0 ${
+                        darkMode ? 'border-white/20' : 'bg-gray-100 border-gray-200'
                       }`}>
-                        {transaction.type === 'session' && <Video className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'wallet' && <Wallet className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'refund' && <RotateCcw className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'subscription' && <Calendar className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'group' && <Users className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'coupon' && <Tag className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
-                        {transaction.type === 'referral' && <Gift className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'session' && <Video className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'wallet' && <Wallet className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'refund' && <RotateCcw className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'subscription' && <Calendar className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'group' && <Users className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'coupon' && <Tag className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                        {transaction.type === 'referral' && <Gift className={`w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <p className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-1">
+                          <p className={`text-sm sm:text-base font-semibold break-words min-w-0 flex-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                             {transaction.description}
                           </p>
-                          <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
+                          <span className={`px-2 py-1 rounded text-xs font-medium capitalize flex-shrink-0 ${
                             transaction.status === 'completed'
                               ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-gray-100 text-[#00001a]')
                               : transaction.status === 'pending'
@@ -853,23 +870,23 @@ const SeekerPayments = ({ darkMode }) => {
                             {transaction.status}
                           </span>
                         </div>
-                        <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        <p className={`text-xs sm:text-sm break-words ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                           {transaction.date} at {transaction.time} • {transaction.paymentMethod}
                         </p>
-                        <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                        <p className={`text-xs break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                           ID: {transaction.id} • Category: {transaction.category}
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className={`text-xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <div className="text-right sm:text-right flex-shrink-0">
+                      <p className={`text-lg sm:text-xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                         {transaction.amount > 0 ? '+' : ''}{getCurrentCurrency().symbol}{Math.abs(transaction.amount).toFixed(2)}
                       </p>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-2">
                         {transaction.refundable && (
                           <button
                             onClick={() => setShowRefundModal(true)}
-                            className={`text-xs px-2 py-1 rounded transition-colors ${
+                            className={`text-xs px-2 py-1 rounded transition-colors whitespace-nowrap ${
                               darkMode ? 'text-yellow-400 hover:bg-yellow-500/20' : 'text-[#00001a] hover:bg-gray-100'
                             }`}
                           >
@@ -901,8 +918,8 @@ const SeekerPayments = ({ darkMode }) => {
             {/* Active Subscriptions */}
             <div className={`p-6 rounded-lg border transition-all duration-300 ${
               darkMode
-                ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="flex items-center justify-between mb-6">
                 <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
@@ -910,10 +927,10 @@ const SeekerPayments = ({ darkMode }) => {
                 </h3>
                 <button
                   onClick={() => setShowSubscriptionModal(true)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${
                     darkMode
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]'
-                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800 hover:shadow-lg'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-[#00001a] text-white border border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
@@ -925,13 +942,13 @@ const SeekerPayments = ({ darkMode }) => {
                 {subscriptions.map((sub) => (
                   <div key={sub.id} className={`p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]'
-                      : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                      ? 'border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-lg border transition-all duration-300 ${
-                          darkMode ? 'border-white/20 hover:border-blue-400/40 hover:shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                        <div className={`p-3 rounded-lg border ${
+                          darkMode ? 'border-white/20' : 'bg-gray-100 border-gray-200'
                         }`}>
                           <Crown className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                         </div>
@@ -1016,8 +1033,8 @@ const SeekerPayments = ({ darkMode }) => {
             {/* Available Plans */}
             <div className={`p-6 rounded-lg border transition-all duration-300 ${
               darkMode
-                ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <h3 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Available Plans
@@ -1030,8 +1047,8 @@ const SeekerPayments = ({ darkMode }) => {
                 ].map((plan, index) => (
                   <div key={index} className={`relative p-6 rounded-lg border transition-all duration-300 ${
                     plan.popular
-                      ? (darkMode ? 'border-blue-400/50 bg-blue-500/10' : 'border-gray-300 bg-gray-50')
-                      : (darkMode ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]' : 'border-gray-200 hover:border-gray-300 hover:shadow-lg')
+                      ? (darkMode ? 'border-blue-400/50 bg-blue-500/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_4px_8px_rgba(0,0,26,0.2)] hover:shadow-[0_-4px_8px_rgba(0,0,26,0.2)]')
+                      : (darkMode ? 'border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]')
                   }`}>
                     {plan.popular && (
                       <div className={`absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full text-xs font-medium ${
@@ -1073,8 +1090,8 @@ const SeekerPayments = ({ darkMode }) => {
                         }}
                         className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                           plan.popular
-                            ? (darkMode ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-[#00001a] text-white hover:bg-gray-800')
-                            : (darkMode ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200')
+                            ? (darkMode ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-[#00001a] text-white hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                            : (darkMode ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-white text-[#00001a] border border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)] shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
                         }`}>
                         Subscribe
                       </button>
@@ -1092,8 +1109,8 @@ const SeekerPayments = ({ darkMode }) => {
             {/* Refund Requests */}
             <div className={`p-6 rounded-lg border transition-all duration-300 ${
               darkMode
-                ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <h3 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Refund History
@@ -1103,13 +1120,13 @@ const SeekerPayments = ({ darkMode }) => {
                 {refunds.map((refund) => (
                   <div key={refund.id} className={`p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]'
-                      : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                      ? 'border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className={`p-2 rounded-lg border transition-all duration-300 ${
-                          darkMode ? 'border-white/20 hover:border-blue-400/40 hover:shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                        <div className={`p-2 rounded-lg border ${
+                          darkMode ? 'border-white/20' : 'bg-gray-100 border-gray-200'
                         }`}>
                           <RotateCcw className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                         </div>
@@ -1157,8 +1174,8 @@ const SeekerPayments = ({ darkMode }) => {
             {/* Refund Policy */}
             <div className={`p-6 rounded-lg border transition-all duration-300 ${
               darkMode
-                ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'border-gray-200'
             }`}>
               <h3 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Refund Policy
@@ -1212,34 +1229,31 @@ const SeekerPayments = ({ darkMode }) => {
                 </div>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Coupons & Promotions Section - Only show in Overview */}
-        {activeTab === 'overview' && (
-          <div className={`p-6 rounded-lg border transition-all duration-300 ${
-            darkMode
-              ? 'border-white/10 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-              : 'border-gray-200 hover:border-gray-300 hover:shadow-lg'
-          }`}>
+            {/* Coupons & Promotions Section */}
+            <div className={`p-6 rounded-lg border transition-all duration-300 ${
+              darkMode
+                ? 'bg-[#00001a] border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+            }`}>
           <h3 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
             Coupons & Promotions
           </h3>
 
           {/* Add Coupon */}
-          <div className={`p-4 rounded-lg border mb-6 ${
-            darkMode ? 'border-white/10' : 'border-gray-200'
+          <div className={`p-3 sm:p-4 rounded-lg border mb-4 sm:mb-6 ${
+            darkMode ? 'border-white/10' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
           }`}>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <input
                 type="text"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
                 placeholder="Enter coupon code"
-                className={`flex-1 px-4 py-2 rounded-lg border transition-all duration-300 ${
+                className={`flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
-                    : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                    ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                    : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                 }`}
               />
               <button
@@ -1262,10 +1276,10 @@ const SeekerPayments = ({ darkMode }) => {
                     alert('Invalid coupon code. Please check and try again.')
                   }
                 }}
-                className={`px-6 py-2 rounded-lg font-medium transition-all duration-300 ${
+                className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                   darkMode
                     ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                    : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800'
+                    : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                 }`}>
                 Apply
               </button>
@@ -1273,35 +1287,35 @@ const SeekerPayments = ({ darkMode }) => {
           </div>
 
           {/* Available Coupons */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {coupons.map((coupon) => (
-              <div key={coupon.id} className={`p-4 rounded-lg border transition-all duration-300 ${
+              <div key={coupon.id} className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 min-w-0 ${
                 coupon.status === 'available'
-                  ? (darkMode ? 'border-green-500/30 bg-green-500/10 hover:border-green-400/50' : 'border-gray-300 bg-gray-50 hover:border-gray-400')
+                  ? (darkMode ? 'border-green-500/30 bg-green-500/10 hover:border-green-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
                   : coupon.status === 'used'
-                    ? (darkMode ? 'border-blue-500/30 bg-blue-500/10' : 'border-gray-300 bg-gray-50')
-                    : (darkMode ? 'border-red-500/30 bg-red-500/10' : 'border-gray-300 bg-gray-50')
+                    ? (darkMode ? 'border-blue-500/30 bg-blue-500/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
+                    : (darkMode ? 'border-red-500/30 bg-red-500/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
               }`}>
                 <div className="text-center">
-                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg mb-3 ${
+                  <div className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg mb-2 sm:mb-3 ${
                     coupon.status === 'available'
                       ? (darkMode ? 'bg-green-500/20' : 'bg-gray-100')
                       : coupon.status === 'used'
                         ? (darkMode ? 'bg-blue-500/20' : 'bg-gray-100')
                         : (darkMode ? 'bg-red-500/20' : 'bg-gray-100')
                   }`}>
-                    <Tag className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                    <Tag className={`w-5 h-5 sm:w-6 sm:h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                   </div>
-                  <h4 className={`font-bold mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <h4 className={`text-sm sm:text-base font-bold mb-1 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                     {coupon.name}
                   </h4>
-                  <p className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <p className={`text-base sm:text-lg font-bold mb-2 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                     {coupon.type === 'percentage' ? `${coupon.discount}% OFF` : `${getCurrentCurrency().symbol}${coupon.discount} OFF`}
                   </p>
-                  <p className={`text-xs mb-3 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                  <p className={`text-xs mb-2 sm:mb-3 break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                     Code: {coupon.id}
                   </p>
-                  <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                  <p className={`text-xs break-words ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                     Min. {getCurrentCurrency().symbol}{coupon.minAmount}
                     {coupon.status === 'used' && ` • Used: ${coupon.usedDate}`}
                     {coupon.status === 'expired' && ` • Expired: ${coupon.expiryDate}`}
@@ -1314,8 +1328,8 @@ const SeekerPayments = ({ darkMode }) => {
                           alert(`Coupon "${coupon.name}" applied successfully! You saved ${coupon.type === 'percentage' ? coupon.discount + '%' : getCurrentCurrency().symbol + coupon.discount}.`)
                         }
                       }}
-                      className={`mt-3 w-full px-3 py-1 rounded text-sm font-medium transition-colors ${
-                        darkMode ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' : 'bg-[#00001a] text-white hover:bg-gray-800'
+                      className={`mt-2 sm:mt-3 w-full px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors ${
+                        darkMode ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' : 'bg-[#00001a] text-white hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                       }`}>
                       Use Coupon
                     </button>
@@ -1324,7 +1338,8 @@ const SeekerPayments = ({ darkMode }) => {
               </div>
             ))}
           </div>
-        </div>
+            </div>
+          </div>
         )}
 
       </div>
@@ -1332,8 +1347,8 @@ const SeekerPayments = ({ darkMode }) => {
       {/* Add Payment Method Modal */}
       {showAddPaymentModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-md w-full rounded-lg border ${
-            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200'
           }`}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1386,8 +1401,8 @@ const SeekerPayments = ({ darkMode }) => {
       {/* Add Money Modal */}
       {showAddMoneyModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-md w-full rounded-lg border ${
-            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200'
           }`}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1395,7 +1410,11 @@ const SeekerPayments = ({ darkMode }) => {
                   Add Money to Wallet
                 </h3>
                 <button
-                  onClick={() => setShowAddMoneyModal(false)}
+                  onClick={() => {
+                    setShowAddMoneyModal(false)
+                    setAddMoneyAmount('')
+                    setSelectedPaymentMethod(null)
+                  }}
                   className={`p-2 rounded-lg transition-colors ${
                     darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
                   }`}
@@ -1411,10 +1430,12 @@ const SeekerPayments = ({ darkMode }) => {
                   </label>
                   <input
                     type="number"
+                    value={addMoneyAmount}
+                    onChange={(e) => setAddMoneyAmount(e.target.value)}
                     placeholder="Enter amount"
                     className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                        ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                         : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
                     }`}
                   />
@@ -1424,10 +1445,11 @@ const SeekerPayments = ({ darkMode }) => {
                   {[25, 50, 100].map((amount) => (
                     <button
                       key={amount}
+                      onClick={() => setAddMoneyAmount(amount.toString())}
                       className={`px-3 py-2 rounded-lg border transition-all duration-300 ${
-                        darkMode
-                          ? 'border-white/20 text-white hover:bg-white/10'
-                          : 'border-gray-200 text-[#00001a] hover:bg-gray-50'
+                        addMoneyAmount === amount.toString()
+                          ? (darkMode ? 'border-white bg-white/10 text-white' : 'border-[#00001a] bg-[#00001a]/10 text-[#00001a]')
+                          : (darkMode ? 'border-white/20 text-white hover:bg-white/10' : 'border-gray-200 text-[#00001a] hover:bg-gray-50')
                       }`}
                     >
                       {getCurrentCurrency().symbol}{amount}
@@ -1435,15 +1457,58 @@ const SeekerPayments = ({ darkMode }) => {
                   ))}
                 </div>
 
+                <div>
+                  <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Payment Method
+                  </label>
+                  <div className="space-y-2">
+                    {paymentMethods.filter(method => method.type !== 'wallet' && method.type !== 'points').map((method) => (
+                      <button
+                        key={method.id}
+                        onClick={() => setSelectedPaymentMethod(method)}
+                        className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
+                          selectedPaymentMethod?.id === method.id
+                            ? (darkMode ? 'border-white bg-white/10' : 'border-[#00001a] bg-[#00001a]/10')
+                            : (darkMode ? 'border-white/20 hover:bg-white/5' : 'border-gray-200 hover:bg-gray-50')
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-lg ${
+                            darkMode ? 'bg-white/10' : 'bg-gray-100'
+                          }`}>
+                            {method.type === 'card' && <CreditCard className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                            {method.type === 'paypal' && <Mail className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
+                          </div>
+                          <div>
+                            <p className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                              {method.nickname}
+                            </p>
+                            <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                              {method.type === 'card' ? `${method.brand} •••• ${method.last4}` : method.email}
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <button
                   onClick={() => {
-                    alert('Money added to wallet successfully!')
+                    if (!addMoneyAmount || !selectedPaymentMethod) {
+                      alert('Please enter an amount and select a payment method')
+                      return
+                    }
+                    alert(`Successfully added ${getCurrentCurrency().symbol}${addMoneyAmount} to wallet using ${selectedPaymentMethod.nickname}!`)
+                    setAddMoneyAmount('')
+                    setSelectedPaymentMethod(null)
                     setShowAddMoneyModal(false)
                   }}
+                  disabled={!addMoneyAmount || !selectedPaymentMethod}
                   className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                    darkMode
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800'
+                    !addMoneyAmount || !selectedPaymentMethod
+                      ? (darkMode ? 'bg-white/10 text-white/50 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
+                      : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800' : 'bg-[#00001a] text-white hover:bg-gray-800')
                   }`}
                 >
                   Add Money
@@ -1457,8 +1522,8 @@ const SeekerPayments = ({ darkMode }) => {
       {/* Group Split Modal */}
       {showGroupSplitModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-md w-full rounded-lg border ${
-            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200'
           }`}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1466,7 +1531,11 @@ const SeekerPayments = ({ darkMode }) => {
                   Group Payment Split
                 </h3>
                 <button
-                  onClick={() => setShowGroupSplitModal(false)}
+                  onClick={() => {
+                    setShowGroupSplitModal(false)
+                    setGroupSplitAmount('')
+                    setSelectedGroupMembers([])
+                  }}
                   className={`p-2 rounded-lg transition-colors ${
                     darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
                   }`}
@@ -1482,10 +1551,12 @@ const SeekerPayments = ({ darkMode }) => {
                   </label>
                   <input
                     type="number"
+                    value={groupSplitAmount}
+                    onChange={(e) => setGroupSplitAmount(e.target.value)}
                     placeholder="Enter total amount"
                     className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                        ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                         : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
                     }`}
                   />
@@ -1493,29 +1564,78 @@ const SeekerPayments = ({ darkMode }) => {
 
                 <div>
                   <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                    Number of People
+                    Select Group Members
                   </label>
-                  <select className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
-                    darkMode
-                      ? 'bg-[#00001a] border-white/20 text-white'
-                      : 'bg-white border-gray-300 text-[#00001a]'
-                  }`}>
-                    <option value="2">2 people</option>
-                    <option value="3">3 people</option>
-                    <option value="4">4 people</option>
-                    <option value="5">5 people</option>
-                  </select>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {groupMembers.map((member) => (
+                      <button
+                        key={member.id}
+                        onClick={() => {
+                          setSelectedGroupMembers(prev =>
+                            prev.includes(member.id)
+                              ? prev.filter(id => id !== member.id)
+                              : [...prev, member.id]
+                          )
+                        }}
+                        className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
+                          selectedGroupMembers.includes(member.id)
+                            ? (darkMode ? 'border-white bg-white/10' : 'border-[#00001a] bg-[#00001a]/10')
+                            : (darkMode ? 'border-white/20 hover:bg-white/5' : 'border-gray-200 hover:bg-gray-50')
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-medium ${
+                            darkMode ? 'bg-white/20 text-white' : 'bg-gray-200 text-[#00001a]'
+                          }`}>
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <div>
+                            <p className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                              {member.name}
+                            </p>
+                            <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                              {member.email}
+                            </p>
+                          </div>
+                          {selectedGroupMembers.includes(member.id) && (
+                            <div className="ml-auto">
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                                darkMode ? 'bg-white text-[#00001a]' : 'bg-[#00001a] text-white'
+                              }`}>
+                                ✓
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  {selectedGroupMembers.length > 0 && (
+                    <p className={`text-sm mt-2 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                      {selectedGroupMembers.length} member{selectedGroupMembers.length !== 1 ? 's' : ''} selected
+                      {groupSplitAmount && ` • ${getCurrentCurrency().symbol}${(parseFloat(groupSplitAmount) / (selectedGroupMembers.length + 1)).toFixed(2)} per person`}
+                    </p>
+                  )}
                 </div>
 
                 <button
                   onClick={() => {
-                    alert('Group split payment initiated! Invitations sent to participants.')
+                    if (!groupSplitAmount || selectedGroupMembers.length === 0) {
+                      alert('Please enter an amount and select at least one group member')
+                      return
+                    }
+                    const perPersonAmount = (parseFloat(groupSplitAmount) / (selectedGroupMembers.length + 1)).toFixed(2)
+                    const selectedNames = selectedGroupMembers.map(id => groupMembers.find(m => m.id === id)?.name).join(', ')
+                    alert(`Group split created! ${getCurrentCurrency().symbol}${perPersonAmount} per person. Invitations sent to: ${selectedNames}`)
+                    setGroupSplitAmount('')
+                    setSelectedGroupMembers([])
                     setShowGroupSplitModal(false)
                   }}
+                  disabled={!groupSplitAmount || selectedGroupMembers.length === 0}
                   className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                    darkMode
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800'
+                    !groupSplitAmount || selectedGroupMembers.length === 0
+                      ? (darkMode ? 'bg-white/10 text-white/50 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
+                      : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800' : 'bg-[#00001a] text-white hover:bg-gray-800')
                   }`}
                 >
                   Create Split Payment
@@ -1529,8 +1649,8 @@ const SeekerPayments = ({ darkMode }) => {
       {/* Refund Modal */}
       {showRefundModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-md w-full rounded-lg border ${
-            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200'
           }`}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1574,7 +1694,7 @@ const SeekerPayments = ({ darkMode }) => {
                     placeholder="Please provide additional details..."
                     className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                        ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                         : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
                     }`}
                   />
@@ -1602,8 +1722,8 @@ const SeekerPayments = ({ darkMode }) => {
       {/* Subscription Modal */}
       {showSubscriptionModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-2xl w-full rounded-lg border ${
-            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+          <div className={`max-w-2xl w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200'
           }`}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1628,8 +1748,8 @@ const SeekerPayments = ({ darkMode }) => {
                 ].map((plan, index) => (
                   <div key={index} className={`p-4 rounded-lg border transition-all duration-300 ${
                     plan.popular
-                      ? (darkMode ? 'border-blue-400/50 bg-blue-500/10' : 'border-gray-300 bg-gray-50')
-                      : (darkMode ? 'border-white/10' : 'border-gray-200')
+                      ? (darkMode ? 'border-blue-400/50 bg-blue-500/10' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]')
+                      : (darkMode ? 'border-white/10' : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
                   }`}>
                     <div className="text-center">
                       <h4 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
@@ -1666,6 +1786,110 @@ const SeekerPayments = ({ darkMode }) => {
           </div>
         </div>
       )}
+
+      {/* Referral Modal */}
+      {showReferralModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200'
+          }`}>
+            <div className="p-6">
+              <div className="text-center mb-6">
+                <Gift className={`w-16 h-16 mx-auto mb-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Referral Bonus Program
+                </h3>
+                <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                  Invite friends and earn rewards for each successful referral!
+                </p>
+              </div>
+
+              <div className={`p-4 rounded-lg mb-6 ${
+                darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+              }`}>
+                <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Your Referral Benefits:
+                </h4>
+                <ul className={`space-y-1 text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                  <li>• Earn $10 for each friend who signs up</li>
+                  <li>• Your friend gets $5 welcome bonus</li>
+                  <li>• Bonus 5% on all transactions for 30 days</li>
+                  <li>• Unlock premium features faster</li>
+                </ul>
+              </div>
+
+              <div className="mb-6">
+                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Your Referral Link
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value="https://seekeralone.com/ref/user123"
+                    readOnly
+                    className={`flex-1 px-3 py-2 rounded-lg border text-sm ${
+                      darkMode
+                        ? 'bg-white/5 border-white/20 text-white'
+                        : 'bg-gray-50 border-gray-300 text-[#00001a]'
+                    }`}
+                  />
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText('https://seekeralone.com/ref/user123')
+                      alert('Referral link copied to clipboard!')
+                    }}
+                    className={`px-3 py-2 rounded-lg border transition-all duration-300 ${
+                      darkMode
+                        ? 'border-white/20 text-white hover:bg-white/10'
+                        : 'border-gray-300 text-[#00001a] hover:bg-gray-50'
+                    }`}
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowReferralModal(false)}
+                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-white/10 text-white hover:bg-white/20'
+                      : 'bg-gray-100 text-[#00001a] hover:bg-gray-200'
+                  }`}
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    // Share functionality
+                    if (navigator.share) {
+                      navigator.share({
+                        title: 'Join SeekerAlone',
+                        text: 'Join me on SeekerAlone and get $5 welcome bonus!',
+                        url: 'https://seekeralone.com/ref/user123'
+                      })
+                    } else {
+                      navigator.clipboard.writeText('Join me on SeekerAlone and get $5 welcome bonus! https://seekeralone.com/ref/user123')
+                      alert('Referral message copied to clipboard!')
+                    }
+                  }}
+                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-[#00001a] text-white hover:bg-gray-800'
+                      : 'bg-[#00001a] text-white hover:bg-gray-800'
+                  }`}
+                >
+                  Share
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+        </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -204,7 +204,7 @@ const Login = ({ setIsAuthenticated }) => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-3 rounded-2xl backdrop-blur-2xl border transition-all duration-300 focus:ring-2 focus:ring-offset-2 ${
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-2xl backdrop-blur-2xl border transition-all duration-300 focus:ring-2 focus:ring-offset-2 ${
                   darkMode
                     ? 'bg-[#00001a]/20 border-white/30 text-white placeholder-white/50 focus:border-white/50 focus:ring-white/50'
                     : 'bg-white/20 border-[#00001a]/30 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:ring-[#00001a]/50'
@@ -227,7 +227,7 @@ const Login = ({ setIsAuthenticated }) => {
                 id="mobile"
                 value={mobile}
                 onChange={(e) => setMobile(e.target.value)}
-                className={`w-full px-4 py-3 rounded-2xl backdrop-blur-2xl border transition-all duration-300 focus:ring-2 focus:ring-offset-2 ${
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-2xl backdrop-blur-2xl border transition-all duration-300 focus:ring-2 focus:ring-offset-2 ${
                   darkMode
                     ? 'bg-[#00001a]/20 border-white/30 text-white placeholder-white/50 focus:border-white/50 focus:ring-white/50'
                     : 'bg-white/20 border-[#00001a]/30 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:ring-[#00001a]/50'
@@ -251,7 +251,7 @@ const Login = ({ setIsAuthenticated }) => {
                 id="otp"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className={`w-full px-4 py-3 rounded-2xl backdrop-blur-2xl border transition-all duration-300 focus:ring-2 focus:ring-offset-2 ${
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-2xl backdrop-blur-2xl border transition-all duration-300 focus:ring-2 focus:ring-offset-2 ${
                   darkMode
                     ? 'bg-[#00001a]/20 border-white/30 text-white placeholder-white/50 focus:border-white/50 focus:ring-white/50'
                     : 'bg-white/20 border-[#00001a]/30 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:ring-[#00001a]/50'

@@ -5,7 +5,7 @@ import {
   BookOpen, Play, Video, FileText, Link, Bookmark, Filter, Search, User, Heart,
   MessageCircle, Share2, ChevronRight, Star, Clock, Eye, ThumbsUp, ThumbsDown,
   Flag, UserPlus, UserCheck, FolderPlus, Folder, Settings, Grid, List,
-  Calendar, Award, Shield, Crown, Zap, Gift, ShoppingBag, Download,
+  Calendar, Award, Shield, Crown, Zap, Gift, ShoppingBag,
   ExternalLink, Copy, MoreHorizontal, X, Plus, ChevronDown, ChevronUp,
   Layers, Tag, TrendingUp, Users, Bell, BellOff, Volume2, VolumeX
 } from 'lucide-react'
@@ -27,11 +27,18 @@ const SeekerContent = ({ darkMode }) => {
   const [selectedSolver, setSelectedSolver] = useState(null)
   const [showFolderModal, setShowFolderModal] = useState(false)
   const [showReportModal, setShowReportModal] = useState(false)
+  const [showCommentsModal, setShowCommentsModal] = useState(false)
+  const [selectedContentForComments, setSelectedContentForComments] = useState(null)
+  const [comments, setComments] = useState({})
+  const [newComment, setNewComment] = useState('')
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [selectedContentForShare, setSelectedContentForShare] = useState(null)
+  const [showMoreOptionsMenu, setShowMoreOptionsMenu] = useState(null) // stores content id for which menu is open
   const [showMerchandiseModal, setShowMerchandiseModal] = useState(false)
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
   const [selectedMerchandise, setSelectedMerchandise] = useState(null)
-  const [merchandiseMode, setMerchandiseMode] = useState('buy') // 'buy' or 'sell'
+
   const [merchandiseForm, setMerchandiseForm] = useState({
     title: '',
     description: '',
@@ -50,6 +57,8 @@ const SeekerContent = ({ darkMode }) => {
     { id: 'folder2', name: 'Node.js Resources', count: 8 },
     { id: 'folder3', name: 'AI/ML Papers', count: 15 }
   ])
+  const [newFolderName, setNewFolderName] = useState('')
+  const [selectedFolderType, setSelectedFolderType] = useState('Saved Content')
 
   const tabs = [
     { id: 'all', label: 'All Content', icon: BookOpen, count: 156 },
@@ -67,13 +76,62 @@ const SeekerContent = ({ darkMode }) => {
   // Enhanced categories with subcategories
   const categories = {
     'All': ['All'],
-    'Frontend': ['All', 'React', 'Vue', 'Angular', 'JavaScript', 'TypeScript', 'CSS', 'HTML'],
-    'Backend': ['All', 'Node.js', 'Python', 'Java', 'C#', 'Go', 'PHP', 'Ruby'],
-    'AI/ML': ['All', 'Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision', 'Data Science'],
-    'DevOps': ['All', 'Docker', 'Kubernetes', 'AWS', 'Azure', 'CI/CD', 'Monitoring'],
-    'Mobile': ['All', 'React Native', 'Flutter', 'iOS', 'Android', 'Xamarin'],
-    'Database': ['All', 'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'Redis'],
-    'Security': ['All', 'Web Security', 'Cryptography', 'Penetration Testing', 'OWASP']
+    'Programming': [
+      'All', 'Frontend', 'Backend', 'Mobile', 'DevOps', 'Data Science', 'AI/ML',
+      'React', 'Vue.js', 'Angular', 'Node.js', 'Python', 'JavaScript', 'TypeScript',
+      'Java', 'C++', 'C#', 'PHP', 'Ruby', 'Go', 'Rust', 'Swift', 'Kotlin',
+      'iOS Development', 'Android Development', 'Flutter', 'React Native',
+      'Machine Learning', 'Deep Learning', 'Neural Networks', 'Computer Vision',
+      'Docker', 'Kubernetes', 'AWS', 'Azure', 'Google Cloud', 'CI/CD'
+    ],
+    'Design': [
+      'All', 'UI/UX', 'Graphic Design', 'Web Design', 'Product Design', 'Branding',
+      'Figma', 'Adobe XD', 'Sketch', 'Photoshop', 'Illustrator', 'InDesign',
+      'Logo Design', 'Typography', 'Color Theory', 'Design Systems',
+      'Wireframing', 'Prototyping', 'User Research', 'Usability Testing',
+      'Motion Graphics', 'Animation', '3D Design', 'Print Design'
+    ],
+    'Business': [
+      'All', 'Marketing', 'Sales', 'Finance', 'Management', 'Entrepreneurship',
+      'Digital Marketing', 'Social Media', 'SEO', 'Content Marketing', 'Email Marketing',
+      'Lead Generation', 'Sales Funnel', 'CRM', 'Customer Service',
+      'Project Management', 'Team Leadership', 'Strategic Planning',
+      'Accounting', 'Investment', 'Cryptocurrency', 'Stock Market',
+      'Startup', 'Business Plan', 'Funding', 'Venture Capital'
+    ],
+    'Technology': [
+      'All', 'Cloud Computing', 'Cybersecurity', 'Blockchain', 'IoT', 'AR/VR',
+      'Artificial Intelligence', 'Quantum Computing', 'Edge Computing',
+      'Network Security', 'Ethical Hacking', 'Penetration Testing',
+      'Smart Contracts', 'DeFi', 'NFTs', 'Web3',
+      'Smart Home', 'Wearables', 'Sensors', 'Automation',
+      'Virtual Reality', 'Augmented Reality', 'Mixed Reality', 'Metaverse'
+    ],
+    'Education': [
+      'All', 'Tutorials', 'Courses', 'Workshops', 'Certifications', 'Study Materials',
+      'Online Learning', 'E-learning', 'MOOCs', 'Bootcamps',
+      'Programming Tutorials', 'Design Courses', 'Business Training',
+      'Language Learning', 'Mathematics', 'Science', 'History',
+      'Professional Development', 'Skill Building', 'Career Guidance',
+      'Exam Preparation', 'Academic Writing', 'Research Methods'
+    ],
+    'Creative': [
+      'All', 'Photography', 'Video Editing', 'Music', 'Writing', 'Art',
+      'Portrait Photography', 'Landscape Photography', 'Street Photography',
+      'Adobe Premiere', 'Final Cut Pro', 'DaVinci Resolve', 'After Effects',
+      'Music Production', 'Audio Engineering', 'Songwriting', 'Music Theory',
+      'Creative Writing', 'Copywriting', 'Technical Writing', 'Blogging',
+      'Digital Art', 'Traditional Art', 'Painting', 'Drawing', 'Sculpture'
+    ],
+    'Lifestyle': [
+      'All', 'Health', 'Fitness', 'Travel', 'Food', 'Personal Development',
+      'Nutrition', 'Mental Health', 'Wellness', 'Meditation', 'Yoga',
+      'Weight Training', 'Cardio', 'Home Workouts', 'Sports',
+      'Travel Planning', 'Budget Travel', 'Solo Travel', 'Adventure Travel',
+      'Cooking', 'Baking', 'Healthy Recipes', 'International Cuisine',
+      'Self Improvement', 'Productivity', 'Time Management', 'Goal Setting',
+      'Relationships', 'Communication', 'Leadership', 'Confidence Building'
+    ]
   }
 
   // Comprehensive mock data for all content types and categories
@@ -1529,7 +1587,56 @@ const SeekerContent = ({ darkMode }) => {
   }
 
   const handleBookSolver = (solverId) => {
-    navigate(`/seeker/sessions?book=${solverId}`)
+    navigate(`/sessions?book=${solverId}`)
+  }
+
+  // Handle transcript viewing
+  const handleViewTranscript = (content) => {
+    if (content.hasTranscript && content.transcript) {
+      setSelectedContent(content)
+      setShowContentModal(true)
+    } else {
+      alert('Transcript not available for this content')
+    }
+  }
+
+
+
+  // Handle tag click for filtering
+  const handleTagClick = (tag) => {
+    setSearchQuery(tag)
+    // Find the category that contains this tag
+    for (const [category, subcategories] of Object.entries(categories)) {
+      if (subcategories.includes(tag) || category.toLowerCase().includes(tag.toLowerCase())) {
+        setSelectedCategory(category)
+        if (subcategories.includes(tag)) {
+          setSelectedSubCategory(tag)
+        }
+        break
+      }
+    }
+  }
+
+  // Handle external link
+  const handleExternalLink = (content) => {
+    if (content.externalLink) {
+      window.open(content.externalLink, '_blank', 'noopener,noreferrer')
+    } else {
+      alert('External link not available')
+    }
+  }
+
+  // Handle like/react functionality
+  const handleReactToContent = (contentId) => {
+    setLikedContent(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(contentId)) {
+        newSet.delete(contentId)
+      } else {
+        newSet.add(contentId)
+      }
+      return newSet
+    })
   }
 
   const handleViewSolverProfile = (solver) => {
@@ -1547,13 +1654,150 @@ const SeekerContent = ({ darkMode }) => {
     setShowReportModal(true)
   }
 
-  const handleCreateFolder = (folderName) => {
-    const newFolder = {
-      id: `folder${Date.now()}`,
-      name: folderName,
-      count: 0
+  // Handle comments functionality
+  const handleShowComments = (content) => {
+    setSelectedContentForComments(content)
+    setShowCommentsModal(true)
+    // Initialize comments for this content if not exists
+    if (!comments[content.id]) {
+      setComments(prev => ({
+        ...prev,
+        [content.id]: [
+          {
+            id: 1,
+            user: 'John Doe',
+            avatar: null,
+            text: 'Great content! Very helpful.',
+            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+            likes: 3
+          },
+          {
+            id: 2,
+            user: 'Jane Smith',
+            avatar: null,
+            text: 'Thanks for sharing this. Learned a lot!',
+            timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
+            likes: 1
+          }
+        ]
+      }))
     }
-    setCustomFolders(prev => [...prev, newFolder])
+  }
+
+  const handleAddComment = () => {
+    if (!newComment.trim() || !selectedContentForComments) return
+
+    const comment = {
+      id: Date.now(),
+      user: 'You',
+      avatar: null,
+      text: newComment.trim(),
+      timestamp: new Date(),
+      likes: 0
+    }
+
+    setComments(prev => ({
+      ...prev,
+      [selectedContentForComments.id]: [
+        ...(prev[selectedContentForComments.id] || []),
+        comment
+      ]
+    }))
+
+    setNewComment('')
+  }
+
+  // Handle share functionality
+  const handleShowShare = (content) => {
+    setSelectedContentForShare(content)
+    setShowShareModal(true)
+  }
+
+  const handleShareContent = (platform) => {
+    if (!selectedContentForShare) return
+
+    const shareUrl = `${window.location.origin}/content/${selectedContentForShare.id}`
+    const shareText = `Check out this amazing content: ${selectedContentForShare.title}`
+
+    switch (platform) {
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+        break
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank')
+        break
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')
+        break
+      case 'copy':
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          alert('Link copied to clipboard!')
+        }).catch(() => {
+          alert('Failed to copy link')
+        })
+        break
+      default:
+        break
+    }
+
+    setShowShareModal(false)
+  }
+
+  // Handle more options menu
+  const handleToggleMoreOptions = (contentId) => {
+    setShowMoreOptionsMenu(prev => prev === contentId ? null : contentId)
+  }
+
+  // Close more options menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowMoreOptionsMenu(null)
+    }
+
+    if (showMoreOptionsMenu) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [showMoreOptionsMenu])
+
+  const handleMoreOptionAction = (action, content) => {
+    switch (action) {
+      case 'save':
+        handleSaveContent(content.id)
+        break
+      case 'report':
+        handleReportContent(content)
+        break
+      case 'share':
+        handleShowShare(content)
+        break
+      case 'hide':
+        // Implement hide functionality
+        alert(`Content "${content.title}" hidden from your feed`)
+        break
+      case 'notInterested':
+        // Implement not interested functionality
+        alert(`We'll show you less content like "${content.title}"`)
+        break
+      default:
+        break
+    }
+    setShowMoreOptionsMenu(null)
+  }
+
+  const handleCreateFolder = () => {
+    if (newFolderName.trim()) {
+      const newFolder = {
+        id: `folder${Date.now()}`,
+        name: newFolderName.trim(),
+        type: selectedFolderType,
+        count: 0
+      }
+      setCustomFolders(prev => [...prev, newFolder])
+      setNewFolderName('')
+      setSelectedFolderType('Saved Content')
+      setShowFolderModal(false)
+    }
   }
 
   // Merchandise handlers
@@ -1646,55 +1890,57 @@ const SeekerContent = ({ darkMode }) => {
     <div className={`min-h-screen transition-all duration-500 ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-8 sm:space-y-12 max-w-full overflow-x-hidden">
+        <div className="w-full">
 
         {/* Enhanced Header */}
-        <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`p-4 sm:p-6 border relative overflow-hidden transition-all duration-300 ${
           darkMode
-            ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+            ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+            <div className="min-w-0 flex-1">
+              <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-2 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 Content Library
               </h2>
-              <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+              <p className={`text-sm sm:text-base break-words ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                 Discover, learn, and save content from expert solvers
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               {/* Cart Button - Only show when there are items */}
               {cart.length > 0 && (
                 <button
                   onClick={() => setShowCart(true)}
-                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
+                  className={`relative px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium flex items-center gap-1 sm:gap-2 ${
                     darkMode
-                      ? 'bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30'
-                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                      ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                      : 'bg-[#00001a] text-white border border-[#00001a]'
                   }`}
                 >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span className={`absolute -top-2 -right-2 text-xs rounded-full w-5 h-5 flex items-center justify-center ${
+                  <ShoppingBag className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <span className={`absolute -top-2 -right-2 text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center ${
                     darkMode ? 'bg-red-500 text-white' : 'bg-white text-[#00001a] border border-[#00001a]'
                   }`}>
                     {getCartItemCount()}
                   </span>
-                  Cart
+                  <span className="hidden sm:inline">Cart</span>
                 </button>
               )}
 
               {/* Merchandise Button */}
               <button
                 onClick={() => setShowMerchandiseModal(true)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium flex items-center gap-1 sm:gap-2 ${
                   darkMode
-                    ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30 hover:bg-teal-500/30 hover:shadow-[0_0_15px_rgba(20,184,166,0.3)]'
-                    : 'bg-white text-[#00001a] border border-[#00001a]/30 hover:bg-[#00001a]/5'
+                    ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
+                    : 'bg-white text-[#00001a] border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}
               >
-                <ShoppingBag className="w-4 h-4" />
-                Merchandise
+                <ShoppingBag className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <span className="hidden sm:inline">Merchandise</span>
+                <span className="sm:hidden">Shop</span>
               </button>
             </div>
           </div>
@@ -1712,8 +1958,8 @@ const SeekerContent = ({ darkMode }) => {
                 placeholder="Search content, topics, or creators..."
                 className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50 focus:bg-white/10'
-                    : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500 focus:border-[#00001a] focus:ring-1 focus:ring-[#00001a]'
+                    ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] focus:border-blue-500'
+                    : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                 }`}
               />
             </div>
@@ -1721,8 +1967,8 @@ const SeekerContent = ({ darkMode }) => {
               onClick={() => setShowFilters(!showFilters)}
               className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
                 showFilters
-                  ? (darkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-[#00001a] text-white border border-[#00001a]')
-                  : (darkMode ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200')
+                  ? (darkMode ? 'bg-[#00001a] text-blue-400 border border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-[#00001a] text-white border border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                  : (darkMode ? 'bg-[#00001a] text-white border border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white text-[#00001a] border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -1733,8 +1979,8 @@ const SeekerContent = ({ darkMode }) => {
               onClick={() => setShowFolderModal(true)}
               className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
                 darkMode
-                  ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                  : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200'
+                  ? 'bg-[#00001a] text-white border border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                  : 'bg-white text-[#00001a] border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
               }`}
             >
               <FolderPlus className="w-4 h-4" />
@@ -1742,10 +1988,10 @@ const SeekerContent = ({ darkMode }) => {
             </button>
           </div>
 
-          {/* Advanced Filters Panel */}
+          {/* Advanced Filters Panel - Moved to top for better dropdown positioning */}
           {showFilters && (
             <div className={`mb-6 p-4 rounded-lg border transition-all duration-300 ${
-              darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'
+              darkMode ? 'bg-[#00001a] border-blue-500 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             }`}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Category Filter */}
@@ -1759,10 +2005,18 @@ const SeekerContent = ({ darkMode }) => {
                       setSelectedCategory(e.target.value)
                       setSelectedSubCategory('All')
                     }}
+                    style={{
+                      appearance: 'none',
+                      backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                      backgroundPosition: 'right 0.5rem center',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: '1.5em 1.5em',
+                      paddingRight: '2.5rem'
+                    }}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/10 border-white/20 text-white'
-                        : 'bg-white border-gray-300 text-[#00001a]'
+                        ? 'bg-[#00001a] border-blue-500 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] focus:border-blue-500'
+                        : 'bg-white border-gray-200 text-[#00001a] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
                     {Object.keys(categories).map(category => (
@@ -1774,18 +2028,26 @@ const SeekerContent = ({ darkMode }) => {
                 {/* Sub-Category Filter */}
                 <div>
                   <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                    Sub-Category
+                    Sub-Category {categories[selectedCategory] && `(${categories[selectedCategory].length} options)`}
                   </label>
                   <select
                     value={selectedSubCategory}
                     onChange={(e) => setSelectedSubCategory(e.target.value)}
+                    style={{
+                      appearance: 'none',
+                      backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                      backgroundPosition: 'right 0.5rem center',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: '1.5em 1.5em',
+                      paddingRight: '2.5rem'
+                    }}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/10 border-white/20 text-white'
-                        : 'bg-white border-gray-300 text-[#00001a]'
+                        ? 'bg-[#00001a] border-blue-500 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] focus:border-blue-500'
+                        : 'bg-white border-gray-200 text-[#00001a] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
-                    {categories[selectedCategory]?.map(subCategory => (
+                    {(categories[selectedCategory] || ['All']).map(subCategory => (
                       <option key={subCategory} value={subCategory} className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>{subCategory}</option>
                     ))}
                   </select>
@@ -1799,10 +2061,18 @@ const SeekerContent = ({ darkMode }) => {
                   <select
                     value={activeTab}
                     onChange={(e) => setActiveTab(e.target.value)}
+                    style={{
+                      appearance: 'none',
+                      backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                      backgroundPosition: 'right 0.5rem center',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: '1.5em 1.5em',
+                      paddingRight: '2.5rem'
+                    }}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
-                        ? 'bg-white/10 border-white/20 text-white'
-                        : 'bg-white border-gray-300 text-[#00001a]'
+                        ? 'bg-[#00001a] border-blue-500 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] focus:border-blue-500'
+                        : 'bg-white border-gray-200 text-[#00001a] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
                     {tabs.map(tab => (
@@ -1814,8 +2084,8 @@ const SeekerContent = ({ darkMode }) => {
             </div>
           )}
 
-          {/* Enhanced Tab Navigation */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          {/* Enhanced Tab Navigation - Moved below filters */}
+          <div className="flex flex-wrap gap-2 mb-6">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
@@ -1824,8 +2094,8 @@ const SeekerContent = ({ darkMode }) => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                     activeTab === tab.id
-                      ? (darkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-[#00001a] text-white border border-[#00001a] hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]')
-                      : (darkMode ? 'bg-white/5 text-white/70 border border-white/20 hover:bg-white/10' : 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200')
+                      ? (darkMode ? 'bg-[#00001a] text-blue-400 border border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-[#00001a] text-white border border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                      : (darkMode ? 'bg-[#00001a] text-white/70 border border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white text-gray-600 border border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -1833,8 +2103,8 @@ const SeekerContent = ({ darkMode }) => {
                   {tab.count > 0 && (
                     <span className={`px-2 py-0.5 rounded-full text-xs ${
                       activeTab === tab.id
-                        ? (darkMode ? 'bg-blue-400/20 text-blue-300' : 'bg-white/20 text-white/80')
-                        : (darkMode ? 'bg-white/10 text-white/50' : 'bg-gray-200 text-gray-500')
+                        ? (darkMode ? 'bg-[#00001a] border border-blue-500 text-blue-300' : 'bg-white/20 text-white/80')
+                        : (darkMode ? 'bg-[#00001a] border border-gray-800 text-white/50' : 'bg-gray-100 text-gray-500 border border-gray-200')
                     }`}>
                       {tab.count}
                     </span>
@@ -1843,38 +2113,20 @@ const SeekerContent = ({ darkMode }) => {
               )
             })}
           </div>
-
-          {/* Quick Category Pills */}
-          <div className="flex flex-wrap gap-2">
-            {Object.keys(categories).map((category) => (
-              <button
-                key={category}
-                onClick={() => {
-                  setSelectedCategory(category)
-                  setSelectedSubCategory('All')
-                }}
-                className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? (darkMode ? 'bg-white/10 text-white border border-white/20' : 'bg-gray-200 text-[#00001a] border border-gray-300')
-                    : (darkMode ? 'text-white/60 hover:bg-white/5' : 'text-gray-600 hover:bg-gray-100')
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
         </div>
 
-
-
         {/* Enhanced Content Grid */}
-        <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
-          darkMode
-            ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
-        }`}>
-          <div className="flex items-center justify-between mb-6">
-            <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+        <div className="mt-8"></div>
+        <div
+          className={`p-4 sm:p-6 border relative overflow-hidden transition-all duration-300 ${
+            darkMode
+              ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+          }`}
+          style={{ minHeight: '600px' }} // Ensure enough space for dropdowns to open downward
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+            <h3 className={`text-base sm:text-lg font-semibold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               {activeTab === 'all' && 'All Content'}
               {activeTab === 'reels' && 'Reels'}
               {activeTab === 'videos' && 'Videos'}
@@ -1897,8 +2149,8 @@ const SeekerContent = ({ darkMode }) => {
                   onClick={() => setShowFolderModal(true)}
                   className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
                     darkMode
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                      ? 'bg-[#00001a] text-blue-400 border border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                   }`}
                 >
                   <Plus className="w-3 h-3" />
@@ -1907,7 +2159,7 @@ const SeekerContent = ({ darkMode }) => {
               )}
 
               <div className={`text-xs px-2 py-1 rounded-lg ${
-                darkMode ? 'bg-white/10 text-white/60' : 'bg-gray-100 text-gray-500'
+                darkMode ? 'bg-[#00001a] border border-gray-800 text-white/60' : 'bg-white text-gray-500 border border-gray-200'
               }`}>
                 {viewMode === 'grid' ? 'Grid View' : 'List View'}
               </div>
@@ -1918,10 +2170,10 @@ const SeekerContent = ({ darkMode }) => {
           {activeTab === 'folders' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {customFolders.map((folder) => (
-                <div key={folder.id} className={`group p-6 rounded-lg border transition-all duration-500 cursor-pointer ${
+                <div key={folder.id} className={`group p-6 rounded-lg border transition-all duration-300 cursor-pointer ${
                   darkMode
-                    ? 'bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                    : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                    ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                    : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                 }`}>
                   <div className="flex items-center justify-between mb-4">
                     <Folder className={`w-8 h-8 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
@@ -1941,26 +2193,24 @@ const SeekerContent = ({ darkMode }) => {
               ))}
             </div>
           ) : (
-            <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}`}>
+            <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6' : 'space-y-3 sm:space-y-4'}`}>
               {filteredContent.map((content) => (
-                <div key={content.id} className={`group rounded-lg border transition-all duration-500 overflow-hidden cursor-pointer ${
+                <div key={content.id} className={`group rounded-lg border transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full min-h-[350px] sm:min-h-[400px] ${
                   darkMode
-                    ? 'bg-white/3 border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                    : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
-                } ${viewMode === 'list' ? 'flex' : ''}`}>
+                    ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                    : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+                }`} onClick={() => handleContentClick(content)}>
 
                   {/* Thumbnail/Preview */}
-                  <div className={`${viewMode === 'list' ? 'w-48 h-32' : 'aspect-video'} relative flex items-center justify-center ${
-                    darkMode ? 'bg-white/5' : 'bg-gray-100'
-                  }`} onClick={() => handleContentClick(content)}>
+                  <div className={`aspect-video relative flex items-center justify-center ${
+                    darkMode ? 'bg-[#00001a] border-b border-gray-800' : 'bg-gray-100 border-b border-gray-200'
+                  }`}>
                     {content.type === 'reel' && <Play className={`w-12 h-12 ${darkMode ? 'text-white/30' : 'text-gray-400'}`} />}
                     {content.type === 'video' && <Video className={`w-12 h-12 ${darkMode ? 'text-white/30' : 'text-gray-400'}`} />}
                     {content.type === 'live' && (
                       <div className="relative">
                         <Users className={`w-12 h-12 ${darkMode ? 'text-white/30' : 'text-gray-400'}`} />
-                        <div className={`absolute -top-2 -right-2 px-2 py-1 rounded-full text-xs font-bold ${
-                          darkMode ? 'bg-red-500 text-white' : 'bg-red-500 text-white'
-                        }`}>
+                        <div className="absolute -top-2 -right-2 px-2 py-1 rounded text-xs font-bold bg-red-500 text-white">
                           LIVE
                         </div>
                       </div>
@@ -1971,246 +2221,144 @@ const SeekerContent = ({ darkMode }) => {
 
                     {/* Duration overlay */}
                     {content.duration && content.duration !== 'Live' && (
-                      <div className={`absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-medium ${
-                        darkMode ? 'bg-black/50 text-white' : 'bg-black/50 text-white'
-                      }`}>
+                      <div className="absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-medium bg-black/70 text-white">
                         {content.duration}
                       </div>
                     )}
 
                     {/* Premium badge */}
                     {content.isPremium && (
-                      <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold ${
-                        darkMode ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : 'bg-yellow-100 text-yellow-800 border border-yellow-300'
+                      <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold flex items-center gap-1 ${
+                        darkMode ? 'bg-[#00001a] border border-yellow-500 text-yellow-400' : 'bg-[#00001a]/10 text-[#00001a]'
                       }`}>
-                        <Crown className="w-3 h-3 inline mr-1" />
+                        <Crown className="w-3 h-3" />
                         PRO
                       </div>
                     )}
                   </div>
 
                   {/* Content Info */}
-                  <div className={`${viewMode === 'list' ? 'flex-1' : ''} p-4`}>
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className={`font-semibold line-clamp-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  <div className="p-4 sm:p-6 flex flex-col flex-1 justify-between">
+                    {/* Main Content */}
+                    <div className="flex-1">
+                      {/* Title */}
+                      <h3 className={`text-xl font-bold mb-3 line-clamp-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                         {content.title}
-                      </h4>
+                      </h3>
+
+                      {/* Description */}
+                      <p className={`text-sm mb-4 line-clamp-3 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        {content.description || 'Deep dive into modern programming concepts and best practices.'}
+                      </p>
+
+                      {/* Category and Type */}
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                          {content.category} • {content.type.charAt(0).toUpperCase() + content.type.slice(1)}
+                        </span>
+                      </div>
+
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {content.tags.slice(0, 3).map((tag, index) => (
+                          <span
+                            key={index}
+                            className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
+                              darkMode ? 'bg-[#00001a] border border-gray-800 text-white/70' : 'bg-gray-100 text-gray-600'
+                            }`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Stats */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm mb-4 gap-2">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <span className={`flex items-center gap-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                            <Eye className="w-4 h-4" />
+                            {formatViews(content.views)}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleLikeContent(content.id)
+                            }}
+                            className={`flex items-center gap-1 transition-colors duration-200 ${
+                              likedContent.has(content.id)
+                                ? (darkMode ? 'text-white hover:text-white/80' : 'text-[#00001a] hover:text-[#00001a]/80')
+                                : (darkMode ? 'text-white/60 hover:text-white' : 'text-gray-500 hover:text-[#00001a]')
+                            }`}
+                          >
+                            <Heart
+                              className={`w-4 h-4 ${likedContent.has(content.id) ? 'fill-current' : ''}`}
+                            />
+                            {content.likes + (likedContent.has(content.id) ? 1 : 0)}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleShowComments(content)
+                            }}
+                            className={`flex items-center gap-1 transition-colors duration-200 ${
+                              darkMode ? 'text-white/60 hover:text-white' : 'text-gray-500 hover:text-[#00001a]'
+                            }`}
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            {content.comments}
+                          </button>
+                        </div>
+                        <span className={`${darkMode ? 'text-white/60' : 'text-gray-500'} text-xs sm:text-sm`}>
+                          {getTimeAgo(content.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons - Always at bottom */}
+                    <div className="flex flex-wrap items-center gap-2 mt-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleLikeContent(content.id)
+                        }}
+                        className={`flex-1 min-w-[70px] px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 border ${
+                          likedContent.has(content.id)
+                            ? (darkMode ? 'bg-[#00001a] text-white border-gray-800' : 'bg-gray-100 text-[#00001a] border-gray-300')
+                            : (darkMode ? 'border-gray-800 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'border-gray-300 text-gray-700 hover:bg-gray-50')
+                        }`}
+                      >
+                        Like
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleShowShare(content)
+                        }}
+                        className={`flex-1 min-w-[70px] px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                          darkMode
+                            ? 'bg-[#00001a] text-white'
+                            : 'bg-[#00001a] text-white'
+                        }`}
+                      >
+                        Share
+                      </button>
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           handleSaveContent(content.id)
                         }}
-                        className={`ml-2 p-1 rounded transition-all duration-300 ${
+                        className={`flex-1 min-w-[70px] px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 border ${
                           savedContent.has(content.id)
-                            ? (darkMode ? 'text-yellow-400' : 'text-[#00001a]')
-                            : (darkMode ? 'text-white/50 hover:text-yellow-400' : 'text-gray-400 hover:text-[#00001a]')
+                            ? (darkMode ? 'bg-[#00001a] text-white border-gray-800' : 'bg-gray-100 text-[#00001a] border-gray-300')
+                            : (darkMode ? 'border-gray-800 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'border-gray-300 text-gray-700 hover:bg-gray-50')
                         }`}
                       >
-                        <Bookmark className={`w-4 h-4 ${savedContent.has(content.id) ? 'fill-current' : ''}`} />
+                        {savedContent.has(content.id) ? 'Saved' : 'Save'}
                       </button>
                     </div>
 
-                    {/* Creator Info */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleViewSolverProfile(content.creator)
-                        }}
-                        className={`flex items-center gap-2 hover:opacity-80 transition-opacity duration-200`}
-                      >
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-200 text-[#00001a]'
-                        }`}>
-                          {content.creator.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <span className={`text-sm font-medium ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>
-                          {content.creator.name}
-                        </span>
-                        {content.creator.verified && (
-                          <Shield className={`w-3 h-3 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                        )}
-                      </button>
-
-                      {/* Follow Button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleFollowChannel(content.creator.id)
-                        }}
-                        className={`ml-auto px-2 py-1 rounded text-xs font-medium transition-all duration-300 ${
-                          followedChannels.has(content.creator.id)
-                            ? (darkMode ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-200 text-[#00001a] border border-gray-300')
-                            : (darkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30' : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90')
-                        }`}
-                      >
-                        {followedChannels.has(content.creator.id) ? (
-                          <>
-                            <UserCheck className="w-3 h-3 inline mr-1" />
-                            Following
-                          </>
-                        ) : (
-                          <>
-                            <UserPlus className="w-3 h-3 inline mr-1" />
-                            Follow
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {/* Creator Badges */}
-                    {content.creator.badges && content.creator.badges.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {content.creator.badges.slice(0, 2).map((badge, index) => (
-                          <span key={index} className={`px-2 py-0.5 rounded text-xs font-medium ${
-                            darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-gray-600'
-                          }`}>
-                            <Award className="w-3 h-3 inline mr-1" />
-                            {badge}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Content Stats */}
-                    <div className="flex items-center justify-between text-sm mb-3">
-                      <div className="flex items-center gap-3">
-                        <span className={`flex items-center gap-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                          <Eye className="w-3 h-3" />
-                          {formatViews(content.views)}
-                        </span>
-                        <span className={`${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                          {getTimeAgo(content.createdAt)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-100 text-[#00001a]'
-                        }`}>
-                          {content.category}
-                        </span>
-                        {content.subCategory !== 'All' && (
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-50 text-gray-600'
-                          }`}>
-                            {content.subCategory}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {content.tags.slice(0, 3).map((tag, index) => (
-                        <span key={index} className={`px-2 py-0.5 rounded text-xs ${
-                          darkMode ? 'bg-white/5 text-white/60 border border-white/10' : 'bg-gray-50 text-gray-500 border border-gray-200'
-                        }`}>
-                          <Tag className="w-2 h-2 inline mr-1" />
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleLikeContent(content.id)
-                          }}
-                          className={`flex items-center gap-1 transition-all duration-300 ${
-                            likedContent.has(content.id)
-                              ? (darkMode ? 'text-red-400' : 'text-[#00001a]')
-                              : (darkMode ? 'text-white/50 hover:text-red-400' : 'text-gray-400 hover:text-[#00001a]')
-                          }`}
-                        >
-                          <Heart className={`w-4 h-4 ${likedContent.has(content.id) ? 'fill-current' : ''}`} />
-                          <span className="text-sm">{content.likes + (likedContent.has(content.id) ? 1 : 0)}</span>
-                        </button>
-
-                        <button className={`flex items-center gap-1 transition-all duration-300 ${
-                          darkMode ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-[#00001a]'
-                        }`}>
-                          <MessageCircle className="w-4 h-4" />
-                          <span className="text-sm">{content.comments}</span>
-                        </button>
-
-                        <button className={`flex items-center gap-1 transition-all duration-300 ${
-                          darkMode ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-[#00001a]'
-                        }`}>
-                          <Share2 className="w-4 h-4" />
-                          <span className="text-sm">{content.shares}</span>
-                        </button>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {/* Book Solver Button */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleBookSolver(content.creator.id)
-                          }}
-                          className={`px-3 py-1 rounded text-xs font-medium transition-all duration-300 ${
-                            darkMode
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                              : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
-                          }`}
-                        >
-                          Book
-                        </button>
-
-                        {/* More Options */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            // Show more options menu
-                          }}
-                          className={`p-1 rounded transition-all duration-300 ${
-                            darkMode ? 'text-white/50 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-[#00001a] hover:bg-gray-100'
-                          }`}
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Additional Features */}
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
-                      <div className="flex items-center gap-2 text-xs">
-                        {content.hasTranscript && (
-                          <span className={`flex items-center gap-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                            <FileText className="w-3 h-3" />
-                            Transcript
-                          </span>
-                        )}
-                        {content.downloadable && (
-                          <span className={`flex items-center gap-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                            <Download className="w-3 h-3" />
-                            Download
-                          </span>
-                        )}
-                        {content.externalLink && (
-                          <span className={`flex items-center gap-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                            <ExternalLink className="w-3 h-3" />
-                            External
-                          </span>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleReportContent(content)
-                        }}
-                        className={`flex items-center gap-1 text-xs transition-all duration-300 ${
-                          darkMode ? 'text-white/40 hover:text-red-400' : 'text-gray-400 hover:text-red-600'
-                        }`}
-                      >
-                        <Flag className="w-3 h-3" />
-                        Report
-                      </button>
-                    </div>
                   </div>
                 </div>
               ))}
@@ -2219,19 +2367,19 @@ const SeekerContent = ({ darkMode }) => {
         </div>
 
         {/* Enhanced Content Features Overview */}
-        <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`group p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden ${
           darkMode
-            ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
+            ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
             : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
         }`}>
-          <h3 className={`text-lg font-semibold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+          <h3 className={`text-base sm:text-lg font-semibold mb-4 sm:mb-6 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
             Content Platform Features
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-xs sm:text-sm">
             <div>
-              <h4 className={`font-medium mb-3 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                <Search className="w-4 h-4" />
-                Content Discovery
+              <h4 className={`font-medium mb-2 sm:mb-3 flex items-center gap-2 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                <Search className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <span className="min-w-0">Content Discovery</span>
               </h4>
               <ul className={`space-y-2 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                 <li className="flex items-center gap-2">
@@ -2303,6 +2451,7 @@ const SeekerContent = ({ darkMode }) => {
           </div>
         </div>
 
+        </div>
       </div>
 
       {/* Content Detail Modal */}
@@ -2330,7 +2479,7 @@ const SeekerContent = ({ darkMode }) => {
             <div className="p-6">
               {/* Content preview area */}
               <div className={`aspect-video rounded-lg mb-6 flex items-center justify-center ${
-                darkMode ? 'bg-white/5' : 'bg-gray-100'
+                darkMode ? 'bg-white/5' : 'bg-gray-100 border border-gray-200'
               }`}>
                 {selectedContent.type === 'reel' && <Play className={`w-16 h-16 ${darkMode ? 'text-white/30' : 'text-gray-400'}`} />}
                 {selectedContent.type === 'video' && <Video className={`w-16 h-16 ${darkMode ? 'text-white/30' : 'text-gray-400'}`} />}
@@ -2345,7 +2494,7 @@ const SeekerContent = ({ darkMode }) => {
                 <div className="lg:col-span-2">
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                      darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-200 text-[#00001a]'
+                      darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-100 text-[#00001a] border border-gray-200'
                     }`}>
                       {selectedContent.creator.name.split(' ').map(n => n[0]).join('')}
                     </div>
@@ -2363,7 +2512,7 @@ const SeekerContent = ({ darkMode }) => {
                         className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                           darkMode
                             ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                            : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                            : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                         }`}
                       >
                         Book Session
@@ -2430,11 +2579,20 @@ const SeekerContent = ({ darkMode }) => {
                       <h6 className={`font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>Tags</h6>
                       <div className="flex flex-wrap gap-1">
                         {selectedContent.tags.map((tag, index) => (
-                          <span key={index} className={`px-2 py-1 rounded text-xs ${
-                            darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-gray-600'
-                          }`}>
+                          <button
+                            key={index}
+                            onClick={() => {
+                              handleTagClick(tag)
+                              setShowContentModal(false)
+                            }}
+                            className={`px-2 py-1 rounded text-xs transition-all duration-300 hover:scale-105 ${
+                              darkMode
+                                ? 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
+                                : 'bg-gray-100 text-gray-600 hover:bg-[#00001a]/10 hover:text-[#00001a]'
+                            }`}
+                          >
                             {tag}
-                          </span>
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -2560,7 +2718,11 @@ const SeekerContent = ({ darkMode }) => {
                   Create New Folder
                 </h3>
                 <button
-                  onClick={() => setShowFolderModal(false)}
+                  onClick={() => {
+                    setShowFolderModal(false)
+                    setNewFolderName('')
+                    setSelectedFolderType('Saved Content')
+                  }}
                   className={`p-2 rounded-lg transition-all duration-300 ${
                     darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                   }`}
@@ -2577,6 +2739,8 @@ const SeekerContent = ({ darkMode }) => {
                 </label>
                 <input
                   type="text"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
                   placeholder="Enter folder name..."
                   className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                     darkMode
@@ -2594,10 +2758,15 @@ const SeekerContent = ({ darkMode }) => {
                   {['Saved Solvers', 'Saved Reels', 'Saved Content', 'Saved Blogs'].map((type) => (
                     <button
                       key={type}
+                      onClick={() => setSelectedFolderType(type)}
                       className={`p-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                          : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200'
+                        selectedFolderType === type
+                          ? (darkMode
+                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                              : 'bg-[#00001a] text-white border border-[#00001a]')
+                          : (darkMode
+                              ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                              : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200')
                       }`}
                     >
                       {type}
@@ -2608,7 +2777,11 @@ const SeekerContent = ({ darkMode }) => {
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => setShowFolderModal(false)}
+                  onClick={() => {
+                    setShowFolderModal(false)
+                    setNewFolderName('')
+                    setSelectedFolderType('Saved Content')
+                  }}
                   className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
@@ -2618,10 +2791,7 @@ const SeekerContent = ({ darkMode }) => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    // Handle folder creation
-                    setShowFolderModal(false)
-                  }}
+                  onClick={handleCreateFolder}
                   className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
                     darkMode
                       ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
@@ -2746,19 +2916,15 @@ const SeekerContent = ({ darkMode }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                    {merchandiseMode === 'buy' ? 'Tech Merchandise Store' : 'Add Your Merchandise'}
+                    Tech Merchandise Store
                   </h3>
                   <p className={`mt-1 ${darkMode ? 'text-white/60' : 'text-[#00001a]/60'}`}>
-                    {merchandiseMode === 'buy'
-                      ? 'Premium tech gear and accessories for developers'
-                      : 'Promote your products, courses, or services to the community. Your merchandise will be reviewed before being published.'
-                    }
+                    Premium tech gear and accessories for developers
                   </p>
                 </div>
                 <button
                   onClick={() => {
                     setShowMerchandiseModal(false)
-                    setMerchandiseMode('buy')
                     setMerchandiseForm({
                       title: '',
                       description: '',
@@ -2779,40 +2945,21 @@ const SeekerContent = ({ darkMode }) => {
               {/* Mode Toggle */}
               <div className="flex mt-4">
                 <button
-                  onClick={() => setMerchandiseMode('buy')}
-                  className={`flex-1 py-3 px-4 rounded-l-lg font-medium transition-all duration-300 ${
-                    merchandiseMode === 'buy'
-                      ? darkMode
-                        ? 'bg-teal-500/20 text-teal-300 border-2 border-teal-500/30'
-                        : 'bg-[#00001a] text-white border-2 border-[#00001a]'
-                      : darkMode
-                        ? 'bg-white/5 text-white/70 border-2 border-white/10 hover:bg-white/10'
-                        : 'bg-white text-[#00001a]/70 border-2 border-[#00001a]/20 hover:bg-[#00001a]/5'
+                  className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-[#00001a] text-blue-400 border-2 border-blue-500 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-[#00001a] text-white border-2 border-[#00001a]'
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4 inline mr-2" />
                   Buy Merchandise
                 </button>
-                <button
-                  onClick={() => setMerchandiseMode('sell')}
-                  className={`flex-1 py-3 px-4 rounded-r-lg font-medium transition-all duration-300 ${
-                    merchandiseMode === 'sell'
-                      ? darkMode
-                        ? 'bg-teal-500/20 text-teal-300 border-2 border-teal-500/30'
-                        : 'bg-[#00001a] text-white border-2 border-[#00001a]'
-                      : darkMode
-                        ? 'bg-white/5 text-white/70 border-2 border-white/10 hover:bg-white/10'
-                        : 'bg-white text-[#00001a]/70 border-2 border-[#00001a]/20 hover:bg-[#00001a]/5'
-                  }`}
-                >
-                  <Plus className="w-4 h-4 inline mr-2" />
-                  Sell Merchandise
-                </button>
+
               </div>
             </div>
 
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
-              {merchandiseMode === 'buy' ? (
+              {(
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {merchandiseItems.map((item) => (
                   <div
@@ -2854,7 +3001,7 @@ const SeekerContent = ({ darkMode }) => {
                               key={i}
                               className={`w-4 h-4 ${
                                 i < Math.floor(item.rating)
-                                  ? darkMode ? 'text-yellow-400 fill-current' : 'text-[#00001a] fill-current'
+                                  ? darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a] fill-current'
                                   : darkMode ? 'text-gray-300' : 'text-[#00001a]/30'
                               }`}
                             />
@@ -2930,171 +3077,6 @@ const SeekerContent = ({ darkMode }) => {
                   </div>
                 ))}
                 </div>
-              ) : (
-                <form className="space-y-6 max-w-2xl mx-auto">
-                  {/* Product Title */}
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                      Product Title <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={merchandiseForm.title}
-                      onChange={(e) => setMerchandiseForm(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter product title"
-                      className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:bg-white/10'
-                          : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:bg-[#00001a]/5'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      value={merchandiseForm.description}
-                      onChange={(e) => setMerchandiseForm(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="Describe your product, its features, and benefits"
-                      rows={4}
-                      className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 resize-none ${
-                        darkMode
-                          ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:bg-white/10'
-                          : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:bg-[#00001a]/5'
-                      }`}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Price */}
-                    <div>
-                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                        Price ($) <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        value={merchandiseForm.price}
-                        onChange={(e) => setMerchandiseForm(prev => ({ ...prev, price: e.target.value }))}
-                        placeholder="0.00"
-                        min="0"
-                        step="0.01"
-                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                          darkMode
-                            ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:bg-white/10'
-                            : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:bg-[#00001a]/5'
-                        }`}
-                      />
-                    </div>
-
-                    {/* Category */}
-                    <div>
-                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                        Category
-                      </label>
-                      <select
-                        value={merchandiseForm.category}
-                        onChange={(e) => setMerchandiseForm(prev => ({ ...prev, category: e.target.value }))}
-                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                          darkMode
-                            ? 'bg-white/5 border-white/20 text-white focus:border-white/40 focus:bg-white/10'
-                            : 'bg-white border-[#00001a]/20 text-[#00001a] focus:border-[#00001a]/50 focus:bg-[#00001a]/5'
-                        }`}
-                      >
-                        <option value="Course" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Course</option>
-                        <option value="Book" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Book</option>
-                        <option value="Template" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Template</option>
-                        <option value="Tool" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Tool</option>
-                        <option value="Service" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Service</option>
-                        <option value="Other" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Product Image URL */}
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                      Product Image URL (Optional)
-                    </label>
-                    <input
-                      type="url"
-                      value={merchandiseForm.imageUrl}
-                      onChange={(e) => setMerchandiseForm(prev => ({ ...prev, imageUrl: e.target.value }))}
-                      placeholder="https://example.com/image.jpg"
-                      className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:bg-white/10'
-                          : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:bg-[#00001a]/5'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Tags */}
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                      Tags (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={merchandiseForm.tags}
-                      onChange={(e) => setMerchandiseForm(prev => ({ ...prev, tags: e.target.value }))}
-                      placeholder="react, javascript, tutorial (comma separated)"
-                      className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:bg-white/10'
-                          : 'bg-white border-[#00001a]/20 text-[#00001a] placeholder-[#00001a]/50 focus:border-[#00001a]/50 focus:bg-[#00001a]/5'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMerchandiseForm({
-                          title: '',
-                          description: '',
-                          price: '',
-                          category: 'Course',
-                          imageUrl: '',
-                          tags: ''
-                        })
-                      }}
-                      className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                          : 'bg-white text-[#00001a] border border-[#00001a]/30 hover:bg-[#00001a]/5'
-                      }`}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // Handle form submission
-                        alert('Merchandise submitted for review! You will be notified once it\'s approved.')
-                        setMerchandiseForm({
-                          title: '',
-                          description: '',
-                          price: '',
-                          category: 'Course',
-                          imageUrl: '',
-                          tags: ''
-                        })
-                      }}
-                      className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
-                        darkMode
-                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30 hover:bg-teal-500/30'
-                          : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
-                      }`}
-                    >
-                      Add Merchandise
-                    </button>
-                  </div>
-                </form>
               )}
             </div>
           </div>
@@ -3241,6 +3223,151 @@ const SeekerContent = ({ darkMode }) => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Comments Modal */}
+      {showCommentsModal && selectedContentForComments && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className={`w-full max-w-2xl max-h-[80vh] rounded-lg overflow-hidden ${
+            darkMode ? 'bg-[#00001a] border border-white/10' : 'bg-white border border-gray-200'
+          }`}>
+            <div className={`p-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between">
+                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Comments
+                </h3>
+                <button
+                  onClick={() => setShowCommentsModal(false)}
+                  className={`p-2 rounded-lg transition-colors ${
+                    darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 max-h-96 overflow-y-auto">
+              {comments[selectedContentForComments.id]?.map((comment) => (
+                <div key={comment.id} className={`mb-4 p-3 rounded-lg ${
+                  darkMode ? 'bg-white/5' : 'bg-gray-50'
+                }`}>
+                  <div className="flex items-start gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-[#00001a] text-white'
+                    }`}>
+                      {comment.user.charAt(0)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`font-medium text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          {comment.user}
+                        </span>
+                        <span className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                          {comment.timestamp.toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <p className={`text-sm ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>
+                        {comment.text}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={`p-4 border-t ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a comment..."
+                  className={`flex-1 px-3 py-2 rounded-lg border text-sm ${
+                    darkMode
+                      ? 'bg-white/5 border-white/10 text-white placeholder-white/50'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                  }`}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
+                />
+                <button
+                  onClick={handleAddComment}
+                  disabled={!newComment.trim()}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 disabled:opacity-50'
+                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 disabled:opacity-50'
+                  }`}
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && selectedContentForShare && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className={`w-full max-w-xs rounded-lg overflow-hidden ${
+            darkMode ? 'bg-[#00001a] border border-white/10' : 'bg-white border border-gray-200'
+          }`}>
+            <div className={`p-4 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between">
+                <h3 className={`text-base font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Share
+                </h3>
+                <button
+                  onClick={() => setShowShareModal(false)}
+                  className={`p-1 rounded transition-colors ${
+                    darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-3">
+              <div className="space-y-1">
+                <button
+                  onClick={() => handleShareContent('copy')}
+                  className={`w-full p-2 rounded-lg transition-all duration-300 flex items-center gap-3 text-sm ${
+                    darkMode
+                      ? 'hover:bg-white/5 text-white'
+                      : 'hover:bg-gray-50 text-gray-700'
+                  }`}
+                >
+                  <Copy className="w-4 h-4" />
+                  Copy Link
+                </button>
+                <button
+                  onClick={() => handleShareContent('twitter')}
+                  className={`w-full p-2 rounded-lg transition-all duration-300 flex items-center gap-3 text-sm ${
+                    darkMode
+                      ? 'hover:bg-white/5 text-white'
+                      : 'hover:bg-gray-50 text-gray-700'
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-blue-400 rounded-sm"></div>
+                  Twitter
+                </button>
+                <button
+                  onClick={() => handleShareContent('linkedin')}
+                  className={`w-full p-2 rounded-lg transition-all duration-300 flex items-center gap-3 text-sm ${
+                    darkMode
+                      ? 'hover:bg-white/5 text-white'
+                      : 'hover:bg-gray-50 text-gray-700'
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-blue-700 rounded-sm"></div>
+                  LinkedIn
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

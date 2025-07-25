@@ -35,11 +35,11 @@ const GlassButton = ({
       // Primary button - main actions
       primary: active
         ? darkMode
-          ? 'bg-white/30 text-white border-white/40 hover:bg-white/40 shadow-black/30 hover:shadow-black/40 focus:ring-white/50'
-          : 'bg-[#00001a]/30 text-[#00001a] border-[#00001a]/40 hover:bg-[#00001a]/40 shadow-[#00001a]/30 hover:shadow-[#00001a]/40 focus:ring-[#00001a]/50'
+          ? 'bg-white/30 text-white border-white/40 shadow-black/30 focus:ring-white/50'
+          : 'bg-[#00001a]/30 text-[#00001a] border-[#00001a]/40 shadow-[#00001a]/30 focus:ring-[#00001a]/50'
         : darkMode
-          ? 'bg-white/20 text-white border-white/30 hover:bg-white/30 shadow-black/20 hover:shadow-black/30 focus:ring-white/50'
-          : 'bg-[#00001a]/20 text-[#00001a] border-[#00001a]/30 hover:bg-[#00001a]/30 shadow-[#00001a]/20 hover:shadow-[#00001a]/30 focus:ring-[#00001a]/50',
+          ? 'bg-white/20 text-white border-white/30 shadow-black/20 focus:ring-white/50'
+          : 'bg-[#00001a]/20 text-[#00001a] border-[#00001a]/30 shadow-[#00001a]/20 focus:ring-[#00001a]/50',
 
       // Secondary button - less prominent actions
       secondary: active
@@ -62,11 +62,11 @@ const GlassButton = ({
       // Success variant - for positive actions
       success: active
         ? darkMode
-          ? 'bg-white/25 text-white border-white/35 hover:bg-white/35 shadow-black/25 hover:shadow-black/35 focus:ring-white/50'
-          : 'bg-[#00001a]/25 text-[#00001a] border-[#00001a]/35 hover:bg-[#00001a]/35 shadow-[#00001a]/25 hover:shadow-[#00001a]/35 focus:ring-[#00001a]/50'
+          ? 'bg-white/25 text-white border-white/35 shadow-black/25 focus:ring-white/50'
+          : 'bg-[#00001a]/25 text-[#00001a] border-[#00001a]/35 shadow-[#00001a]/25 focus:ring-[#00001a]/50'
         : darkMode
-          ? 'bg-white/15 text-white border-white/25 hover:bg-white/25 shadow-black/15 hover:shadow-black/25 focus:ring-white/50'
-          : 'bg-[#00001a]/15 text-[#00001a] border-[#00001a]/25 hover:bg-[#00001a]/25 shadow-[#00001a]/15 hover:shadow-[#00001a]/25 focus:ring-[#00001a]/50',
+          ? 'bg-white/15 text-white border-white/25 shadow-black/15 focus:ring-white/50'
+          : 'bg-[#00001a]/15 text-[#00001a] border-[#00001a]/25 shadow-[#00001a]/15 focus:ring-[#00001a]/50',
 
       // Danger variant - for destructive actions
       danger: active

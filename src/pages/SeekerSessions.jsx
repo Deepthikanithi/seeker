@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
 import {
   MessageSquare,
@@ -29,21 +29,42 @@ import {
   StickyNote,
   Smile,
   Share2,
-  FolderOpen
+  FolderOpen,
+  CreditCard,
+  Wallet,
+  Brain,
+  Code,
+  Server,
+  BarChart3,
+  Smartphone,
+  Palette
 } from 'lucide-react'
 
 const SeekerSessions = ({ darkMode }) => {
   const navigate = useNavigate()
   const { t } = useLanguage()
+  const [searchParams] = useSearchParams()
 
   // Main state management
   const [activeTab, setActiveTab] = useState('upcoming')
+
+  // Handle URL parameters
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam && ['upcoming', 'booking', 'podcast', 'history', 'anonymous', 'files', 'chat', 'live'].includes(tabParam)) {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
   const [searchQuery, setSearchQuery] = useState('')
+  const [solverSearchQuery, setSolverSearchQuery] = useState('')
   const [showBookingModal, setShowBookingModal] = useState(false)
   const [bookingType, setBookingType] = useState('') // 'anonymous' or 'group'
+  const [showPodcastBookingModal, setShowPodcastBookingModal] = useState(false)
+  const [selectedSolver, setSelectedSolver] = useState(null)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState('card') // 'card' or 'wallet'
   const [showSolverBrowser, setShowSolverBrowser] = useState(false)
   const [bookingTopic, setBookingTopic] = useState('')
-  const [selectedSolver, setSelectedSolver] = useState(null)
   const [numberOfParticipants, setNumberOfParticipants] = useState(2)
   const [showFileUpload, setShowFileUpload] = useState(false)
   const [showReactionsModal, setShowReactionsModal] = useState(false)
@@ -79,6 +100,7 @@ const SeekerSessions = ({ darkMode }) => {
   const tabs = [
     { id: 'upcoming', label: 'Upcoming Sessions', icon: Calendar, count: 3 },
     { id: 'booking', label: 'Book Session', icon: Plus, count: 0 },
+    { id: 'podcast', label: 'Podcast', icon: Mic, count: 0 },
     { id: 'history', label: 'Booking History', icon: Clock, count: 12 },
     { id: 'anonymous', label: 'Query Pool', icon: Users, count: 5 },
     { id: 'files', label: 'Files & References', icon: FileText, count: 8 },
@@ -395,6 +417,11 @@ const SeekerSessions = ({ darkMode }) => {
       return
     }
 
+    // If already verified, directly open chat
+    openChatModal(solverId, solverName)
+  }
+
+  const openChatModal = (solverId, solverName = 'Solver') => {
     // Load existing chat messages for this solver
     const existingMessages = [
       {
@@ -462,7 +489,8 @@ const SeekerSessions = ({ darkMode }) => {
             const chatKey = `chat_${pendingAction.solverId}`
             setVerifiedSessions(prev => new Set([...prev, chatKey]))
             setShowVerificationModal(false)
-            handleStartChat(pendingAction.solverId, pendingAction.solverName)
+            // Directly open chat modal after verification instead of calling handleStartChat
+            openChatModal(pendingAction.solverId, pendingAction.solverName)
           }
           setPendingAction(null)
           setVerificationStep('camera')
@@ -543,7 +571,7 @@ const SeekerSessions = ({ darkMode }) => {
   }
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
+    <div className={`min-h-screen ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
       {/* Header */}
@@ -572,8 +600,8 @@ const SeekerSessions = ({ darkMode }) => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                   activeTab === tab.id
-                    ? (darkMode ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-[#00001a]/20 text-[#00001a] border border-[#00001a]/30')
-                    : (darkMode ? 'bg-white/5 text-white/70 border border-white/20 hover:bg-white/10' : 'bg-[#00001a]/10 text-[#00001a]/70 border border-[#00001a]/20 hover:bg-[#00001a]/20')
+                    ? (darkMode ? 'text-white border border-white/20' : 'text-[#00001a] border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
+                    : (darkMode ? 'text-white/70 border border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)] hover:border-blue-400/30' : 'text-[#00001a]/70 border border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -593,17 +621,11 @@ const SeekerSessions = ({ darkMode }) => {
         </div>
 
         {/* Tab Content */}
-        <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`p-6 border relative overflow-hidden transition-all duration-300 ${
           darkMode
-            ? 'rounded-lg border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-            : 'rounded-lg bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_25px_rgba(0,0,26,0.15)]'
+            ? 'rounded-lg border-gray-800 bg-[#00001a] hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
-          {/* Background Gradient */}
-          <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-            darkMode
-              ? 'bg-gradient-to-br from-blue-500/5 via-transparent to-blue-500/5'
-              : 'bg-gradient-to-br from-[#00001a]/5 via-transparent to-[#00001a]/5'
-          }`} />
 
           <div className="relative z-10">
           
@@ -614,37 +636,37 @@ const SeekerSessions = ({ darkMode }) => {
                 Upcoming Sessions ({upcomingSessions.length})
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {upcomingSessions.map((session) => (
-                  <div key={session.id} className={`group p-6 rounded-lg border transition-all duration-500 cursor-pointer ${
+                  <div key={session.id} className={`group p-4 md:p-6 rounded-lg border cursor-pointer ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'
                           }`}>
-                            <User className={`w-6 h-6 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
+                            <User className={`w-5 h-5 md:w-6 md:h-6 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
                           </div>
-                          <div>
-                            <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          <div className="min-w-0 flex-1">
+                            <h4 className={`font-semibold truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                               {session.topic}
                             </h4>
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex flex-wrap items-center gap-2 mt-1">
                               <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
                                 with {session.solver.name}
                               </span>
                               <div className="flex items-center gap-1">
-                                <Star className={`w-3 h-3 ${darkMode ? 'text-yellow-400 fill-current' : 'text-[#00001a]/70 fill-[#00001a]/70'}`} />
+                                <Star className={`w-3 h-3 ${darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a]/70 fill-[#00001a]/70'}`} />
                                 <span className={`text-xs ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`}>
                                   {session.solver.rating}
                                 </span>
                               </div>
                               {session.solver.isOnline && (
-                                <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-green-400' : 'bg-[#00001a]'}`}></div>
+                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${darkMode ? 'bg-green-400' : 'bg-[#00001a]'}`}></div>
                               )}
                             </div>
                           </div>
@@ -654,37 +676,37 @@ const SeekerSessions = ({ darkMode }) => {
                           {session.description}
                         </p>
 
-                        <div className="flex items-center gap-4 text-sm">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm">
                           <div className="flex items-center gap-1">
-                            <Calendar className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
-                            <span className={darkMode ? 'text-white/70' : 'text-[#00001a]/70'}>
+                            <Calendar className={`w-4 h-4 flex-shrink-0 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
+                            <span className={`truncate ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
                               {session.scheduledTime.toLocaleDateString()}
                             </span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Clock className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
-                            <span className={darkMode ? 'text-white/70' : 'text-[#00001a]/70'}>
+                            <Clock className={`w-4 h-4 flex-shrink-0 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
+                            <span className={`truncate ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
                               {session.duration} min
                             </span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <DollarSign className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
-                            <span className={darkMode ? 'text-white/70' : 'text-[#00001a]/70'}>
+                            <DollarSign className={`w-4 h-4 flex-shrink-0 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
+                            <span className={`truncate ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
                               ${session.price}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-2 ml-4">
+                      <div className="flex flex-col gap-2 ml-2 md:ml-4 flex-shrink-0">
                         <button
                           onClick={() => handleJoinSession(session.id)}
                           disabled={!session.canJoin}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+                          className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 ${
                             session.canJoin
                               ? (darkMode
-                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30'
-                                  : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90')
+                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                  : 'bg-[#00001a] text-white border border-[#00001a]')
                               : (darkMode
                                   ? 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed'
                                   : 'bg-[#00001a]/5 text-[#00001a]/30 border border-[#00001a]/10 cursor-not-allowed')
@@ -696,10 +718,10 @@ const SeekerSessions = ({ darkMode }) => {
 
                         <button
                           onClick={() => handleStartChat(session.solver.id, session.solver.name)}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+                          className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 ${
                             darkMode
                               ? 'bg-white/5 text-white border border-white/20 hover:bg-white/10'
-                              : 'bg-white text-[#00001a] border border-[#00001a]/20 hover:bg-[#00001a]/10'
+                              : 'bg-white text-[#00001a] border border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                           }`}
                         >
                           <MessageSquare className="w-4 h-4" />
@@ -724,13 +746,13 @@ const SeekerSessions = ({ darkMode }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Anonymous Booking */}
-                <div className={`p-6 rounded-lg border transition-all duration-500 ${
+                <div className={`p-6 rounded-lg border cursor-pointer ${
                   darkMode
-                    ? 'bg-white/3 border-white/10 hover:bg-white/8 hover:border-white/20'
-                    : 'bg-white/40 border-white/30 hover:bg-white/60'
+                    ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                    : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                 }`}>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'}`}>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'}`}>
                       <Users className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                     </div>
                     <div>
@@ -750,10 +772,10 @@ const SeekerSessions = ({ darkMode }) => {
                       setBookingType('anonymous')
                       setShowBookingModal(true)
                     }}
-                    className={`w-full py-2 rounded-lg font-medium transition-all duration-300 ${
+                    className={`w-full py-2 rounded-lg font-medium ${
                       darkMode
-                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                        : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                        : 'bg-[#00001a] text-white border border-[#00001a]'
                     }`}
                   >
                     Book Anonymous Session
@@ -761,13 +783,13 @@ const SeekerSessions = ({ darkMode }) => {
                 </div>
 
                 {/* Group Booking */}
-                <div className={`p-6 rounded-lg border transition-all duration-500 ${
+                <div className={`p-6 rounded-lg border ${
                   darkMode
-                    ? 'bg-white/3 border-white/10 hover:bg-white/8 hover:border-white/20'
-                    : 'bg-white/40 border-white/30 hover:bg-white/60'
+                    ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                    : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                 }`}>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'}`}>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'}`}>
                       <Users className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                     </div>
                     <div>
@@ -787,10 +809,10 @@ const SeekerSessions = ({ darkMode }) => {
                       setBookingType('group')
                       setShowBookingModal(true)
                     }}
-                    className={`w-full py-2 rounded-lg font-medium transition-all duration-300 ${
+                    className={`w-full py-2 rounded-lg font-medium ${
                       darkMode
-                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                        : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                        : 'bg-[#00001a] text-white border border-[#00001a]'
                     }`}
                   >
                     Book Group Session
@@ -802,10 +824,10 @@ const SeekerSessions = ({ darkMode }) => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <button
                   onClick={() => navigate('/seeker/explore')}
-                  className={`p-4 rounded-lg border transition-all duration-300 flex items-center gap-3 ${
+                  className={`p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 text-[#00001a] hover:border-[#00001a]/30'
+                      ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 text-[#00001a] shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}
                 >
                   <Search className="w-5 h-5" />
@@ -819,10 +841,10 @@ const SeekerSessions = ({ darkMode }) => {
 
                 <button
                   onClick={() => setActiveTab('anonymous')}
-                  className={`p-4 rounded-lg border transition-all duration-300 flex items-center gap-3 ${
+                  className={`p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 text-[#00001a] hover:border-[#00001a]/30'
+                      ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 text-[#00001a] shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}
                 >
                   <MessageSquare className="w-5 h-5" />
@@ -836,10 +858,10 @@ const SeekerSessions = ({ darkMode }) => {
 
                 <button
                   onClick={() => setActiveTab('history')}
-                  className={`p-4 rounded-lg border transition-all duration-300 flex items-center gap-3 ${
+                  className={`p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white border-[#00001a]/20 hover:bg-[#00001a]/5 text-[#00001a] hover:border-[#00001a]/30'
+                      ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 text-[#00001a] shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}
                 >
                   <Clock className="w-5 h-5" />
@@ -850,6 +872,202 @@ const SeekerSessions = ({ darkMode }) => {
                     </div>
                   </div>
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Podcast Tab */}
+          {activeTab === 'podcast' && (
+            <div className="space-y-6">
+              <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                Book Podcast Session
+              </h3>
+
+              {/* Search and Browse Options */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
+                      darkMode ? 'text-white/50' : 'text-gray-400'
+                    }`} />
+                    <input
+                      type="text"
+                      placeholder="Search solvers by name or expertise..."
+                      value={solverSearchQuery}
+                      onChange={(e) => setSolverSearchQuery(e.target.value)}
+                      className={`w-full pl-10 pr-4 py-2 rounded-lg border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-[#00001a] border-gray-800 text-white placeholder-white/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                          : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                      }`}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate('/seeker/explore')}
+                  className={`px-4 py-2 rounded-lg border transition-all duration-300 flex items-center gap-2 ${
+                    darkMode
+                      ? 'bg-[#00001a] border-gray-800 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-300 hover:bg-gray-50 text-[#00001a] hover:border-gray-400'
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  Browse All Solvers
+                </button>
+              </div>
+
+              {/* Available Solvers for Podcast */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    id: 1,
+                    name: 'Dr. Sarah Chen',
+                    expertise: 'AI & Machine Learning',
+                    rating: 4.9,
+                    sessions: 156,
+                    price: 150,
+                    icon: Brain,
+                    available: true,
+                    nextSlot: 'Today 3:00 PM'
+                  },
+                  {
+                    id: 2,
+                    name: 'Mike Rodriguez',
+                    expertise: 'Full Stack Development',
+                    rating: 4.8,
+                    sessions: 203,
+                    price: 120,
+                    icon: Code,
+                    available: true,
+                    nextSlot: 'Tomorrow 10:00 AM'
+                  },
+                  {
+                    id: 3,
+                    name: 'Alex Thompson',
+                    expertise: 'DevOps & Cloud',
+                    rating: 4.9,
+                    sessions: 178,
+                    price: 140,
+                    icon: Server,
+                    available: false,
+                    nextSlot: 'Dec 28, 2:00 PM'
+                  },
+                  {
+                    id: 4,
+                    name: 'Dr. Emily Watson',
+                    expertise: 'Data Science',
+                    rating: 5.0,
+                    sessions: 89,
+                    price: 160,
+                    icon: BarChart3,
+                    available: true,
+                    nextSlot: 'Today 5:00 PM'
+                  },
+                  {
+                    id: 5,
+                    name: 'James Park',
+                    expertise: 'Mobile Development',
+                    rating: 4.7,
+                    sessions: 134,
+                    price: 110,
+                    icon: Smartphone,
+                    available: true,
+                    nextSlot: 'Tomorrow 2:00 PM'
+                  },
+                  {
+                    id: 6,
+                    name: 'Lisa Kumar',
+                    expertise: 'UX/UI Design',
+                    rating: 4.8,
+                    sessions: 167,
+                    price: 130,
+                    icon: Palette,
+                    available: true,
+                    nextSlot: 'Today 4:30 PM'
+                  }
+                ].filter(solver =>
+                  solverSearchQuery === '' ||
+                  solver.name.toLowerCase().includes(solverSearchQuery.toLowerCase()) ||
+                  solver.expertise.toLowerCase().includes(solverSearchQuery.toLowerCase())
+                ).map((solver) => (
+                  <div key={solver.id} className={`group p-6 rounded-lg border ${
+                    darkMode
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+                  }`}>
+                    <div className="flex items-start gap-4">
+                      <div className={`p-2 rounded-lg ${
+                        darkMode ? 'bg-white/10' : 'bg-gray-100 border border-gray-200'
+                      }`}>
+                        <solver.icon className={`w-5 h-5 ${
+                          darkMode ? 'text-white' : 'text-[#00001a]'
+                        }`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                              {solver.name}
+                            </h4>
+                            <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                              {solver.expertise}
+                            </p>
+                          </div>
+                          <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
+                            solver.available
+                              ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-gray-100 text-gray-700')
+                              : (darkMode ? 'bg-red-500/20 text-red-400' : 'bg-gray-100 text-gray-700')
+                          }`}>
+                            {solver.available ? 'Available' : 'Busy'}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 mb-3">
+                          <div className="flex items-center gap-1">
+                            <Star className={`w-4 h-4 ${
+                              darkMode ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-400 text-gray-400'
+                            }`} />
+                            <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                              {solver.rating}
+                            </span>
+                          </div>
+                          <div className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                            {solver.sessions} sessions
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                            Next available: {solver.nextSlot}
+                          </div>
+                          <div className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                            ${solver.price}/hour
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setSelectedSolver(solver)
+                            setShowPodcastBookingModal(true)
+                          }}
+                          disabled={!solver.available}
+                          className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                            solver.available
+                              ? (darkMode
+                                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                                  : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90')
+                              : (darkMode
+                                  ? 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed'
+                                  : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed')
+                          }`}
+                        >
+                          <Mic className="w-4 h-4" />
+                          {solver.available ? 'Book Podcast' : 'Not Available'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -875,35 +1093,35 @@ const SeekerSessions = ({ darkMode }) => {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {sessionHistory.map((session) => (
-                  <div key={session.id} className={`group p-6 rounded-lg border transition-all duration-500 cursor-pointer ${
+                  <div key={session.id} className={`group p-4 md:p-6 rounded-lg border cursor-pointer ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'
                           }`}>
-                            <CheckCircle className={`w-6 h-6 ${
+                            <CheckCircle className={`w-5 h-5 md:w-6 md:h-6 ${
                               session.status === 'completed'
-                                ? (darkMode ? 'text-green-400' : 'text-[#00001a]')
+                                ? (darkMode ? 'text-white/70' : 'text-[#00001a]')
                                 : (darkMode ? 'text-white/50' : 'text-[#00001a]/50')
                             }`} />
                           </div>
-                          <div>
-                            <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          <div className="min-w-0 flex-1">
+                            <h4 className={`font-semibold truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                               {session.topic}
                             </h4>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
                               <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
                                 with {session.solver.name}
                               </span>
                               <div className="flex items-center gap-1">
-                                <Star className={`w-3 h-3 ${darkMode ? 'text-yellow-500 fill-yellow-500' : 'text-[#00001a]/70 fill-[#00001a]/70'}`} />
+                                <Star className={`w-3 h-3 ${darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a]/70 fill-[#00001a]/70'}`} />
                                 <span className={`text-xs ${darkMode ? 'text-white/60' : 'text-[#00001a]/60'}`}>
                                   {session.solver.rating}
                                 </span>
@@ -944,7 +1162,7 @@ const SeekerSessions = ({ darkMode }) => {
                                   key={i}
                                   className={`w-4 h-4 ${
                                     i < session.rating
-                                      ? (darkMode ? 'text-yellow-500 fill-yellow-500' : 'text-[#00001a]/70 fill-[#00001a]/70')
+                                      ? (darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a]/70 fill-[#00001a]/70')
                                       : (darkMode ? 'text-white/20' : 'text-[#00001a]/20')
                                   }`}
                                 />
@@ -963,8 +1181,8 @@ const SeekerSessions = ({ darkMode }) => {
                       <div className="flex flex-col gap-2 ml-6">
                         <span className={`px-3 py-1 rounded text-xs font-medium text-center ${
                           session.status === 'completed'
-                            ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-[#00001a]/10 text-[#00001a]')
-                            : (darkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-[#00001a]/10 text-[#00001a]')
+                            ? (darkMode ? 'bg-white/10 text-white/70' : 'bg-[#00001a]/10 text-[#00001a]')
+                            : (darkMode ? 'bg-white/10 text-white/70' : 'bg-[#00001a]/10 text-[#00001a]')
                         }`}>
                           {session.status.toUpperCase()}
                         </span>
@@ -975,10 +1193,10 @@ const SeekerSessions = ({ darkMode }) => {
                               setSelectedRecording(session)
                               setShowRecordingModal(true)
                             }}
-                            className={`px-3 py-1 rounded text-xs font-medium transition-all duration-300 ${
+                            className={`px-3 py-1 rounded text-xs font-medium ${
                               darkMode
-                                ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30'
-                                : 'bg-[#00001a]/20 text-[#00001a] hover:bg-[#00001a]/30'
+                                ? 'bg-white/10 text-white/70'
+                                : 'bg-[#00001a]/20 text-[#00001a]'
                             }`}
                           >
                             <Video className="w-3 h-3 inline mr-1" />
@@ -1015,8 +1233,8 @@ const SeekerSessions = ({ darkMode }) => {
                   onClick={() => setShowAskQuestionModal(true)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
                     darkMode
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                      : 'bg-[#00001a]/20 text-[#00001a] border border-[#00001a]/30 hover:bg-[#00001a]/30'
+                      ? 'bg-[#00001a] text-blue-400 border border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                      : 'bg-[#00001a] text-white border border-[#00001a]'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
@@ -1024,18 +1242,18 @@ const SeekerSessions = ({ darkMode }) => {
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {queryPool.map((query) => (
-                  <div key={query.id} className={`group p-6 rounded-lg border transition-all duration-500 cursor-pointer ${
+                  <div key={query.id} className={`p-6 rounded-lg border cursor-pointer transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'
                           }`}>
                             <MessageSquare className={`w-5 h-5 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
                           </div>
@@ -1079,8 +1297,8 @@ const SeekerSessions = ({ darkMode }) => {
                           </div>
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
                             query.status === 'answered'
-                              ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-[#00001a]/10 text-[#00001a]')
-                              : (darkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-[#00001a]/10 text-[#00001a]')
+                              ? (darkMode ? 'bg-white/10 text-white/70' : 'bg-[#00001a]/10 text-[#00001a]')
+                              : (darkMode ? 'bg-white/10 text-white/70' : 'bg-[#00001a]/10 text-[#00001a]')
                           }`}>
                             {query.status.toUpperCase()}
                           </span>
@@ -1093,10 +1311,10 @@ const SeekerSessions = ({ darkMode }) => {
                             setSelectedQuery(query)
                             setShowResponsesModal(true)
                           }}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                          className={`px-4 py-2 rounded-lg text-sm font-medium ${
                             darkMode
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                              : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                              : 'bg-[#00001a] text-white border border-[#00001a]'
                           }`}
                         >
                           View Responses ({query.responses})
@@ -1119,27 +1337,23 @@ const SeekerSessions = ({ darkMode }) => {
 
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mockFiles.map((file) => (
-                  <div key={file.id} className={`group p-4 rounded-lg border transition-all duration-500 cursor-pointer ${
+                  <div key={file.id} className={`group p-4 rounded-lg border cursor-pointer ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="flex items-start justify-between mb-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                         file.type === 'pdf'
-                          ? (darkMode ? 'bg-red-500/20' : 'bg-[#00001a]/10')
+                          ? (darkMode ? 'bg-red-500/20' : 'bg-[#00001a]/10 border border-gray-200')
                           : file.type === 'doc'
-                          ? (darkMode ? 'bg-blue-500/20' : 'bg-[#00001a]/10')
-                          : (darkMode ? 'bg-green-500/20' : 'bg-[#00001a]/10')
+                          ? (darkMode ? 'bg-blue-500/20' : 'bg-[#00001a]/10 border border-gray-200')
+                          : (darkMode ? 'bg-green-500/20' : 'bg-[#00001a]/10 border border-gray-200')
                       }`}>
                         <FileText className={`w-5 h-5 ${
-                          file.type === 'pdf'
-                            ? (darkMode ? 'text-red-400' : 'text-[#00001a]')
-                            : file.type === 'doc'
-                            ? (darkMode ? 'text-blue-400' : 'text-[#00001a]')
-                            : (darkMode ? 'text-green-400' : 'text-[#00001a]')
+                          darkMode ? 'text-white/70' : 'text-[#00001a]'
                         }`} />
                       </div>
                       <button className={`p-1 rounded hover:bg-white/10 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`}>
@@ -1162,7 +1376,7 @@ const SeekerSessions = ({ darkMode }) => {
                         }}
                         className={`w-full px-3 py-1 rounded text-xs font-medium transition-all duration-300 ${
                           darkMode
-                            ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30'
+                            ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                             : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
                         }`}
                       >
@@ -1183,20 +1397,20 @@ const SeekerSessions = ({ darkMode }) => {
                   {/* Session Header */}
                   <div className={`p-6 rounded-lg border ${
                     darkMode
-                      ? 'bg-green-500/10 border-green-500/30'
-                      : 'bg-[#00001a]/5 border-[#00001a]/20'
+                      ? 'bg-white/5 border-white/20'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className={`text-lg font-semibold ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`}>
+                        <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           Live Session Active
                         </h3>
-                        <p className={`text-sm ${darkMode ? 'text-green-300' : 'text-[#00001a]/70'}`}>
+                        <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
                           React Performance Optimization with Alex Chen
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className={`text-lg font-mono ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`}>
+                        <div className={`text-lg font-mono ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                           {Math.floor(sessionTimer / 60)}:{(sessionTimer % 60).toString().padStart(2, '0')}
                         </div>
                         <button
@@ -1254,9 +1468,9 @@ const SeekerSessions = ({ darkMode }) => {
 
                     <button
                       onClick={toggleScreenShare}
-                      className={`p-3 rounded-full transition-all duration-300 ${
+                      className={`p-3 rounded-full ${
                         isScreenSharing
-                          ? (darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')
+                          ? (darkMode ? 'bg-white/20 text-white' : 'bg-gray-200 text-[#00001a]')
                           : (darkMode ? 'bg-white/10 text-white' : 'bg-gray-100 text-gray-600')
                       }`}
                     >
@@ -1265,9 +1479,9 @@ const SeekerSessions = ({ darkMode }) => {
 
                     <button
                       onClick={toggleHandRaise}
-                      className={`p-3 rounded-full transition-all duration-300 ${
+                      className={`p-3 rounded-full ${
                         handRaised
-                          ? (darkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-600')
+                          ? (darkMode ? 'bg-white/20 text-white' : 'bg-gray-200 text-[#00001a]')
                           : (darkMode ? 'bg-white/10 text-white' : 'bg-gray-100 text-gray-600')
                       }`}
                     >
@@ -1367,7 +1581,7 @@ const SeekerSessions = ({ darkMode }) => {
                     onClick={() => setActiveTab('upcoming')}
                     className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                       darkMode
-                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                        ? 'bg-[#00001a] text-blue-400 border border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                         : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
                     }`}
                   >
@@ -1378,7 +1592,7 @@ const SeekerSessions = ({ darkMode }) => {
                       onClick={() => setIsInSession(true)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                         darkMode
-                          ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30'
+                          ? 'bg-[#00001a] text-green-400 border border-green-500 hover:shadow-[0_0_10px_rgba(34,197,94,0.5)]'
                           : 'bg-[#00001a]/10 text-[#00001a] border border-[#00001a]/20 hover:bg-[#00001a]/20'
                       }`}
                     >
@@ -1397,16 +1611,16 @@ const SeekerSessions = ({ darkMode }) => {
                 Chat History
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {[
                   { id: 1, solver: 'Alex Chen', lastMessage: 'Thanks for the great session!', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), unread: 0 },
                   { id: 2, solver: 'Sarah Davis', lastMessage: 'I have some follow-up questions about Node.js...', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), unread: 2 },
                   { id: 3, solver: 'Mike Johnson', lastMessage: 'The database optimization worked perfectly!', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), unread: 0 }
                 ].map((chat) => (
-                  <div key={chat.id} className={`group p-4 rounded-lg border transition-all duration-500 cursor-pointer ${
+                  <div key={chat.id} className={`group p-4 rounded-lg border cursor-pointer ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                      : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                      ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                      : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}
                   onClick={() => {
                     // Load chat history for this solver
@@ -1433,7 +1647,7 @@ const SeekerSessions = ({ darkMode }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                          darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'
                         }`}>
                           <User className={`w-5 h-5 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
                         </div>
@@ -1616,9 +1830,9 @@ const SeekerSessions = ({ darkMode }) => {
                 {verificationStep === 'success' && (
                   <div className="text-center py-12">
                     <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-                      darkMode ? 'bg-green-500/20' : 'bg-green-100'
+                      darkMode ? 'bg-white/10' : 'bg-gray-100'
                     }`}>
-                      <CheckCircle className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                      <CheckCircle className={`w-8 h-8 ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
                     </div>
                     <p className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                       Verification Successful!
@@ -1726,8 +1940,8 @@ const SeekerSessions = ({ darkMode }) => {
                                 {selectedSolver.name}
                               </div>
                               <div className="flex items-center gap-2 text-xs">
-                                <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                                <span className={darkMode ? 'text-blue-300' : 'text-blue-600'}>
+                                <Star className={`w-3 h-3 ${darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a]/70 fill-[#00001a]/70'}`} />
+                                <span className={darkMode ? 'text-white/70' : 'text-[#00001a]/70'}>
                                   {selectedSolver.rating} • ${selectedSolver.hourlyRate}/hr
                                 </span>
                               </div>
@@ -1970,10 +2184,10 @@ const SeekerSessions = ({ darkMode }) => {
                         setShowAskQuestionModal(false)
                         alert('Question posted to Query Pool!')
                       }}
-                      className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      className={`flex-1 py-3 rounded-lg font-medium ${
                         darkMode
-                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                          : 'bg-[#00001a] text-white'
                       }`}
                     >
                       Post Question
@@ -2058,7 +2272,7 @@ const SeekerSessions = ({ darkMode }) => {
                               {response.author}
                             </span>
                             <div className="flex items-center gap-1">
-                              <Star className={`w-3 h-3 fill-current ${darkMode ? 'text-yellow-400' : 'text-[#00001a]'}`} />
+                              <Star className={`w-3 h-3 fill-current ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
                               <span className={`text-xs ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`}>
                                 {response.rating}
                               </span>
@@ -2183,17 +2397,17 @@ const SeekerSessions = ({ darkMode }) => {
               </div>
 
               <div className="p-6 max-h-96 overflow-y-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {getRelevantSolvers(bookingTopic).map((solver) => (
-                    <div key={solver.id} className={`group p-4 rounded-lg border transition-all duration-500 cursor-pointer ${
+                    <div key={solver.id} className={`group p-4 rounded-lg border cursor-pointer ${
                       darkMode
-                        ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                        : 'bg-gray-50 border-gray-200 hover:bg-white hover:border-gray-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                        ? 'bg-[#00001a] border-blue-400/30 shadow-[0_0_15px_rgba(59,130,246,0.2)] hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] transition-all duration-500'
+                        : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                     }`}>
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10 border border-gray-200'
                           }`}>
                             <User className={`w-6 h-6 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`} />
                           </div>
@@ -2203,20 +2417,20 @@ const SeekerSessions = ({ darkMode }) => {
                                 {solver.name}
                               </h4>
                               {solver.isOnline && (
-                                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-white/70' : 'bg-[#00001a]'}`}></div>
                               )}
                             </div>
                             <div className="flex items-center gap-2 mt-1">
                               <div className="flex items-center gap-1">
-                                <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                                <Star className={`w-3 h-3 ${darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a]/70 fill-[#00001a]/70'}`} />
                                 <span className={`text-xs ${darkMode ? 'text-white/60' : 'text-[#00001a]/60'}`}>
                                   {solver.rating} ({solver.reviews} reviews)
                                 </span>
                               </div>
                               <span className={`text-xs px-2 py-0.5 rounded ${
                                 solver.isOnline
-                                  ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800')
-                                  : (darkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-800')
+                                  ? (darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-[#00001a]')
+                                  : (darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-[#00001a]')
                               }`}>
                                 {solver.isOnline ? 'Online' : `Responds in ${solver.responseTime}`}
                               </span>
@@ -2364,6 +2578,335 @@ const SeekerSessions = ({ darkMode }) => {
             </div>
           </div>
         )}
+
+        {/* Podcast Booking Modal */}
+        {showPodcastBookingModal && selectedSolver && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className={`max-w-md w-full rounded-lg border ${
+              darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+            }`}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Book Podcast Session
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowPodcastBookingModal(false)
+                      setSelectedSolver(null)
+                    }}
+                    className={`p-2 rounded-lg transition-colors ${
+                      darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
+                    }`}
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className={`p-4 rounded-lg ${
+                    darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+                  }`}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="text-2xl">{selectedSolver.avatar}</div>
+                      <div>
+                        <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          {selectedSolver.name}
+                        </h4>
+                        <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                          {selectedSolver.expertise}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className={`text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          {selectedSolver.rating} ({selectedSolver.sessions} sessions)
+                        </span>
+                      </div>
+                      <div className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        ${selectedSolver.price}/hour
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      Session Topic
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="What would you like to discuss?"
+                      className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                          : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      Session Duration
+                    </label>
+                    <select className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-white/5 border-white/20 text-white [&>option]:bg-[#00001a] [&>option]:text-white'
+                        : 'bg-white border-gray-300 text-[#00001a] [&>option]:bg-white [&>option]:text-[#00001a]'
+                    }`}>
+                      <option value="30">30 minutes - ${selectedSolver.price / 2}</option>
+                      <option value="60">1 hour - ${selectedSolver.price}</option>
+                      <option value="90">1.5 hours - ${selectedSolver.price * 1.5}</option>
+                      <option value="120">2 hours - ${selectedSolver.price * 2}</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      Preferred Date & Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/5 border-white/20 text-white'
+                          : 'bg-white border-gray-300 text-[#00001a]'
+                      }`}
+                    />
+                  </div>
+
+                  <div className={`p-3 rounded-lg ${
+                    darkMode ? 'bg-blue-500/10 border border-blue-500/30' : 'bg-blue-50 border border-blue-200'
+                  }`}>
+                    <p className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-800'}`}>
+                      📻 This podcast session will be recorded and may be shared with the community (with your permission).
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={() => {
+                        setShowPodcastBookingModal(false)
+                        setSelectedSolver(null)
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/10 text-white hover:bg-white/20'
+                          : 'bg-gray-100 text-[#00001a] hover:bg-gray-200'
+                      }`}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowPodcastBookingModal(false)
+                        setShowPaymentModal(true)
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                          : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                      }`}
+                    >
+                      Continue to Payment
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Modal */}
+        {showPaymentModal && selectedSolver && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className={`max-w-md w-full rounded-lg border ${
+              darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+            }`}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Payment Details
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowPaymentModal(false)
+                      setSelectedSolver(null)
+                    }}
+                    className={`p-2 rounded-lg transition-colors ${
+                      darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
+                    }`}
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className={`p-4 rounded-lg ${
+                    darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        Podcast Session with {selectedSolver.name}
+                      </span>
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        ${selectedSolver.price}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                        Platform Fee
+                      </span>
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        ${(selectedSolver.price * 0.1).toFixed(2)}
+                      </span>
+                    </div>
+                    <hr className={`my-2 ${darkMode ? 'border-white/20' : 'border-gray-200'}`} />
+                    <div className="flex items-center justify-between">
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Total
+                      </span>
+                      <span className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        ${(selectedSolver.price * 1.1).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      Payment Method
+                    </label>
+                    <div className="space-y-2">
+                      <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-300 ${
+                        paymentMethod === 'card'
+                          ? (darkMode ? 'border-blue-500/50 bg-blue-500/10' : 'border-blue-500 bg-blue-50')
+                          : (darkMode ? 'border-white/20 hover:border-white/30' : 'border-gray-200 hover:border-gray-300')
+                      }`}>
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="card"
+                          checked={paymentMethod === 'card'}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                          className="sr-only"
+                        />
+                        <CreditCard className="w-5 h-5" />
+                        <span className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          Credit/Debit Card
+                        </span>
+                      </label>
+
+                      <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-300 ${
+                        paymentMethod === 'wallet'
+                          ? (darkMode ? 'border-blue-500/50 bg-blue-500/10' : 'border-blue-500 bg-blue-50')
+                          : (darkMode ? 'border-white/20 hover:border-white/30' : 'border-gray-200 hover:border-gray-300')
+                      }`}>
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="wallet"
+                          checked={paymentMethod === 'wallet'}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                          className="sr-only"
+                        />
+                        <Wallet className="w-5 h-5" />
+                        <div>
+                          <span className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                            Wallet Balance
+                          </span>
+                          <div className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                            Available: $250.00
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {paymentMethod === 'card' && (
+                    <div className="space-y-3">
+                      <div>
+                        <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          Card Number
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="1234 5678 9012 3456"
+                          className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                            darkMode
+                              ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                              : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                          }`}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                            Expiry Date
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                              darkMode
+                                ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                                : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                            }`}
+                          />
+                        </div>
+                        <div>
+                          <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                            CVV
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="123"
+                            className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                              darkMode
+                                ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                                : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={() => {
+                        setShowPaymentModal(false)
+                        setShowPodcastBookingModal(true)
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/10 text-white hover:bg-white/20'
+                          : 'bg-gray-100 text-[#00001a] hover:bg-gray-200'
+                      }`}
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowPaymentModal(false)
+                        setSelectedSolver(null)
+                        alert('Podcast session booked successfully! You will receive a confirmation email shortly.')
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                          : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                      }`}
+                    >
+                      Confirm Payment
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         </div>
       </div>
     </div>

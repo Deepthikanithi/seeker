@@ -19,20 +19,20 @@ const Button = ({
 
   const variantClasses = {
     primary: darkMode
-      ? 'bg-white/20 text-white border border-white/30 hover:border-white/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]'
-      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,26,0.3)]',
+      ? 'bg-white/20 text-white border border-white/30'
+      : 'bg-[#00001a] text-white border border-[#00001a]',
 
     secondary: darkMode
-      ? 'bg-white/10 text-white/70 border border-white/20 hover:border-white/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]'
-      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 hover:shadow-md',
+      ? 'bg-white/10 text-white/70 border border-white/20'
+      : 'bg-[#00001a] text-white border border-[#00001a]',
 
     outline: darkMode
-      ? 'bg-transparent text-white border border-white/20 hover:border-white/50 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]'
-      : 'bg-transparent text-[#00001a] border border-[#00001a]/40 hover:bg-[#00001a]/10 hover:border-[#00001a]/60 hover:shadow-[0_0_15px_rgba(0,0,26,0.2)]',
+      ? 'bg-transparent text-white border border-white/20'
+      : 'bg-transparent text-[#00001a] border border-[#00001a]/40',
 
     ghost: darkMode
-      ? 'bg-transparent text-white/70 hover:bg-white/10 hover:text-white'
-      : 'bg-transparent text-[#00001a] hover:bg-[#00001a]/10 hover:text-[#00001a]'
+      ? 'bg-transparent text-white/70'
+      : 'bg-transparent text-[#00001a]'
   }
 
   const baseClasses = `

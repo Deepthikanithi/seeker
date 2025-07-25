@@ -275,17 +275,62 @@ const SeekerDashboard = ({ darkMode }) => {
       nextAvailable: 'Tomorrow, 10:00 AM'
     },
     {
-      id: 3,
-      name: 'Mike Johnson',
-      topic: 'DevOps & AWS',
-      rating: 4.7,
-      sessions: 89,
-      price: 40,
+      id: 5,
+      name: 'David Rodriguez',
+      topic: 'Mobile Development',
+      rating: 4.8,
+      sessions: 142,
+      price: 52,
       availability: 'Available now',
-      responseTime: '< 15 min',
-      specialties: ['AWS', 'Docker', 'Kubernetes'],
-      trending: 'down',
-      trendPercentage: 3,
+      responseTime: '< 8 min',
+      specialties: ['React Native', 'Flutter', 'iOS'],
+      trending: 'up',
+      trendPercentage: 18,
+      isOnline: true,
+      nextAvailable: null
+    },
+    {
+      id: 6,
+      name: 'Lisa Thompson',
+      topic: 'Data Science & Analytics',
+      rating: 4.9,
+      sessions: 187,
+      price: 65,
+      availability: 'Available in 1 hour',
+      responseTime: '< 12 min',
+      specialties: ['Python', 'R', 'SQL', 'Tableau'],
+      trending: 'up',
+      trendPercentage: 25,
+      isOnline: false,
+      nextAvailable: '3:30 PM'
+    },
+    {
+      id: 7,
+      name: 'James Park',
+      topic: 'Blockchain & Web3',
+      rating: 4.6,
+      sessions: 76,
+      price: 70,
+      availability: 'Tomorrow',
+      responseTime: '< 20 min',
+      specialties: ['Solidity', 'Ethereum', 'Smart Contracts'],
+      trending: 'up',
+      trendPercentage: 30,
+      isOnline: false,
+      nextAvailable: 'Tomorrow, 9:00 AM'
+    },
+    {
+      id: 8,
+      name: 'Rachel Kim',
+      topic: 'Cybersecurity & Penetration Testing',
+      rating: 4.7,
+      sessions: 134,
+      price: 58,
+      availability: 'Available now',
+      responseTime: '< 6 min',
+      specialties: ['Ethical Hacking', 'Network Security', 'CISSP'],
+      trending: 'up',
+      trendPercentage: 14,
       isOnline: true,
       nextAvailable: null
     }
@@ -451,16 +496,16 @@ const SeekerDashboard = ({ darkMode }) => {
   }, [])
 
   const handleExplore = () => {
-    navigate('/seeker/explore')
+    navigate('/explore')
   }
 
   const handleViewBookings = () => {
-    navigate('/seeker/sessions')
+    navigate('/sessions')
   }
 
   const handleBookSolver = (solverId) => {
     console.log(`Booking solver: ${solverId}`)
-    navigate(`/seeker/explore?solver=${solverId}`)
+    navigate(`/explore?solver=${solverId}`)
   }
 
   const handleJoinSession = (bookingId) => {
@@ -485,12 +530,12 @@ const SeekerDashboard = ({ darkMode }) => {
 
   const handleViewResponse = (responseId) => {
     console.log(`Viewing response: ${responseId}`)
-    navigate('/seeker/sessions?tab=anonymous')
+    navigate('/sessions?tab=anonymous')
   }
 
   const handleRescheduleBooking = (bookingId) => {
     console.log(`Rescheduling booking: ${bookingId}`)
-    navigate(`/seeker/sessions?reschedule=${bookingId}`)
+    navigate(`/sessions?reschedule=${bookingId}`)
   }
 
   // Effects
@@ -531,7 +576,7 @@ const SeekerDashboard = ({ darkMode }) => {
 
   // Dashboard render - fixed all JSX errors
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
+    <div className={`min-h-screen ${
       darkMode ? 'bg-[#00001a]' : 'bg-gray-50'
     }`}>
 
@@ -541,27 +586,23 @@ const SeekerDashboard = ({ darkMode }) => {
           {notifications.map((notification, index) => (
             <div
               key={notification.id}
-              className={`group p-4 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+              className={`p-4 rounded-lg border shadow-xl relative overflow-hidden ${
                 notification.type === 'success'
                   ? (darkMode
-                    ? 'bg-green-500/10 border-green-500/30 hover:bg-green-500/20'
-                    : 'bg-green-50 border-green-200 hover:bg-green-100')
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-green-50 border-green-200')
                   : notification.type === 'warning'
                   ? (darkMode
-                    ? 'bg-yellow-500/10 border-yellow-500/30 hover:bg-yellow-500/20'
-                    : 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100')
+                    ? 'bg-yellow-500/10 border-yellow-500/30'
+                    : 'bg-yellow-50 border-yellow-200')
                   : notification.type === 'error'
                   ? (darkMode
-                    ? 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20'
-                    : 'bg-red-50 border-red-200 hover:bg-red-100')
+                    ? 'bg-red-500/10 border-red-500/30'
+                    : 'bg-red-50 border-red-200')
                   : (darkMode
-                    ? 'bg-blue-500/10 border-blue-500/30 hover:bg-blue-500/20'
-                    : 'bg-blue-50 border-blue-200 hover:bg-blue-100')
+                    ? 'bg-blue-500/10 border-blue-500/30'
+                    : 'bg-blue-50 border-blue-200')
               }`}
-              style={{
-                animationDelay: `${index * 100}ms`,
-                transform: `translateY(${index * 4}px)`
-              }}
             >
               {/* Notification Icon */}
               <div className="flex items-start gap-3">
@@ -619,8 +660,8 @@ const SeekerDashboard = ({ darkMode }) => {
                 {/* Close Button */}
                 <button
                   onClick={() => setNotifications(prev => prev.filter(n => n.id !== notification.id))}
-                  className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-lg ${
-                    darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+                  className={`p-1 rounded-lg ${
+                    darkMode ? 'bg-white/10' : 'bg-gray-100'
                   }`}
                 >
                   <X className={`w-3 h-3 ${darkMode ? 'text-white/50' : 'text-gray-500'}`} />
@@ -628,7 +669,7 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
 
               {/* Progress Bar for Auto-dismiss */}
-              <div className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r transition-all duration-5000 ${
+              <div className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r ${
                 notification.type === 'success'
                   ? 'from-green-400 to-green-600'
                   : notification.type === 'warning'
@@ -636,25 +677,25 @@ const SeekerDashboard = ({ darkMode }) => {
                   : notification.type === 'error'
                   ? 'from-red-400 to-red-600'
                   : 'from-blue-400 to-blue-600'
-              }`} style={{ width: '100%', animation: 'shrink 5s linear forwards' }} />
+              }`} style={{ width: '100%' }} />
             </div>
           ))}
         </div>
       )}
 
       {/* Header */}
-      <div className="p-4 pb-0">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+      <div className="p-4 md:p-6 pb-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className={`text-xl md:text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               {t('welcomeBack')}, Jane
             </h1>
-            <div className="flex flex-wrap items-center gap-4 mt-3">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-3">
               {/* Enhanced Streak Display */}
-              <div className={`group flex items-center gap-2 px-3 py-2 rounded-lg backdrop-blur-xl border transition-all duration-300 cursor-pointer ${
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
                 darkMode
-                  ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                  : 'bg-white border-gray-200 hover:bg-gray-50 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                  ? 'bg-[#00001a] border-white/20'
+                  : 'bg-white border-gray-200'
               }`}>
                 <div className="relative">
                   <Flame className={`w-5 h-5 ${
@@ -673,10 +714,10 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
 
               {/* Enhanced Level Display */}
-              <div className={`group flex items-center gap-3 px-3 py-2 rounded-lg backdrop-blur-xl border transition-all duration-300 cursor-pointer ${
+              <div className={`flex items-center gap-3 px-3 py-2 rounded-lg border ${
                 darkMode
-                  ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                  : 'bg-white border-gray-200 hover:bg-gray-50 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                  ? 'bg-[#00001a] border-white/20'
+                  : 'bg-white border-gray-200'
               }`}>
                 <div className="relative">
                   <Trophy className={`w-5 h-5 ${
@@ -692,7 +733,7 @@ const SeekerDashboard = ({ darkMode }) => {
                       darkMode ? 'bg-white/20' : 'bg-gray-200'
                     }`}>
                       <div
-                        className={`h-full transition-all duration-1000 rounded-full ${
+                        className={`h-full rounded-full ${
                           darkMode ? 'bg-white' : 'bg-[#00001a]'
                         }`}
                         style={{ width: `${analyticsData.levelProgress}%` }}
@@ -706,18 +747,18 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
 
               {/* Streak Calendar Mini View */}
-              <div className={`flex items-center gap-1 px-3 py-2 rounded-lg backdrop-blur-xl border transition-all duration-300 cursor-pointer ${
+              <div className={`flex items-center gap-1 px-3 py-2 rounded-lg border ${
                 darkMode
-                  ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                  : 'bg-white/60 border-white/40 hover:bg-white/80'
+                  ? 'bg-[#00001a] border-white/20'
+                  : 'bg-white/60 border-white/40'
               }`}>
                 <div className="flex gap-1">
                   {analyticsData.streakDays.slice(-7).map((day, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      className={`w-2 h-2 rounded-full ${
                         day.completed
-                          ? (darkMode ? 'bg-green-400' : 'bg-[#00001a]')
+                          ? (darkMode ? 'bg-white/70' : 'bg-[#00001a]')
                           : (darkMode ? 'bg-white/20' : 'bg-gray-300')
                       }`}
                       title={`${day.date} - ${day.completed ? 'Completed' : 'Missed'}`}
@@ -739,38 +780,38 @@ const SeekerDashboard = ({ darkMode }) => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4">
             <button
               onClick={handleRefreshData}
               disabled={isLoading}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${
                 darkMode
-                  ? 'text-white/70 border border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] disabled:opacity-50'
-                  : 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 disabled:opacity-50'
+                  ? 'text-white/70 border border-white/20 disabled:opacity-50'
+                  : 'bg-gray-100 text-gray-600 border border-gray-300 disabled:opacity-50'
               }`}
             >
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-              Refresh
+              <RefreshCw className="w-4 h-4" />
+              <span className="hidden sm:inline">Refresh</span>
             </button>
 
             <button
               onClick={handleExplore}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-500 ${
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-semibold ${
                 darkMode
-                  ? 'text-white backdrop-blur-md border border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                  : 'bg-white text-[#00001a] border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-[#00001a] text-white border border-white/20'
+                  : 'bg-white text-[#00001a] border border-gray-300'
               }`}
             >
               <Search className="w-4 h-4" />
-              Explore Solvers
+              <span className="hidden sm:inline">Explore Solvers</span>
             </button>
 
             <button
               onClick={handleViewBookings}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-500 ${
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-semibold ${
                 darkMode
-                  ? 'text-white backdrop-blur-md border border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                  : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                  ? 'bg-[#00001a] text-white border border-white/20'
+                  : 'bg-[#00001a] text-white border border-[#00001a]'
               }`}
             >
               <Calendar className="w-4 h-4" />
@@ -781,34 +822,31 @@ const SeekerDashboard = ({ darkMode }) => {
       </div>
 
       {/* Main Dashboard Content */}
-      <div className="p-4 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
 
         {/* Analytics Section with Time Filter */}
-        <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`p-4 md:p-6 border relative overflow-hidden ${
           darkMode
-            ? 'rounded-lg border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-            : 'rounded-lg bg-white border-gray-200'
+            ? 'bg-[#00001a] rounded-lg border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
         }`}>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               <BarChart3 className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
               Analytics
             </h3>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {['Today', 'Week', 'Month', 'Year'].map((timeframe) => (
                 <button
                   key={timeframe}
                   onClick={() => handleTimeframeChange(timeframe)}
                   disabled={isLoading}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50 ${
+                  className={`px-3 py-1 rounded-lg text-sm font-medium disabled:opacity-50 ${
                     selectedTimeframe === timeframe
-                      ? (darkMode ? 'text-blue-400 border border-blue-400/30 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]' : 'bg-[#00001a] text-white border border-[#00001a]')
-                      : (darkMode ? 'text-white/70 border border-transparent hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]' : 'text-gray-600 hover:bg-gray-100')
+                      ? (darkMode ? 'bg-blue-500/20 text-blue-400 border border-gray-800 transition-all duration-300' : 'bg-[#00001a] text-white border border-[#00001a] shadow-[0_1px_3px_rgba(0,0,26,0.12)]')
+                      : (darkMode ? 'text-white/70 border border-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-300' : 'text-[#00001a] bg-white border border-[#00001a] shadow-[0_1px_3px_rgba(0,0,26,0.12)] hover:shadow-[0_-1px_3px_rgba(0,0,26,0.12)]')
                   }`}
                 >
-                  {isLoading && selectedTimeframe === timeframe && (
-                    <RefreshCw className="w-3 h-3 animate-spin mr-1" />
-                  )}
                   {timeframe}
                 </button>
               ))}
@@ -816,16 +854,16 @@ const SeekerDashboard = ({ darkMode }) => {
           </div>
 
           {/* Enhanced Analytics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             {/* Total Problems Card */}
-            <div className={`group p-5 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden cursor-pointer ${
+            <div className={`p-3 md:p-5 rounded-lg border relative overflow-hidden ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             } ${isLoading ? 'opacity-50' : ''}`}>
               <div className="flex items-center justify-between mb-3">
-                <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-500/20' : 'bg-gray-100'}`}>
-                  <BookOpen className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                <div className={`p-2 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-gray-50'}`}>
+                  <BookOpen className={`w-4 h-4 ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
                 </div>
 
               </div>
@@ -834,7 +872,7 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
               <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 {isLoading ? (
-                  <div className="animate-pulse bg-gray-300 h-8 w-12 rounded"></div>
+                  <div className="bg-gray-300 h-8 w-12 rounded"></div>
                 ) : (
                   analyticsData.totalProblems
                 )}
@@ -842,10 +880,10 @@ const SeekerDashboard = ({ darkMode }) => {
             </div>
 
             {/* Total Bookings Card */}
-            <div className={`group p-5 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden cursor-pointer ${
+            <div className={`p-3 md:p-5 rounded-lg border relative overflow-hidden ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             } ${isLoading ? 'opacity-50' : ''}`}>
               <div className="flex items-center justify-between mb-3">
                 <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-500/20' : 'bg-gray-100'}`}>
@@ -858,7 +896,7 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
               <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 {isLoading ? (
-                  <div className="animate-pulse bg-gray-300 h-8 w-12 rounded"></div>
+                  <div className="bg-gray-300 h-8 w-12 rounded"></div>
                 ) : (
                   analyticsData.totalBookings
                 )}
@@ -866,10 +904,10 @@ const SeekerDashboard = ({ darkMode }) => {
             </div>
 
             {/* Money Spent Card */}
-            <div className={`group p-5 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden cursor-pointer ${
+            <div className={`p-3 md:p-5 rounded-lg border relative overflow-hidden ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             } ${isLoading ? 'opacity-50' : ''}`}>
               <div className="flex items-center justify-between mb-3">
                 <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-500/20' : 'bg-gray-100'}`}>
@@ -882,7 +920,7 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
               <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 {isLoading ? (
-                  <div className="animate-pulse bg-gray-300 h-8 w-16 rounded"></div>
+                  <div className="bg-gray-300 h-8 w-16 rounded"></div>
                 ) : (
                   formatCurrency(analyticsData.totalMoneySpent)
                 )}
@@ -890,14 +928,14 @@ const SeekerDashboard = ({ darkMode }) => {
             </div>
 
             {/* Total Minutes Card */}
-            <div className={`group p-5 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden cursor-pointer ${
+            <div className={`p-3 md:p-5 rounded-lg border relative overflow-hidden ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             } ${isLoading ? 'opacity-50' : ''}`}>
               <div className="flex items-center justify-between mb-3">
-                <div className={`p-2 rounded-lg ${darkMode ? 'bg-yellow-500/20' : 'bg-gray-100'}`}>
-                  <Clock className={`w-4 h-4 ${darkMode ? 'text-yellow-400' : 'text-[#00001a]'}`} />
+                <div className={`p-2 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-gray-100'}`}>
+                  <Clock className={`w-4 h-4 ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
                 </div>
 
               </div>
@@ -906,7 +944,7 @@ const SeekerDashboard = ({ darkMode }) => {
               </div>
               <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 {isLoading ? (
-                  <div className="animate-pulse bg-gray-300 h-8 w-16 rounded"></div>
+                  <div className="bg-gray-300 h-8 w-16 rounded"></div>
                 ) : (
                   formatTime(analyticsData.totalMinutes)
                 )}
@@ -914,14 +952,14 @@ const SeekerDashboard = ({ darkMode }) => {
             </div>
 
             {/* Level Card */}
-            <div className={`group p-5 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden cursor-pointer ${
+            <div className={`p-3 md:p-5 rounded-lg border relative overflow-hidden ${
               darkMode
-                ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+                ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
             } ${isLoading ? 'opacity-50' : ''}`}>
               <div className="flex items-center justify-between mb-3">
-                <div className={`p-2 rounded-lg ${darkMode ? 'bg-yellow-500/20' : 'bg-gray-100'}`}>
-                  <Trophy className={`w-4 h-4 ${darkMode ? 'text-yellow-400' : 'text-[#00001a]'}`} />
+                <div className={`p-2 rounded-lg ${darkMode ? 'bg-white/10' : 'bg-gray-100'}`}>
+                  <Trophy className={`w-4 h-4 ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
                 </div>
                 <div className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
                   {analyticsData.levelProgress}%
@@ -930,15 +968,15 @@ const SeekerDashboard = ({ darkMode }) => {
               <div className={`text-xs font-medium mb-2 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                 Current Level
               </div>
-              <div className={`text-2xl font-bold flex items-center gap-2 ${darkMode ? 'text-yellow-400' : 'text-[#00001a]'}`}>
+              <div className={`text-2xl font-bold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                 {isLoading ? (
-                  <div className="animate-pulse bg-gray-300 h-8 w-16 rounded"></div>
+                  <div className="bg-gray-300 h-8 w-16 rounded"></div>
                 ) : (
                   <>
                     {analyticsData.level}
                     <div className={`w-8 h-1 rounded-full ${darkMode ? 'bg-white/20' : 'bg-gray-200'} overflow-hidden`}>
                       <div
-                        className={`h-full transition-all duration-1000 ${darkMode ? 'bg-yellow-400' : 'bg-[#00001a]'}`}
+                        className={`h-full ${darkMode ? 'bg-white/70' : 'bg-[#00001a]'}`}
                         style={{ width: `${analyticsData.levelProgress}%` }}
                       />
                     </div>
@@ -952,15 +990,15 @@ const SeekerDashboard = ({ darkMode }) => {
 
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
           {/* Trending Solvers */}
-          <div className={`group p-8 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+          <div className={`p-4 md:p-6 lg:p-8 border relative overflow-hidden ${
             darkMode
-              ? 'rounded-lg border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              ? 'bg-[#00001a] rounded-lg border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-500/20' : 'bg-gray-100'}`}>
                     <TrendingUp className={`w-5 h-5 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
@@ -968,9 +1006,9 @@ const SeekerDashboard = ({ darkMode }) => {
                   Trending Solvers
                 </h3>
                 <button
-                  onClick={() => navigate('/seeker/explore')}
-                  className={`text-sm font-medium transition-all duration-300 ${
-                    darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-[#00001a] hover:text-gray-700'
+                  onClick={() => navigate('/explore')}
+                  className={`text-sm font-medium ${
+                    darkMode ? 'text-blue-400' : 'text-[#00001a]'
                   }`}
                 >
                   View All →
@@ -980,14 +1018,15 @@ const SeekerDashboard = ({ darkMode }) => {
                 {trendingSolvers.map((solver, index) => (
                   <div
                     key={solver.id}
-                    className={`group/card p-5 rounded-lg backdrop-blur-sm border transition-all duration-500 cursor-pointer relative overflow-hidden ${
+                    className={`p-5 rounded-lg border cursor-pointer relative overflow-hidden ${
                       darkMode
-                        ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                        : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                        ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                        : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                     }`}
-                    style={{ animationDelay: `${index * 100}ms` }}
-                    onClick={() => navigate(`/seeker/explore?solver=${solver.id}`)}
+
+                    onClick={() => navigate(`/explore?solver=${solver.id}`)}
                   >
+
 
 
                     <div className="flex items-start gap-4 relative z-10">
@@ -1032,9 +1071,9 @@ const SeekerDashboard = ({ darkMode }) => {
                         </div>
 
                         {/* Stats */}
-                        <div className="flex items-center gap-4 text-xs">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs">
                           <div className="flex items-center gap-1">
-                            <Star className={`w-3 h-3 ${darkMode ? 'text-yellow-500 fill-yellow-500' : 'text-[#00001a] fill-[#00001a]'}`} />
+                            <Star className={`w-3 h-3 ${darkMode ? 'text-white/70 fill-white/70' : 'text-[#00001a] fill-[#00001a]'}`} />
                             <span className={`font-medium ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>
                               {solver.rating}
                             </span>
@@ -1049,7 +1088,7 @@ const SeekerDashboard = ({ darkMode }) => {
 
                         {/* Availability */}
                         {solver.nextAvailable && (
-                          <div className={`text-xs mt-2 ${darkMode ? 'text-yellow-400' : 'text-gray-600'}`}>
+                          <div className={`text-xs mt-2 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
                             Next available: {solver.nextAvailable}
                           </div>
                         )}
@@ -1060,16 +1099,16 @@ const SeekerDashboard = ({ darkMode }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            navigate(`/seeker/explore?book=${solver.id}`)
+                            navigate(`/explore?book=${solver.id}`)
                           }}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 relative z-20 ${
+                          className={`px-4 py-2 rounded-lg text-sm font-medium relative z-20 ${
                             solver.isOnline
                               ? (darkMode
-                                ? 'bg-transparent text-green-400 border border-green-400/30 hover:bg-green-400/10'
-                                : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800')
+                                ? 'bg-transparent text-green-400 border border-green-400/30'
+                                : 'bg-[#00001a] text-white border border-[#00001a]')
                               : (darkMode
-                                ? 'bg-transparent text-blue-400 border border-blue-400/30 hover:bg-blue-400/10'
-                                : 'bg-gray-100 text-[#00001a] border border-gray-300 hover:bg-gray-200')
+                                ? 'bg-transparent text-blue-400 border border-blue-400/30'
+                                : 'bg-gray-100 text-[#00001a] border border-gray-300')
                           }`}
                         >
                           {solver.isOnline ? 'Book Now' : 'Schedule'}
@@ -1078,12 +1117,12 @@ const SeekerDashboard = ({ darkMode }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            navigate(`/seeker/sessions?chat=${solver.id}`)
+                            navigate('/sessions')
                           }}
-                          className={`px-4 py-1 rounded-md border text-xs font-medium transition-all duration-300 relative z-20 ${
+                          className={`px-4 py-1 rounded-lg border text-xs font-medium relative z-20 ${
                             darkMode
-                              ? 'bg-white/10 text-white/70 hover:bg-white/20 border-blue-400'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-400'
+                              ? 'bg-white/10 text-white border-white/20'
+                              : 'bg-white text-[#00001a] border-[#00001a]/20'
                           }`}
                         >
                           Chat
@@ -1094,51 +1133,20 @@ const SeekerDashboard = ({ darkMode }) => {
                 ))}
               </div>
 
-              {/* Quick Actions */}
-              <div className="mt-6 pt-4 border-t border-white/10">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => navigate('/seeker/explore?filter=trending')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                      darkMode
-                        ? 'bg-white/5 text-white/70 hover:bg-white/10'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    <Flame className="w-4 h-4" />
-                    Hot Topics
-                  </button>
-                  <button
-                    onClick={() => navigate('/seeker/explore?filter=available')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                      darkMode
-                        ? 'bg-white/5 text-white/70 hover:bg-white/10'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    Available Now
-                  </button>
-                </div>
-              </div>
+
             </div>
           </div>
 
           {/* Enhanced Upcoming Bookings with Calendar */}
-          <div className={`group p-8 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+          <div className={`p-4 md:p-6 lg:p-8 border relative overflow-hidden ${
             darkMode
-              ? 'rounded-lg border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              ? 'bg-[#00001a] rounded-lg border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
-            {/* Background Gradient */}
-            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-              darkMode
-                ? 'bg-gradient-to-br from-blue-500/5 via-transparent to-blue-500/5'
-                : 'bg-gradient-to-br from-blue-50/50 via-transparent to-blue-50/50'
-            }`} />
+
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-500/20' : 'bg-gray-100'}`}>
                     <Calendar className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
@@ -1147,9 +1155,9 @@ const SeekerDashboard = ({ darkMode }) => {
                 </h3>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => navigate('/seeker/sessions')}
-                    className={`text-sm font-medium transition-all duration-300 ${
-                      darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-[#00001a] hover:text-gray-700'
+                    onClick={() => navigate('/sessions')}
+                    className={`text-sm font-medium ${
+                      darkMode ? 'text-blue-400' : 'text-[#00001a]'
                     }`}
                   >
                     View All →
@@ -1159,7 +1167,9 @@ const SeekerDashboard = ({ darkMode }) => {
 
               {/* Mini Calendar View */}
               <div className={`mb-6 p-4 rounded-lg border ${
-                darkMode ? 'border-white/10' : 'bg-gray-50 border-gray-200'
+                darkMode
+                  ? 'bg-[#00001a] border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)] transition-all duration-300 shadow-xl'
+                  : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <h4 className={`font-medium ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>
@@ -1228,22 +1238,22 @@ const SeekerDashboard = ({ darkMode }) => {
                       <div
                         key={index}
                         onClick={() => day && setSelectedDay(day)}
-                        className={`aspect-square flex items-center justify-center text-xs rounded-lg transition-all duration-300 cursor-pointer relative ${
+                        className={`aspect-square flex items-center justify-center text-xs rounded-lg cursor-pointer relative ${
                           !day
                             ? ''
                             : isToday
-                            ? (darkMode ? 'bg-blue-500/30 text-blue-300 font-bold' : 'bg-[#00001a] text-white font-bold')
+                            ? (darkMode ? 'bg-white/30 text-white font-bold' : 'bg-[#00001a] text-white font-bold')
                             : hasBooking
-                            ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-gray-100 text-[#00001a]')
+                            ? (darkMode ? 'bg-white/20 text-white/70' : 'bg-gray-100 text-[#00001a]')
                             : isSelected
                             ? (darkMode ? 'bg-white/20 text-white' : 'bg-gray-200 text-[#00001a]')
-                            : (darkMode ? 'hover:bg-white/10 text-white/60' : 'hover:bg-gray-100 text-gray-600')
+                            : (darkMode ? 'text-white/60' : 'text-gray-600')
                         }`}
                       >
                         {day}
                         {hasBooking && (
                           <div className={`absolute w-1 h-1 rounded-full bottom-1 ${
-                            darkMode ? 'bg-green-400' : 'bg-[#00001a]'
+                            darkMode ? 'bg-white/70' : 'bg-[#00001a]'
                           }`} />
                         )}
                       </div>
@@ -1263,7 +1273,7 @@ const SeekerDashboard = ({ darkMode }) => {
                       Book a session with an expert solver to get started
                     </p>
                     <button
-                      onClick={() => navigate('/seeker/explore')}
+                      onClick={() => navigate('/explore')}
                       className={`mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                         darkMode
                           ? 'bg-transparent text-blue-400 border border-blue-400/30 hover:bg-blue-400/10'
@@ -1277,141 +1287,230 @@ const SeekerDashboard = ({ darkMode }) => {
                   upcomingBookings.map((booking, index) => (
                     <div
                       key={booking.id}
-                      className={`group/booking p-5 rounded-lg backdrop-blur-sm border transition-all duration-500 cursor-pointer relative overflow-hidden ${
+                      className={`p-5 rounded-lg border cursor-pointer relative overflow-hidden ${
                         darkMode
-                          ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                          : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                          ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                          : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                       }`}
-                      style={{ animationDelay: `${index * 100}ms` }}
+
                     >
 
 
-                      <div className="flex items-start gap-4 relative z-10">
-                        {/* Session Icon */}
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                          darkMode ? 'bg-blue-500/20' : 'bg-gray-100'
-                        }`}>
-                          <Video className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                        </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h4 className={`font-semibold truncate ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+
+                      <div className="flex flex-col lg:flex-row gap-4 relative z-10">
+                        {/* Main Content */}
+                        <div className="flex items-start gap-3 md:gap-4 flex-1 min-w-0">
+                          {/* Session Icon - Matching Trending Solvers Style */}
+                          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center flex-shrink-0 relative transition-all duration-300 ${
+                            darkMode ? 'bg-[#00001a] border border-gray-800' : 'bg-gray-100'
+                          }`}>
+                            <Video className={`w-5 h-5 md:w-6 md:h-6 transition-all duration-300 ${
+                              darkMode
+                                ? 'text-blue-400'
+                                : 'text-gray-600'
+                            }`} />
+
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                            <h4 className={`font-semibold truncate ${
+                              darkMode
+                                ? 'text-white'
+                                : 'text-[#00001a]'
+                            }`}>
                               {booking.topic}
                             </h4>
-                            <span className={`px-2 py-0.5 rounded-lg text-xs font-medium relative z-10 ${
+                            <span className={`px-2 py-0.5 rounded-lg text-xs font-medium relative z-10 flex-shrink-0 border ${
                               booking.status === 'confirmed'
-                                ? (darkMode ? 'bg-green-500/20 text-green-400' : 'bg-gray-100 text-[#00001a]')
-                                : (darkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-100 text-[#00001a]')
+                                ? (darkMode
+                                  ? 'bg-white/10 text-white/70 border-white/20'
+                                  : 'bg-gray-100 text-[#00001a] border-gray-200')
+                                : (darkMode
+                                  ? 'bg-white/10 text-white/70 border-white/20'
+                                  : 'bg-gray-100 text-[#00001a] border-gray-200')
                             }`}>
                               {booking.status.toUpperCase()}
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                          <div className="flex flex-wrap items-center gap-2 mb-3">
+                            <span className={`text-sm ${
+                              darkMode
+                                ? 'text-white/70'
+                                : 'text-gray-600'
+                            }`}>
                               with {booking.solver}
                             </span>
                             <div className="flex items-center gap-1">
-                              <Star className={`w-3 h-3 ${darkMode ? 'text-yellow-500 fill-yellow-500' : 'text-[#00001a] fill-[#00001a]'}`} />
-                              <span className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                              <Star className={`w-3 h-3 ${
+                                darkMode
+                                  ? 'text-white/70 fill-white/70'
+                                  : 'text-[#00001a] fill-[#00001a]'
+                              }`} />
+                              <span className={`text-xs ${
+                                darkMode
+                                  ? 'text-white/60'
+                                  : 'text-gray-500'
+                              }`}>
                                 {booking.solverRating}
                               </span>
                             </div>
                           </div>
 
-                          {/* Session Details */}
-                          <div className="grid grid-cols-2 gap-4 mb-3 text-sm">
+                          {/* Enhanced Session Details */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-3 text-sm">
                             <div className="flex items-center gap-2">
-                              <Clock className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-                              <span className={darkMode ? 'text-white/70' : 'text-gray-600'}>
+                              <Clock className={`w-4 h-4 flex-shrink-0 ${
+                                darkMode
+                                  ? 'text-white/50'
+                                  : 'text-gray-400'
+                              }`} />
+                              <span className={`truncate ${
+                                darkMode
+                                  ? 'text-white/70'
+                                  : 'text-gray-600'
+                              }`}>
                                 {booking.time}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Calendar className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-                              <span className={darkMode ? 'text-white/70' : 'text-gray-600'}>
+                              <Calendar className={`w-4 h-4 flex-shrink-0 ${
+                                darkMode
+                                  ? 'text-white/50'
+                                  : 'text-gray-400'
+                              }`} />
+                              <span className={`truncate ${
+                                darkMode
+                                  ? 'text-white/70'
+                                  : 'text-gray-600'
+                              }`}>
                                 {booking.date}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Clock className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-                              <span className={darkMode ? 'text-white/70' : 'text-gray-600'}>
+                              <Clock className={`w-4 h-4 flex-shrink-0 ${
+                                darkMode
+                                  ? 'text-white/50'
+                                  : 'text-gray-400'
+                              }`} />
+                              <span className={`truncate ${
+                                darkMode
+                                  ? 'text-white/70'
+                                  : 'text-gray-600'
+                              }`}>
                                 {booking.duration} min
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <DollarSign className={`w-4 h-4 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-                              <span className={darkMode ? 'text-white/70' : 'text-gray-600'}>
+                              <DollarSign className={`w-4 h-4 flex-shrink-0 ${
+                                darkMode
+                                  ? 'text-white/50'
+                                  : 'text-gray-400'
+                              }`} />
+                              <span className={`truncate font-medium ${
+                                darkMode
+                                  ? 'text-white/70'
+                                  : 'text-gray-600'
+                              }`}>
                                 ${booking.price.toFixed(2)}
                               </span>
                             </div>
                           </div>
 
-                          {/* Features */}
-                          <div className="flex items-center gap-3 text-xs relative z-10">
+                          {/* Enhanced Features */}
+                          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs relative z-10">
                             {booking.hasPreparationMaterial && (
-                              <div className={`flex items-center gap-1 px-2 py-1 rounded-md border-2 relative z-10 ${
-                                darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
-                              }`}>
-                                <BookOpen className="w-3 h-3" />
+                              <button
+                                onClick={() => navigate('/sessions')}
+                                className={`flex items-center gap-1 px-2 py-1 rounded-lg border relative z-10 ${
+                                  darkMode
+                                    ? 'bg-white/10 text-white/70 border-white/20'
+                                    : 'bg-gray-100 text-gray-600 border-gray-200'
+                                }`}
+                              >
+                                <BookOpen className={`w-3 h-3 transition-all duration-300 ${
+                                  darkMode
+                                    ? 'text-white/70'
+                                    : 'text-gray-600'
+                                }`} />
                                 Materials
-                              </div>
+                              </button>
                             )}
                             {booking.reminderSent && (
-                              <div className={`flex items-center gap-1 px-2 py-1 rounded-md border-2 relative z-10 ${
-                                darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
-                              }`}>
-                                <Bell className="w-3 h-3" />
+                              <button
+                                onClick={() => navigate('/sessions')}
+                                className={`flex items-center gap-1 px-2 py-1 rounded-lg border relative z-10 ${
+                                  darkMode
+                                    ? 'bg-white/10 text-white/70 border-white/20'
+                                    : 'bg-gray-100 text-gray-600 border-gray-200'
+                                }`}
+                              >
+                                <Bell className={`w-3 h-3 transition-all duration-300 ${
+                                  darkMode
+                                    ? 'text-white/70'
+                                    : 'text-gray-600'
+                                }`} />
                                 Reminded
-                              </div>
+                              </button>
                             )}
                             {booking.hasRecording && (
-                              <div className={`flex items-center gap-1 px-2 py-1 rounded-md border-2 relative z-10 ${
-                                darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
-                              }`}>
-                                <Video className="w-3 h-3" />
+                              <button
+                                onClick={() => navigate('/sessions')}
+                                className={`flex items-center gap-1 px-2 py-1 rounded-lg border relative z-10 ${
+                                  darkMode
+                                    ? 'bg-white/10 text-white/70 border-white/20'
+                                    : 'bg-gray-100 text-gray-600 border-gray-200'
+                                }`}
+                              >
+                                <Video className={`w-3 h-3 transition-all duration-300 ${
+                                  darkMode
+                                    ? 'text-white/70'
+                                    : 'text-gray-600'
+                                }`} />
                                 Recording
-                              </div>
+                              </button>
                             )}
+                          </div>
                           </div>
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex flex-col gap-2 relative z-20">
+                        {/* Enhanced Action Buttons */}
+                        <div className="flex flex-col gap-2 lg:w-32 flex-shrink-0">
                           <button
                             onClick={() => handleJoinSession(booking.id)}
                             disabled={!booking.canJoin}
-                            className={`px-4 py-2 rounded-md border-2 text-sm font-medium transition-all duration-300 relative z-20 ${
+                            className={`w-full px-3 py-2 rounded-lg border text-sm font-medium ${
                               booking.canJoin
                                 ? (darkMode
-                                  ? 'bg-white/10 text-white/70 border-gray-400 hover:bg-white/20'
-                                  : 'bg-gray-100 text-[#00001a] border-gray-400 hover:bg-gray-200')
+                                  ? 'bg-[#00001a] text-white border-white/20'
+                                  : 'bg-[#00001a] text-white border-[#00001a]')
                                 : (darkMode
-                                  ? 'bg-white/10 text-white/50 border-gray-400 cursor-not-allowed'
-                                  : 'bg-gray-100 text-gray-500 border-gray-400 cursor-not-allowed')
+                                  ? 'bg-white/10 text-white/50 border-white/20 cursor-not-allowed opacity-60'
+                                  : 'bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed opacity-60')
                             }`}
                           >
-                            {booking.canJoin ? 'Join Now' : 'Join Soon'}
+                            <span className="relative z-10">{booking.canJoin ? 'Join Now' : 'Join Soon'}</span>
                           </button>
 
-                          <div className="flex gap-1 relative z-20">
+                          <div className="flex gap-1">
                             <button
                               onClick={() => handleRescheduleBooking(booking.id)}
-                              className={`flex-1 px-2 py-1 rounded-md border-2 text-xs font-medium transition-all duration-300 relative z-20 ${
+                              className={`flex-1 px-2 py-1 rounded-lg border text-xs font-medium ${
                                 darkMode
-                                  ? 'bg-white/10 text-white/70 border-gray-400 hover:bg-white/20'
-                                  : 'bg-gray-100 text-[#00001a] border-gray-400 hover:bg-gray-200'
+                                  ? 'bg-white/10 text-white/70 border-white/20'
+                                  : 'bg-gray-100 text-gray-600 border-gray-200'
                               }`}
                             >
                               Reschedule
                             </button>
                             <button
-                              onClick={() => navigate(`/seeker/sessions?chat=${booking.solverId}`)}
-                              className={`flex-1 px-2 py-1 rounded-md border-2 text-xs font-medium transition-all duration-300 relative z-20 ${
+                              onClick={() => navigate('/sessions')}
+                              className={`flex-1 px-2 py-1 rounded-lg border text-xs font-medium ${
                                 darkMode
-                                  ? 'bg-white/10 text-white/70 border-gray-400 hover:bg-white/20'
-                                  : 'bg-gray-100 text-[#00001a] border-gray-400 hover:bg-gray-200'
+                                  ? 'bg-white/10 text-white/70 border-white/20'
+                                  : 'bg-gray-100 text-gray-600 border-gray-200'
                               }`}
                             >
                               Chat
@@ -1427,24 +1526,13 @@ const SeekerDashboard = ({ darkMode }) => {
               {/* Quick Calendar Actions */}
               {upcomingBookings.length > 0 && (
                 <div className="mt-6 pt-4 border-t border-white/10">
-                  <div className="flex gap-2">
+                  <div className="flex justify-center">
                     <button
-                      onClick={() => navigate('/seeker/sessions?view=calendar')}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
+                      onClick={() => navigate('/explore')}
+                      className={`py-2 px-6 rounded-lg border text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300 ${
                         darkMode
-                          ? 'border-white/20 text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200'
-                      }`}
-                    >
-                      <Calendar className="w-4 h-4" />
-                      Full Calendar
-                    </button>
-                    <button
-                      onClick={() => navigate('/seeker/explore')}
-                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                        darkMode
-                          ? 'border-white/20 text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200'
+                          ? 'bg-[#00001a] border-gray-800 text-white/70 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                          : 'bg-[#00001a] text-white border-[#00001a]'
                       }`}
                     >
                       <Plus className="w-4 h-4" />
@@ -1458,89 +1546,128 @@ const SeekerDashboard = ({ darkMode }) => {
         </div>
 
         {/* Enhanced Anonymous Pool Responses */}
-        <div className={`group p-8 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`group p-8 border relative overflow-hidden ${
           darkMode
-            ? 'rounded-lg border-white/20 hover:border-blue-400/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+            ? 'bg-[#00001a] rounded-lg border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
-          {/* Background Gradient */}
-          <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-            darkMode
-              ? 'bg-gradient-to-br from-blue-500/5 via-transparent to-green-500/5'
-              : 'bg-gradient-to-br from-blue-50/50 via-transparent to-green-50/50'
-          }`} />
+
 
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-6">
-              <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-500/20' : 'bg-gray-100'}`}>
-                  <MessageSquare className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
-                </div>
-                Anonymous Pool Activity
-              </h3>
-              <div className="flex items-center gap-2">
-                <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                  darkMode ? 'bg-green-500/20 text-green-400' : 'bg-gray-100 text-[#00001a]'
+              <h3 className={`text-lg font-semibold flex items-center gap-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                <div className={`p-2.5 rounded-xl border ${
+                  darkMode ? 'bg-[#00001a] border-white/20' : 'bg-gray-100 border-gray-200'
                 }`}>
-                  {anonymousPoolResponses.filter(r => r.hasNewResponses).length} New
+                  <MessageSquare className={`w-5 h-5 ${darkMode ? 'text-white/70' : 'text-[#00001a]'}`} />
                 </div>
+                <div>
+                  <div>Anonymous Pool Activity</div>
+                  <div className={`text-xs font-normal ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                    Community Q&A responses
+                  </div>
+                </div>
+              </h3>
+
+              <div className="flex items-center gap-3">
+                {/* New Responses Badge */}
+                {anonymousPoolResponses.filter(r => r.hasNewResponses).length > 0 && (
+                  <div className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+                    darkMode
+                      ? 'bg-[#00001a] text-white border-white/20'
+                      : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20'
+                  }`}>
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-white' : 'bg-[#00001a]'}`}></div>
+                      {anonymousPoolResponses.filter(r => r.hasNewResponses).length} New
+                    </div>
+                  </div>
+                )}
+
+                {/* View All Button */}
                 <button
-                  onClick={() => navigate('/seeker/sessions?tab=anonymous')}
-                  className={`text-sm font-medium transition-all duration-300 ${
-                    darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-[#00001a] hover:text-gray-700'
+                  onClick={() => navigate('/sessions?tab=anonymous')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-blue-500/20 text-blue-400 border-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                      : 'bg-[#00001a] text-white border-[#00001a]'
                   }`}
                 >
-                  View All →
+                  <div className="flex items-center gap-2">
+                    View All
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </button>
               </div>
             </div>
             {/* Enhanced Response Cards */}
             <div className="space-y-4">
               {anonymousPoolResponses.length === 0 ? (
-                <div className="text-center py-8">
-                  <MessageSquare className={`w-12 h-12 mx-auto mb-4 ${darkMode ? 'text-white/30' : 'text-gray-400'}`} />
-                  <h4 className={`text-lg font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                    No active questions
+                <div className={`text-center py-12 rounded-xl border ${
+                  darkMode ? 'border-white/10 bg-[#00001a]' : 'border-gray-200 bg-gray-50'
+                }`}>
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
+                    darkMode ? 'bg-[#00001a] border border-white/20' : 'bg-[#00001a]/10'
+                  }`}>
+                    <MessageSquare className={`w-8 h-8 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                  </div>
+                  <h4 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    No active questions yet
                   </h4>
-                  <p className={`${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                    Ask a question in the anonymous pool to get expert help
+                  <p className={`text-sm mb-6 max-w-sm mx-auto ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                    Be the first to ask a question in the anonymous pool and get expert help from the community
                   </p>
-                  <button
-                    onClick={() => navigate('/seeker/sessions?tab=anonymous')}
-                    className={`mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      darkMode
-                        ? 'bg-transparent text-blue-400 border border-blue-400/30 hover:bg-blue-400/10'
-                        : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-gray-800'
-                    }`}
-                  >
-                    Ask Question
-                  </button>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <button
+                      onClick={() => navigate('/sessions?tab=anonymous&action=ask')}
+                      className={`px-6 py-3 rounded-lg text-sm font-medium border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-green-500/20 text-green-400 border-gray-800 hover:shadow-[0_0_10px_rgba(34,197,94,0.5)]'
+                          : 'bg-[#00001a] text-white border-[#00001a]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Plus className="w-4 h-4" />
+                        Ask Question
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => navigate('/sessions?tab=anonymous')}
+                      className={`px-6 py-3 rounded-lg text-sm font-medium border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-cyan-500/20 text-cyan-400 border-gray-800 hover:shadow-[0_0_10px_rgba(6,182,212,0.5)]'
+                          : 'bg-[#00001a] text-white border-[#00001a]'
+                      }`}
+                    >
+                      Browse Pool
+                    </button>
+                  </div>
                 </div>
               ) : (
                 anonymousPoolResponses.map((response, index) => (
                   <div
                     key={response.id}
-                    className={`group/response p-5 rounded-lg backdrop-blur-sm border transition-all duration-500 cursor-pointer relative overflow-hidden ${
+                    className={`group/response p-5 rounded-lg border cursor-pointer relative overflow-hidden ${
                       darkMode
-                        ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                        : 'bg-white/40 border-white/30 hover:bg-white/60 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'
+                        ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
+                        : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                     }`}
-                    style={{ animationDelay: `${index * 100}ms` }}
+
                     onClick={() => handleViewResponse(response.id)}
                   >
 
 
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-4 relative z-10">
                       {/* Question Icon */}
                       <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                        response.status === 'answered'
-                          ? (darkMode ? 'bg-green-500/20' : 'bg-gray-100')
-                          : (darkMode ? 'bg-blue-500/20' : 'bg-gray-100')
+                        darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
                       }`}>
                         {response.status === 'answered' ? (
-                          <CheckCircle className={`w-6 h-6 ${darkMode ? 'text-green-400' : 'text-[#00001a]'}`} />
+                          <CheckCircle className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                         ) : (
-                          <MessageSquare className={`w-6 h-6 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                          <MessageSquare className={`w-6 h-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
                         )}
                       </div>
 
@@ -1550,8 +1677,8 @@ const SeekerDashboard = ({ darkMode }) => {
                             {response.question}
                           </h4>
                           {response.bestAnswer && (
-                            <div className={`ml-2 px-2 py-0.5 rounded-md border-2 text-xs font-medium ${
-                              darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
+                            <div className={`ml-2 px-2 py-0.5 rounded-lg border text-xs font-medium ${
+                              darkMode ? 'bg-white/10 text-white border-white/20' : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20'
                             }`}>
                               Best Answer
                             </div>
@@ -1563,15 +1690,15 @@ const SeekerDashboard = ({ darkMode }) => {
                           {response.tags.slice(0, 3).map((tag, idx) => (
                             <span
                               key={idx}
-                              className={`px-2 py-0.5 rounded-md border text-xs ${
-                                darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
+                              className={`px-2 py-0.5 rounded-lg border text-xs ${
+                                darkMode ? 'bg-white/10 text-white border-white/20' : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20'
                               }`}
                             >
                               {tag}
                             </span>
                           ))}
-                          <span className={`px-2 py-0.5 rounded-md border text-xs font-medium ${
-                            darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
+                          <span className={`px-2 py-0.5 rounded-lg border text-xs font-medium ${
+                            darkMode ? 'bg-white/10 text-white border-white/20' : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20'
                           }`}>
                             {response.difficulty}
                           </span>
@@ -1603,36 +1730,77 @@ const SeekerDashboard = ({ darkMode }) => {
                         </div>
                       </div>
 
-                      {/* Status and Action */}
-                      <div className="flex flex-col items-end gap-2">
-                        <div className={`px-3 py-1 rounded-md border text-xs font-medium ${
-                          darkMode ? 'bg-white/10 text-white/70 border-gray-400' : 'bg-gray-100 text-[#00001a] border-gray-400'
-                        }`}>
-                          {response.status === 'answered' ? 'Solved' : 'Active'}
+                      {/* Status and Actions */}
+                      <div className="flex flex-col items-end gap-3 min-w-[120px]">
+                        {/* Status Badge */}
+                        <div className="flex items-center gap-2">
+                          <div className={`px-3 py-1.5 rounded-lg border text-xs font-medium ${
+                            response.status === 'answered'
+                              ? (darkMode
+                                ? 'bg-[#00001a] text-white border-white/20'
+                                : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20')
+                              : (darkMode
+                                ? 'bg-[#00001a] text-white border-white/20'
+                                : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20')
+                          }`}>
+                            {response.status === 'answered' ? (
+                              <div className="flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                Solved
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                Active
+                              </div>
+                            )}
+                          </div>
                         </div>
 
+                        {/* New Responses Notification */}
                         {response.hasNewResponses && (
-                          <div className={`text-xs font-medium flex items-center gap-1 ${
-                            darkMode ? 'text-blue-400' : 'text-[#00001a]'
+                          <div className={`px-2 py-1 rounded-lg text-xs font-medium flex items-center gap-1 border ${
+                            darkMode
+                              ? 'bg-[#00001a] text-white border-white/20'
+                              : 'bg-[#00001a]/10 text-[#00001a] border-[#00001a]/20'
                           }`}>
                             <Bell className="w-3 h-3" />
                             New responses!
                           </div>
                         )}
 
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleViewResponse(response.id)
-                          }}
-                          className={`px-3 py-1 rounded-md border text-xs font-medium transition-all duration-300 ${
-                            darkMode
-                              ? 'bg-white/10 text-white/70 border-gray-400 hover:bg-white/20'
-                              : 'bg-gray-100 text-[#00001a] border-gray-400 hover:bg-gray-200'
-                          }`}
-                        >
-                          View Details
-                        </button>
+                        {/* Action Buttons */}
+                        <div className="flex flex-col gap-2 w-full min-w-[120px]">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleViewResponse(response.id)
+                            }}
+                            className={`px-4 py-2 rounded-lg text-xs font-medium border text-center ${
+                              darkMode
+                                ? 'bg-[#00001a] text-white border-white/20'
+                                : 'bg-[#00001a] text-white border-[#00001a]'
+                            }`}
+                          >
+                            View Details
+                          </button>
+
+                          {response.status === 'answered' && response.bestAnswer && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleViewResponse(response.id)
+                              }}
+                              className={`px-4 py-2 rounded-lg text-xs font-medium border text-center ${
+                                darkMode
+                                  ? 'bg-[#00001a] text-white border-[#00001a]'
+                                  : 'bg-[#00001a] text-white border-[#00001a]'
+                              }`}
+                            >
+                              Best Answer
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1640,35 +1808,7 @@ const SeekerDashboard = ({ darkMode }) => {
               )}
             </div>
 
-            {/* Quick Actions */}
-            {anonymousPoolResponses.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-white/10">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => navigate('/seeker/sessions?tab=anonymous&action=ask')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                      darkMode
-                        ? 'bg-white/5 text-white/70 hover:bg-white/10'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Ask Question
-                  </button>
-                  <button
-                    onClick={() => navigate('/seeker/sessions?tab=anonymous&filter=answered')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                      darkMode
-                        ? 'bg-white/5 text-white/70 hover:bg-white/10'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    <CheckCircle className="w-4 h-4" />
-                    View Solved
-                  </button>
-                </div>
-              </div>
-            )}
+
           </div>
         </div>
 

@@ -43,6 +43,7 @@ const Community = ({ darkMode }) => {
   const [sharedContentFilter, setSharedContentFilter] = useState('all')
   const [sharedContentSearch, setSharedContentSearch] = useState('')
   const [showSharedContentModal, setShowSharedContentModal] = useState(false)
+
   const [selectedSharedContent, setSelectedSharedContent] = useState(null)
 
   // Notification system
@@ -62,6 +63,8 @@ const Community = ({ darkMode }) => {
       }
     }, 3000)
   }
+
+
 
   // Sample data with pseudo names for anonymity
   const activeMembers = [
@@ -690,7 +693,7 @@ const Community = ({ darkMode }) => {
           <div className={`p-6 rounded-2xl backdrop-blur-xl border ${
             darkMode
               ? 'bg-white/10 border-white/20'
-              : 'bg-white/90 border-[#00001a]/20'
+              : 'bg-white/90 border-gray-200 shadow-[0_4px_8px_rgba(0,0,26,0.15)]'
           }`}>
             <div className="flex items-center gap-4">
               <div className={`animate-spin rounded-full h-8 w-8 border-b-2 ${darkMode ? 'border-white' : 'border-[#00001a]'}`}></div>
@@ -727,82 +730,45 @@ const Community = ({ darkMode }) => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="p-3 sm:p-4 md:p-6 overflow-x-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
+          <div className="flex-1 min-w-0">
+            <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Anonymous Community
             </h1>
-            <p className={`mt-2 ${darkMode ? 'text-white/60' : 'text-[#00001a]/60'}`}>
+            <p className={`mt-1 sm:mt-2 text-sm sm:text-base break-words ${darkMode ? 'text-white/60' : 'text-[#00001a]/60'}`}>
               Connect with fellow solvers through pseudo identities
             </p>
-            <p className={`mt-1 text-sm ${darkMode ? 'text-white/40' : 'text-[#00001a]/50'}`}>
+            <p className={`mt-1 text-xs sm:text-sm break-words ${darkMode ? 'text-white/40' : 'text-[#00001a]/50'}`}>
               All interactions use chosen pseudo names to maintain solver anonymity
             </p>
           </div>
 
-          {/* Solver Anonymity Toggle */}
-          <div className="flex flex-col items-end gap-2">
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <span className={`text-sm font-medium block ${darkMode ? 'text-white/70' : 'text-gray-700'}`}>
-                  Enhanced Anonymity
-                </span>
-                <span className={`text-xs block ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
-                  {solverAnonymity ? 'Maximum privacy mode' : 'Standard pseudo mode'}
-                </span>
-              </div>
-              <button
-                onClick={() => setSolverAnonymity(!solverAnonymity)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
-                  solverAnonymity
-                    ? darkMode ? 'bg-white' : 'bg-[#00001a]'
-                    : darkMode ? 'bg-white/30' : 'bg-[#00001a]/30'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-                    solverAnonymity ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-            {solverAnonymity && (
-              <div className={`text-xs px-2 py-1 rounded-lg ${
-                darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
-              }`}>
-                Maximum Privacy Active
-              </div>
-            )}
-          </div>
+
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
           {/* Left Column */}
-          <div className="space-y-6">
+          <div className="space-y-3 sm:space-y-4 md:space-y-6">
             {/* Active Solvers */}
-            <div className={`p-6 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+            <div className={`p-3 sm:p-4 md:p-6 rounded-lg border relative overflow-hidden transition-all duration-300 ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_25px_rgba(0,0,26,0.2)]'
-            }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {}}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                ? 'bg-white/3 border-white/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                <h2 className={`text-base sm:text-lg md:text-xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Active Solvers
                 </h2>
-                <span className={`text-xs px-2 py-1 rounded-lg ${
+                <span className={`text-xs px-2 py-1 rounded-lg self-start sm:self-auto flex-shrink-0 ${
                   darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
                 }`}>
                   Pseudo Identities
                 </span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4">
                 {activeMembers.map((member) => {
                   const displayName = solverAnonymity && member.anonymityLevel === 'high'
                     ? `Anonymous_${member.id.toString().padStart(4, '0')}`
@@ -816,19 +782,19 @@ const Community = ({ darkMode }) => {
                     <div
                       key={member.id}
                       onClick={() => handleMemberClick(member.id)}
-                      className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
+                      className={`p-2 sm:p-3 md:p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
                         darkMode
-                          ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                          : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,26,0.15)]'
+                          ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                          : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                       }`}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="relative">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className="relative flex-shrink-0">
+                          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                            darkMode ? 'bg-white/10' : 'bg-gray-100'
                           }`}>
                             {React.createElement(getAvatarIcon(displayAvatar), {
-                              className: `w-5 h-5 ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`
+                              className: `w-4 h-4 sm:w-5 sm:h-5 ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`
                             })}
                           </div>
                           <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 ${
@@ -840,26 +806,26 @@ const Community = ({ darkMode }) => {
                           } ${darkMode ? 'border-slate-800' : 'border-white'}`}></div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="mb-2">
-                            <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          <div className="mb-1 sm:mb-2">
+                            <h3 className={`font-semibold text-xs sm:text-sm md:text-base break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                               {displayName}
                             </h3>
                           </div>
-                          <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
+                          <p className={`text-xs sm:text-sm break-words ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
                             {solverAnonymity && member.anonymityLevel === 'high' ? 'Anonymous Solver' : member.expertise}
                           </p>
-                          <p className={`text-xs ${darkMode ? 'text-white/40' : 'text-gray-500'}`}>
+                          <p className={`text-xs break-words ${darkMode ? 'text-white/40' : 'text-gray-500'}`}>
                             {member.contributions} contributions
                           </p>
                         </div>
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 mt-1 sm:mt-0">
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
                               handleConnectMember(member.id)
                             }}
                             disabled={isLoading}
-                            className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors w-full sm:w-auto ${
                               isLoading
                                 ? 'opacity-50 cursor-not-allowed'
                                 : darkMode
@@ -893,40 +859,36 @@ const Community = ({ darkMode }) => {
             </div>
 
             {/* Recent Discussions */}
-            <div className={`p-6 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+            <div className={`p-3 sm:p-4 md:p-6 rounded-lg border relative overflow-hidden transition-all duration-300 ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_25px_rgba(0,0,26,0.2)]'
-            }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {}}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                ? 'bg-white/3 border-white/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                <h2 className={`text-base sm:text-lg md:text-xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Recent Discussions
                 </h2>
-                <span className={`text-xs px-2 py-1 rounded-lg ${
+                <span className={`text-xs px-2 py-1 rounded-lg self-start sm:self-auto flex-shrink-0 ${
                   darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
                 }`}>
                   Anonymous Forum
                 </span>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-3 md:space-y-4">
                 {discussions.map((discussion) => (
                   <div
                     key={discussion.id}
-                    className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
+                    className={`p-2 sm:p-3 md:p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
                       darkMode
-                        ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,26,0.15)]'
+                        ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                        : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                     onClick={() => handleDiscussionClick(discussion.id)}
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                          <h3 className={`font-semibold text-xs sm:text-sm md:text-base break-words min-w-0 flex-1 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                             {discussion.topic}
                           </h3>
                           {discussion.isHot && (
@@ -978,7 +940,7 @@ const Community = ({ darkMode }) => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <button
                         onClick={() => handleInterested(discussion.id)}
                         disabled={isLoading}
@@ -988,10 +950,10 @@ const Community = ({ darkMode }) => {
                             : interestedDiscussions.has(discussion.id)
                               ? darkMode
                                 ? 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30'
-                                : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90'
+                                : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                               : darkMode
-                                ? 'border-white/20 text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
-                                : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90'
+                                ? 'border-white/20 text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                                : 'bg-white text-[#00001a] border-gray-200 hover:bg-[#00001a]/10 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       >
                         {interestedDiscussions.has(discussion.id) ? 'Interested ✓' : 'Interested'}
@@ -1005,10 +967,10 @@ const Community = ({ darkMode }) => {
                             : notifyDiscussions.has(discussion.id)
                               ? darkMode
                                 ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 hover:bg-blue-500/30'
-                                : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90'
+                                : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                               : darkMode
-                                ? 'border-white/20 text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
-                                : 'bg-white text-[#00001a] border-[#00001a]/60 hover:bg-gray-50 hover:border-[#00001a] shadow-sm'
+                                ? 'border-white/20 text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                                : 'bg-white text-[#00001a] border-gray-200 hover:bg-[#00001a]/10 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       >
                         {notifyDiscussions.has(discussion.id) ? 'Notifying 🔔' : 'Notify Me'}
@@ -1025,56 +987,52 @@ const Community = ({ darkMode }) => {
           </div>
 
           {/* Right Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-3 sm:space-y-4 md:space-y-6">
             {/* Top Contributors */}
-            <div className={`p-6 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+            <div className={`p-3 sm:p-4 md:p-6 rounded-lg border relative overflow-hidden transition-all duration-300 ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_25px_rgba(0,0,26,0.2)]'
-            }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {}}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                ? 'bg-white/3 border-white/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                <h2 className={`text-base sm:text-lg md:text-xl font-bold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Top Contributors
                 </h2>
-                <span className={`text-xs px-2 py-1 rounded-lg ${
+                <span className={`text-xs px-2 py-1 rounded-lg self-start sm:self-auto flex-shrink-0 ${
                   darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
                 }`}>
                   Leaderboard
                 </span>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {topContributors.map((contributor, index) => (
                   <div
                     key={contributor.id}
                     onClick={() => handleContributorClick(contributor.id)}
-                    className={`p-3 rounded-lg border transition-all duration-300 cursor-pointer ${
+                    className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-300 ${
                       darkMode
-                        ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,26,0.15)]'
+                        ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                        : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-sm font-bold ${
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                        <span className={`text-xs sm:text-sm font-bold ${
                           darkMode ? 'text-white/60' : 'text-[#00001a]/60'
                         }`}>
                           #{index + 1}
                         </span>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
+                        <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
+                          darkMode ? 'bg-white/10' : 'bg-gray-100'
                         }`}>
                           {React.createElement(getAvatarIcon(contributor.avatar), {
-                            className: `w-4 h-4 ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`
+                            className: `w-3 h-3 sm:w-4 sm:h-4 ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`
                           })}
                         </div>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
+                          <div className="flex flex-wrap items-center gap-2">
                             <h3 className={`font-semibold text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                               {contributor.pseudoName}
                             </h3>
@@ -1088,7 +1046,7 @@ const Community = ({ darkMode }) => {
                               handleFollowContributor(contributor.id)
                             }}
                             disabled={isLoading}
-                            className={`px-2 py-1 text-xs font-medium rounded-lg transition-colors ${
+                            className={`px-2 py-1 text-xs font-medium rounded-lg transition-colors flex-shrink-0 ${
                               isLoading
                                 ? 'opacity-50 cursor-not-allowed'
                                 : darkMode
@@ -1137,8 +1095,8 @@ const Community = ({ darkMode }) => {
                     ? 'bg-white/30 border-white/20 text-white/50 cursor-not-allowed'
                     : 'bg-[#00001a]/30 border-[#00001a]/20 text-[#00001a]/50 cursor-not-allowed'
                   : darkMode
-                    ? 'bg-white border-white/50 hover:border-white/80 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] text-[#00001a]'
-                    : 'bg-[#00001a] border-[#00001a]/50 hover:border-[#00001a]/80 hover:shadow-[0_0_25px_rgba(0,0,26,0.3)] text-white'
+                    ? 'bg-white border-white/50 hover:border-white/80 hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] text-[#00001a]'
+                    : 'bg-[#00001a] border-[#00001a]/50 hover:border-[#00001a]/80 hover:shadow-[0_0_25px_rgba(0,0,26,0.4)] text-white shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
@@ -1156,20 +1114,16 @@ const Community = ({ darkMode }) => {
             </button>
 
             {/* Upcoming Events */}
-            <div className={`p-6 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+            <div className={`p-4 md:p-6 rounded-lg border relative overflow-hidden transition-all duration-300 ${
               darkMode
-                ? 'bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-                : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_25px_rgba(0,0,26,0.2)]'
-            }`}
-            style={darkMode ? {
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-            } : {}}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                ? 'bg-white/3 border-white/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <h2 className={`text-lg md:text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Upcoming Events
                 </h2>
-                <span className={`text-xs px-2 py-1 rounded-lg ${
+                <span className={`text-xs px-2 py-1 rounded-lg self-start sm:self-auto ${
                   darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
                 }`}>
                   Anonymous Events
@@ -1179,16 +1133,16 @@ const Community = ({ darkMode }) => {
                 {upcomingEvents.map((event) => (
                   <div
                     key={event.id}
-                    className={`p-5 rounded-lg border transition-all duration-300 cursor-pointer ${
+                    className={`p-4 md:p-5 rounded-lg border transition-all duration-300 cursor-pointer ${
                       darkMode
-                        ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,26,0.15)]'
+                        ? 'border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                        : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1 pr-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <div className="space-y-3">
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <h3 className={`font-semibold text-sm md:text-base ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                             {event.name}
                           </h3>
                           <span className={`px-2 py-1 text-xs font-medium rounded-lg ${getEventTypeColor(event.type)}`}>
@@ -1203,8 +1157,8 @@ const Community = ({ darkMode }) => {
                             </span>
                           )}
                         </div>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex items-center gap-4">
+                        <div className="space-y-2 text-xs md:text-sm">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                             <div className="flex items-center gap-2">
                               <Calendar className={`w-4 h-4 ${darkMode ? 'text-white/60' : 'text-gray-600'}`} />
                               <span className={`${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
@@ -1212,7 +1166,7 @@ const Community = ({ darkMode }) => {
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                             <div className="flex items-center gap-2">
                               <Users className={`w-4 h-4 ${darkMode ? 'text-white/60' : 'text-gray-600'}`} />
                               <span className={`${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
@@ -1231,7 +1185,7 @@ const Community = ({ darkMode }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex justify-end">
                         <button
                           onClick={() => handleJoinEvent(event.id)}
                           disabled={isLoading}
@@ -1243,7 +1197,7 @@ const Community = ({ darkMode }) => {
                                   ? 'bg-white/10 text-white/70 border-white/20'
                                   : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90'
                                 : darkMode
-                                  ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                                  ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
                                   : 'bg-[#00001a] text-white border-[#00001a] hover:bg-[#00001a]/90 shadow-sm'
                           }`}
                         >
@@ -1276,15 +1230,11 @@ const Community = ({ darkMode }) => {
         </div>
 
         {/* Full-Width Access Shared Content Section */}
-        <div className={`mt-8 p-8 rounded-lg backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+        <div className={`mt-8 p-8 rounded-lg border relative overflow-hidden transition-all duration-300 ${
           darkMode
-            ? 'bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'bg-white border-[#00001a]/20 hover:border-[#00001a]/30 hover:shadow-[0_0_25px_rgba(0,0,26,0.2)]'
-        }`}
-        style={darkMode ? {
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-        } : {}}>
+            ? 'bg-white/3 border-white/20 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+            : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+        }`}>
           <div className="flex items-center justify-between mb-8">
             <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Access Shared Content
@@ -1310,7 +1260,7 @@ const Community = ({ darkMode }) => {
                 className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all duration-300 ${
                   darkMode
                     ? 'bg-white/5 border-white/20 text-white placeholder-white/50 focus:border-blue-400/50 focus:bg-white/10'
-                    : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500 focus:border-[#00001a]/50 focus:bg-gray-50'
+                    : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-[#00001a]/50 focus:bg-gray-50 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                 }`}
               />
             </div>
@@ -1320,7 +1270,7 @@ const Community = ({ darkMode }) => {
               className={`px-4 py-3 rounded-lg border transition-all duration-300 ${
                 darkMode
                   ? 'bg-[#1a1a2e] border-white/20 text-white focus:border-blue-400/50'
-                  : 'bg-white border-gray-300 text-[#00001a] focus:border-[#00001a]/50'
+                  : 'bg-white border-gray-200 text-[#00001a] focus:border-[#00001a]/50 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
               }`}
               style={darkMode ? {
                 backgroundColor: '#1a1a2e',
@@ -1337,26 +1287,26 @@ const Community = ({ darkMode }) => {
           </div>
 
           {/* Content Grid - Organized Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {getFilteredSharedContent().slice(0, 20).map((content) => {
               const ContentIcon = getContentIcon(content.type)
               return (
                 <div
                   key={content.id}
-                  className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer flex flex-col h-full ${
+                  className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 cursor-pointer flex flex-col h-full min-w-0 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'bg-white border-[#00001a]/10 hover:border-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,26,0.15)]'
+                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                   onClick={() => handleViewContent(content.id)}
                 >
                   <div className="flex flex-col h-full">
                     {/* Header with icon and type */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2 rounded-lg ${getContentTypeColor(content.type)}`}>
-                        <ContentIcon className="w-5 h-5" />
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <div className={`p-1.5 sm:p-2 rounded-lg flex-shrink-0 ${getContentTypeColor(content.type)}`}>
+                        <ContentIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <span className={`px-2 py-1 text-xs font-medium rounded-lg ${
+                      <span className={`px-2 py-1 text-xs font-medium rounded-lg flex-shrink-0 ${
                         darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
                       }`}>
                         {content.category}
@@ -1364,15 +1314,15 @@ const Community = ({ darkMode }) => {
                     </div>
 
                     {/* Content info */}
-                    <div className="flex-1 mb-3">
-                      <h4 className={`font-semibold text-sm mb-2 line-clamp-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    <div className="flex-1 mb-2 sm:mb-3 min-w-0">
+                      <h4 className={`font-semibold text-xs sm:text-sm mb-1 sm:mb-2 line-clamp-2 break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                         {content.title}
                       </h4>
-                      <p className={`text-xs mb-2 ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
+                      <p className={`text-xs mb-1 sm:mb-2 break-words ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
                         By {content.isAnonymous ? 'Anonymous' : content.sharedBy}
                       </p>
-                      <div className="flex items-center gap-3 text-xs">
-                        <span className={`${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                      <div className="flex items-center gap-2 sm:gap-3 text-xs">
+                        <span className={`break-words ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
                           {content.size}
                         </span>
                         <span className={`${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
@@ -1396,20 +1346,20 @@ const Community = ({ darkMode }) => {
                     </div>
 
                     {/* Action buttons */}
-                    <div className="flex justify-between items-center pt-2 border-t border-white/10">
+                    <div className="flex items-center gap-2 pt-2 border-t border-white/10">
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleDownloadContent(content.id)
+                          handleViewContent(content.id)
                         }}
                         className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                           darkMode
-                            ? 'hover:bg-white/10 text-white/70 hover:text-white'
+                            ? 'bg-[#00001a] text-white hover:bg-gray-800'
                             : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
                         }`}
                       >
-                        <Download className="w-3 h-3" />
-                        Download
+                        <Eye className="w-3 h-3" />
+                        View
                       </button>
                       <button
                         onClick={(e) => {
@@ -1440,7 +1390,7 @@ const Community = ({ darkMode }) => {
                 className={`px-8 py-4 rounded-lg font-medium transition-all duration-300 text-lg ${
                   darkMode
                     ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/30'
-                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 border border-[#00001a]'
+                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 border border-[#00001a] shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
                 }`}
               >
                 View All Shared Content ({getFilteredSharedContent().length})
@@ -1543,15 +1493,18 @@ const Community = ({ darkMode }) => {
                       </div>
                       <div className="flex gap-3">
                         <button
-                          onClick={() => handleDownloadContent(selectedSharedContent.id)}
+                          onClick={() => {
+                            showNotificationMessage(`Opening "${selectedSharedContent.title}" in viewer... 👁️`, 'success')
+                            // In a real app, this would open the content in a viewer/preview
+                          }}
                           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                             darkMode
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                              ? 'bg-[#00001a] text-white hover:bg-gray-800'
                               : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
                           }`}
                         >
-                          <Download className="w-4 h-4" />
-                          Download
+                          <Eye className="w-4 h-4" />
+                          View Content
                         </button>
                         <button
                           onClick={() => handleShareSharedContent(selectedSharedContent.id)}
@@ -1584,7 +1537,7 @@ const Community = ({ darkMode }) => {
                         className={`w-full pl-10 pr-4 py-2 rounded-lg border transition-all duration-300 ${
                           darkMode
                             ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
-                            : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                            : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       />
                     </div>
@@ -1594,7 +1547,7 @@ const Community = ({ darkMode }) => {
                       className={`px-3 py-2 rounded-lg border transition-all duration-300 ${
                         darkMode
                           ? 'bg-[#00001a] border-white/20 text-white'
-                          : 'bg-white border-gray-300 text-[#00001a]'
+                          : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                       }`}
                     >
                       <option value="all">All Types</option>
@@ -1613,8 +1566,8 @@ const Community = ({ darkMode }) => {
                           key={content.id}
                           className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
                             darkMode
-                              ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                              : 'bg-white border-[#00001a]/10 hover:border-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,26,0.15)]'
+                              ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                              : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                           }`}
                           onClick={() => setSelectedSharedContent(content)}
                         >
@@ -1647,15 +1600,15 @@ const Community = ({ darkMode }) => {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation()
-                                  handleDownloadContent(content.id)
+                                  setSelectedSharedContent(content)
                                 }}
                                 className={`p-2 rounded-lg transition-colors ${
                                   darkMode
-                                    ? 'text-white/70 hover:text-white hover:bg-white/10'
-                                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
+                                    ? 'bg-[#00001a] text-white hover:bg-gray-800'
+                                    : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                                 }`}
                               >
-                                <Download className="w-4 h-4" />
+                                <Eye className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={(e) => {
@@ -1665,7 +1618,7 @@ const Community = ({ darkMode }) => {
                                 className={`p-2 rounded-lg transition-colors border ${
                                   darkMode
                                     ? 'text-white/70 hover:text-white hover:bg-white/10 border-white/20'
-                                    : 'text-[#00001a] hover:bg-[#00001a]/10 border-[#00001a]/20'
+                                    : 'text-[#00001a] hover:bg-[#00001a]/10 border-gray-200 shadow-[0_1px_2px_rgba(0,0,26,0.1)]'
                                 }`}
                               >
                                 <Share2 className="w-4 h-4" />
@@ -1694,6 +1647,8 @@ const Community = ({ darkMode }) => {
           </div>
         </div>
       )}
+
+
     </div>
   )
 }

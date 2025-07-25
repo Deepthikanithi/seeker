@@ -14,14 +14,34 @@ import {
 } from 'lucide-react'
 
 const SeekerProfile = ({ darkMode }) => {
+  const { t } = useLanguage()
   const [isEditing, setIsEditing] = useState(false)
   const [profileCompletion] = useState(75)
+
+  // Pseudo name generation
+  const pseudoNamePrefixes = ['Code', 'Pixel', 'Data', 'Cloud', 'Cyber', 'Tech', 'Digital', 'Quantum', 'Neural', 'Logic']
+  const pseudoNameSuffixes = ['Ninja', 'Master', 'Wizard', 'Surfer', 'Sage', 'Hunter', 'Walker', 'Rider', 'Seeker', 'Explorer']
+
+  const generateRandomPseudoName = () => {
+    const prefix = pseudoNamePrefixes[Math.floor(Math.random() * pseudoNamePrefixes.length)]
+    const suffix = pseudoNameSuffixes[Math.floor(Math.random() * pseudoNameSuffixes.length)]
+    const number = Math.floor(Math.random() * 99) + 1
+    return `${prefix}${suffix}${number}`
+  }
+
+
 
   // Modal states
   const [showChangeEmailModal, setShowChangeEmailModal] = useState(false)
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
   const [showDeactivateModal, setShowDeactivateModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showPseudoNameModal, setShowPseudoNameModal] = useState(false)
+
+  // Pseudo name state
+  const [pseudoName, setPseudoName] = useState('')
+  const [isPseudoNameSet, setIsPseudoNameSet] = useState(false)
+
 
   // Change email/mobile states
   const [changeEmailStep, setChangeEmailStep] = useState('method') // 'method', 'verify', 'complete'
@@ -39,6 +59,22 @@ const SeekerProfile = ({ darkMode }) => {
   const [showProfilePicModal, setShowProfilePicModal] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
+
+  // Editable profile data states
+  const [editableData, setEditableData] = useState({
+    firstName: 'Jane',
+    lastName: 'Doe',
+    email: 'jane.doe@example.com',
+    phone: '+1 (555) 123-4567',
+    country: 'United States',
+    city: 'San Francisco',
+    gender: 'Female',
+    dateOfBirth: '1990-05-15',
+    bio: 'Passionate about technology and continuous learning. Always looking for new challenges and opportunities to grow.'
+  })
+
+  // Track if there are unsaved changes
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // Handle profile picture upload
   const handleImageUpload = (event) => {
@@ -69,6 +105,53 @@ const SeekerProfile = ({ darkMode }) => {
     }
   }
 
+  // Handle input changes for editable fields
+  const handleInputChange = (field, value) => {
+    setEditableData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+    setHasUnsavedChanges(true)
+  }
+
+  // Handle save changes
+  const handleSaveChanges = () => {
+    // Here you would typically send the data to your backend
+    console.log('Saving profile changes:', editableData)
+
+    // Simulate API call
+    setTimeout(() => {
+      setHasUnsavedChanges(false)
+      setIsEditing(false)
+      // You could show a success message here
+      alert('Profile updated successfully!')
+    }, 500)
+  }
+
+  // Handle cancel editing
+  const handleCancelEdit = () => {
+    if (hasUnsavedChanges) {
+      if (window.confirm('You have unsaved changes. Are you sure you want to cancel?')) {
+        // Reset to original data (you'd typically fetch from server)
+        setEditableData({
+          firstName: 'Jane',
+          lastName: 'Doe',
+          email: 'jane.doe@example.com',
+          phone: '+1 (555) 123-4567',
+          country: 'United States',
+          city: 'San Francisco',
+          gender: 'Female',
+          dateOfBirth: '1990-05-15',
+          bio: 'Passionate about technology and continuous learning. Always looking for new challenges and opportunities to grow.'
+        })
+        setHasUnsavedChanges(false)
+        setIsEditing(false)
+      }
+    } else {
+      setIsEditing(false)
+    }
+  }
+
   // Format countdown time for OTP
   const formatCountdown = (seconds) => {
     const minutes = Math.floor(seconds / 60)
@@ -87,17 +170,7 @@ const SeekerProfile = ({ darkMode }) => {
     return () => clearInterval(interval)
   }, [otpCountdown])
 
-  const profileData = {
-    firstName: 'Jane',
-    lastName: 'Doe',
-    email: 'jane.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    country: 'United States',
-    city: 'San Francisco',
-    gender: 'Female',
-    dateOfBirth: '1990-05-15',
-    bio: 'Passionate learner seeking to improve my programming skills and advance my career in tech.'
-  }
+
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${
@@ -109,23 +182,38 @@ const SeekerProfile = ({ darkMode }) => {
         <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
           darkMode
             ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-            : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+            : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
         }`}>
           <div className="flex items-center justify-between mb-6">
             <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Profile
             </h2>
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                isEditing
-                  ? (darkMode ? 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]' : 'bg-gray-200 text-gray-700 border border-gray-300 hover:bg-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]')
-                  : (darkMode ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-[#00001a]/10 text-[#00001a] border border-[#00001a]/20 hover:bg-[#00001a]/20 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]')
-              }`}
-            >
-              {isEditing ? <X className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
-              {isEditing ? 'Cancel' : 'Edit Profile'}
-            </button>
+            <div className="flex items-center gap-3">
+              {isEditing && hasUnsavedChanges && (
+                <button
+                  onClick={handleSaveChanges}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-[#00001a] text-white border border-white/20 hover:bg-[#00001a]/90 hover:border-white/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 hover:shadow-[0_0_15px_rgba(0,0,26,0.2)]'
+                  }`}
+                >
+                  <Save className="w-4 h-4" />
+                  Save Changes
+                </button>
+              )}
+              <button
+                onClick={isEditing ? handleCancelEdit : () => setIsEditing(true)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  isEditing
+                    ? (darkMode ? 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]' : 'bg-gray-200 text-gray-700 border border-gray-300 hover:bg-gray-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]')
+                    : (darkMode ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-[#00001a]/10 text-[#00001a] border border-[#00001a]/20 hover:bg-[#00001a]/20 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]')
+                }`}
+              >
+                {isEditing ? <X className="w-4 h-4" /> : <Edit className="w-4 h-4" />}
+                {isEditing ? 'Cancel' : 'Edit Profile'}
+              </button>
+            </div>
           </div>
 
           {/* Profile Completion Meter */}
@@ -174,18 +262,20 @@ const SeekerProfile = ({ darkMode }) => {
 
           {/* Profile Picture */}
           <div className="flex items-center gap-6 mb-6">
-            <div className={`relative w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${
-              darkMode ? 'bg-white/10' : 'bg-gray-100'
-            }`}>
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <User className={`w-12 h-12 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
-              )}
+            <div className="relative">
+              <div className={`w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${
+                darkMode ? 'bg-white/10' : 'bg-gray-100 border border-gray-200'
+              }`}>
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className={`w-12 h-12 ${darkMode ? 'text-white/50' : 'text-gray-400'}`} />
+                )}
+              </div>
               <input
                 type="file"
                 accept="image/*"
@@ -195,8 +285,10 @@ const SeekerProfile = ({ darkMode }) => {
               />
               <label
                 htmlFor="profile-pic-upload"
-                className={`absolute bottom-0 right-0 p-2 rounded-full transition-all duration-300 cursor-pointer ${
-                  darkMode ? 'bg-white/20 text-white hover:bg-white/30 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-[#00001a]/20 text-[#00001a] hover:bg-[#00001a]/30 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                className={`absolute -bottom-1 -right-1 p-2 rounded-full border-2 transition-all duration-300 cursor-pointer shadow-lg ${
+                  darkMode
+                    ? 'bg-[#00001a] border-white/20 text-white hover:bg-[#00001a]/90 hover:border-white/30 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                    : 'bg-white border-gray-200 text-[#00001a] hover:bg-gray-50 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.15)]'
                 }`}
               >
                 <Camera className="w-4 h-4" />
@@ -204,7 +296,7 @@ const SeekerProfile = ({ darkMode }) => {
             </div>
             <div>
               <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
-                {profileData.firstName} {profileData.lastName}
+                {editableData.firstName} {editableData.lastName}
               </h3>
               <p className={`${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                 Premium Seeker
@@ -228,7 +320,7 @@ const SeekerProfile = ({ darkMode }) => {
           <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
             darkMode
               ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <h3 className={`text-lg font-semibold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
               Personal Information
@@ -242,12 +334,13 @@ const SeekerProfile = ({ darkMode }) => {
                   </label>
                   <input
                     type="text"
-                    value={profileData.firstName}
+                    value={editableData.firstName}
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
                     disabled={!isEditing}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   />
                 </div>
@@ -257,12 +350,13 @@ const SeekerProfile = ({ darkMode }) => {
                   </label>
                   <input
                     type="text"
-                    value={profileData.lastName}
+                    value={editableData.lastName}
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
                     disabled={!isEditing}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   />
                 </div>
@@ -274,12 +368,13 @@ const SeekerProfile = ({ darkMode }) => {
                 </label>
                 <input
                   type="email"
-                  value={profileData.email}
+                  value={editableData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
                   disabled={!isEditing}
                   className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                      : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 />
               </div>
@@ -290,12 +385,13 @@ const SeekerProfile = ({ darkMode }) => {
                 </label>
                 <input
                   type="tel"
-                  value={profileData.phone}
+                  value={editableData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
                   disabled={!isEditing}
                   className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                      : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 />
               </div>
@@ -307,12 +403,13 @@ const SeekerProfile = ({ darkMode }) => {
                   </label>
                   <input
                     type="text"
-                    value={profileData.country}
+                    value={editableData.country}
+                    onChange={(e) => handleInputChange('country', e.target.value)}
                     disabled={!isEditing}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   />
                 </div>
@@ -322,12 +419,13 @@ const SeekerProfile = ({ darkMode }) => {
                   </label>
                   <input
                     type="text"
-                    value={profileData.city}
+                    value={editableData.city}
+                    onChange={(e) => handleInputChange('city', e.target.value)}
                     disabled={!isEditing}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   />
                 </div>
@@ -339,12 +437,13 @@ const SeekerProfile = ({ darkMode }) => {
                     Gender
                   </label>
                   <select
-                    value={profileData.gender}
+                    value={editableData.gender}
+                    onChange={(e) => handleInputChange('gender', e.target.value)}
                     disabled={!isEditing}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
                     <option value="">Select Gender</option>
@@ -360,12 +459,13 @@ const SeekerProfile = ({ darkMode }) => {
                   </label>
                   <input
                     type="date"
-                    value={profileData.dateOfBirth}
+                    value={editableData.dateOfBirth}
+                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                     disabled={!isEditing}
                     className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                        : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                        : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   />
                 </div>
@@ -376,21 +476,83 @@ const SeekerProfile = ({ darkMode }) => {
                   Bio
                 </label>
                 <textarea
-                  value={profileData.bio}
+                  value={editableData.bio}
+                  onChange={(e) => handleInputChange('bio', e.target.value)}
                   disabled={!isEditing}
                   rows={3}
                   className={`w-full px-3 py-2 rounded-lg border transition-all duration-300 ${
                     darkMode
                       ? 'bg-white/5 border-white/20 text-white disabled:opacity-50 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] focus:border-blue-400/50 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                      : 'bg-white border-gray-300 text-[#00001a] disabled:bg-gray-50 hover:border-gray-400 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] focus:border-[#00001a]/50 focus:shadow-[0_0_15px_rgba(0,0,0,0.1)]'
+                      : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 />
               </div>
             </div>
           </div>
 
-          {/* Account Settings */}
+
+          {/* Right Column */}
           <div className="space-y-6">
+
+            {/* Anonymous Identity */}
+            <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+              darkMode
+                ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
+                : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
+            }`}>
+              <h3 className={`text-lg font-semibold mb-6 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                Anonymous Identity
+              </h3>
+
+              <div className="space-y-4">
+                <div className={`p-4 rounded-lg ${
+                  darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+                }`}>
+                  <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                    Set a pseudo name for anonymous community interactions. This helps maintain your privacy while participating in discussions.
+                  </p>
+                  {isPseudoNameSet && (
+                    <div className={`mt-3 p-3 rounded-lg ${
+                      darkMode ? 'bg-red-500/10 border border-red-500/30' : 'bg-red-50 border border-red-200'
+                    }`}>
+                      <p className={`text-sm font-medium ${darkMode ? 'text-red-400' : 'text-red-800'}`}>
+                        ⚠️ Important: Once set, your pseudo name cannot be changed. Choose carefully!
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                      Your Pseudo Name
+                    </label>
+                    <span className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      {pseudoName || 'Not set'}
+                    </span>
+                    {pseudoName && (
+                      <div className={`text-xs mt-1 px-2 py-1 rounded-lg inline-block ${
+                        darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-[#00001a]/10 text-[#00001a]'
+                      }`}>
+                        Anonymous Identity Active
+                      </div>
+                    )}
+                  </div>
+                  {!isPseudoNameSet && (
+                    <button
+                      onClick={() => setShowPseudoNameModal(true)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
+                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90 border border-[#00001a]'
+                      }`}
+                    >
+                      {pseudoName ? 'Change Name' : 'Set Pseudo Name'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
             
             {/* Security Settings */}
             <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
@@ -1151,6 +1313,125 @@ const SeekerProfile = ({ darkMode }) => {
                       }`}
                     >
                       Save Picture
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pseudo Name Modal */}
+        {showPseudoNameModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className={`max-w-md w-full rounded-lg border ${
+              darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+            }`}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Set Your Pseudo Name
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowPseudoNameModal(false)
+                      setPseudoName(pseudoName) // Reset to current value
+                    }}
+                    className={`p-2 rounded-lg transition-colors ${
+                      darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
+                    }`}
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className={`p-4 rounded-lg mb-6 ${
+                  darkMode ? 'bg-red-500/10 border border-red-500/30' : 'bg-red-50 border border-red-200'
+                }`}>
+                  <p className={`text-sm font-medium ${darkMode ? 'text-red-400' : 'text-red-800'}`}>
+                    ⚠️ Important: Once you confirm your pseudo name, it cannot be changed. Choose carefully!
+                  </p>
+                </div>
+
+                <div className={`p-4 rounded-lg mb-6 ${
+                  darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+                }`}>
+                  <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                    Choose a pseudo name to maintain your anonymity in the community. This name will be visible to other members instead of your real name.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      Custom Pseudo Name
+                    </label>
+                    <input
+                      type="text"
+                      value={pseudoName}
+                      onChange={(e) => setPseudoName(e.target.value)}
+                      placeholder="Enter your preferred pseudo name"
+                      maxLength={20}
+                      className={`w-full px-4 py-2 rounded-lg border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/5 border-white/20 text-white placeholder-white/50'
+                          : 'bg-white border-gray-300 text-[#00001a] placeholder-gray-500'
+                      }`}
+                    />
+                    <p className={`text-xs mt-1 ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                      {pseudoName.length}/20 characters
+                    </p>
+                  </div>
+
+                  <div className="text-center">
+                    <span className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                      Or generate a random name
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => setPseudoName(generateRandomPseudoName())}
+                    className={`w-full px-4 py-2 rounded-lg font-medium border transition-all duration-300 ${
+                      darkMode
+                        ? 'border-white/20 text-white hover:bg-white/10'
+                        : 'border-gray-300 text-[#00001a] hover:bg-gray-50'
+                    }`}
+                  >
+                    🎲 Generate Random Name
+                  </button>
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={() => {
+                        setShowPseudoNameModal(false)
+                        setPseudoName('') // Reset if cancelled
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/10 text-white hover:bg-white/20'
+                          : 'bg-gray-100 text-[#00001a] hover:bg-gray-200'
+                      }`}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (pseudoName.trim()) {
+                          setShowPseudoNameModal(false)
+                          setIsPseudoNameSet(true)
+                          alert(`Pseudo name set to "${pseudoName}"! This cannot be changed.`)
+                        } else {
+                          alert('Please enter a pseudo name')
+                        }
+                      }}
+                      disabled={!pseudoName.trim()}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        !pseudoName.trim()
+                          ? (darkMode ? 'bg-white/10 text-white/50 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
+                          : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800' : 'bg-[#00001a] text-white hover:bg-gray-800')
+                      }`}
+                    >
+                      Confirm & Save
                     </button>
                   </div>
                 </div>

@@ -303,10 +303,10 @@ const SeekerTopHeader = ({ darkMode, setDarkMode, setIsAuthenticated }) => {
           <div className="relative" ref={profileRef}>
             <button
               onClick={handleProfileClick}
-              className={`p-2 rounded-lg transition-all duration-300 z-10 cursor-pointer ${
+              className={`p-2 rounded-lg z-10 cursor-pointer ${
                 darkMode
-                  ? 'bg-white/10 text-white hover:bg-white/20 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-                  : 'bg-gray-100 text-[#00001a] hover:bg-gray-200 hover:shadow-[0_0_15px_rgba(0,0,26,0.1)]'
+                  ? 'bg-white/10 text-white'
+                  : 'bg-gray-100 text-[#00001a]'
               }`}
               title="Profile menu"
               style={{ pointerEvents: 'auto', cursor: 'pointer' }}
@@ -353,8 +353,8 @@ const SeekerTopHeader = ({ darkMode, setDarkMode, setIsAuthenticated }) => {
                       e.stopPropagation()
                       handleProfileAction('profile')
                     }}
-                    className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors duration-200 cursor-pointer ${
-                      darkMode ? 'text-white hover:bg-white/10' : 'text-[#00001a] hover:bg-gray-100'
+                    className={`w-full flex items-center space-x-3 px-4 py-2 text-left cursor-pointer ${
+                      darkMode ? 'text-white' : 'text-[#00001a]'
                     }`}
                     style={{ pointerEvents: 'auto' }}
                   >
@@ -366,8 +366,8 @@ const SeekerTopHeader = ({ darkMode, setDarkMode, setIsAuthenticated }) => {
                       e.stopPropagation()
                       handleProfileAction('settings')
                     }}
-                    className={`w-full flex items-center space-x-3 px-4 py-2 text-left transition-colors duration-200 cursor-pointer ${
-                      darkMode ? 'text-white hover:bg-white/10' : 'text-[#00001a] hover:bg-gray-100'
+                    className={`w-full flex items-center space-x-3 px-4 py-2 text-left cursor-pointer ${
+                      darkMode ? 'text-white' : 'text-[#00001a]'
                     }`}
                     style={{ pointerEvents: 'auto' }}
                   >
