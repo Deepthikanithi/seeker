@@ -223,7 +223,7 @@ const SeekerVerification = ({ darkMode }) => {
     switch (activeStep) {
       case 1:
         return (
-          <div className={`group p-6 border transition-all duration-300 relative overflow-hidden ${
+          <div className={`group p-6 border transition-all duration-300 relative overflow-hidden mt-6 ${
             darkMode
               ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
               : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
@@ -300,7 +300,7 @@ const SeekerVerification = ({ darkMode }) => {
 
       case 2:
         return (
-          <div className={`group p-6 border transition-all duration-300 relative overflow-hidden ${
+          <div className={`group p-6 border transition-all duration-300 relative overflow-hidden mt-6 ${
             darkMode
               ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
               : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
@@ -429,7 +429,7 @@ const SeekerVerification = ({ darkMode }) => {
 
       case 3:
         return (
-          <div className={`group p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden ${
+          <div className={`group p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden mt-6 ${
             darkMode
               ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
               : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
@@ -557,10 +557,10 @@ const SeekerVerification = ({ darkMode }) => {
 
       case 4:
         return (
-          <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden ${
+          <div className={`group p-6 backdrop-blur-xl border transition-all duration-500 shadow-xl relative overflow-hidden mt-6 ${
             darkMode
               ? 'rounded-lg bg-white/3 border-white/20 hover:border-blue-400/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]'
-              : 'rounded-lg bg-white border-gray-200 hover:border-gray-300 hover:shadow-[0_0_25px_rgba(0,0,0,0.15)]'
+              : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <div className="text-center">
               <CheckCircle className={`w-16 h-16 mx-auto mb-4 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />

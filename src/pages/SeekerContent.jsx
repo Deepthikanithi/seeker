@@ -37,6 +37,18 @@ const SeekerContent = ({ darkMode }) => {
   const [showMerchandiseModal, setShowMerchandiseModal] = useState(false)
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedPaymentItem, setSelectedPaymentItem] = useState(null)
+  const [paymentMethod, setPaymentMethod] = useState('card')
+  const [paymentForm, setPaymentForm] = useState({
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+    cardholderName: '',
+    walletType: 'paypal',
+    email: '',
+    phone: ''
+  })
   const [selectedMerchandise, setSelectedMerchandise] = useState(null)
 
   const [merchandiseForm, setMerchandiseForm] = useState({
@@ -1837,9 +1849,8 @@ const SeekerContent = ({ darkMode }) => {
   }
 
   const handleBuyNow = (item) => {
-    console.log(`Redirecting to checkout for "${item.title}"...`)
-    // In a real app, this would redirect to a payment processor
-    alert(`Proceeding to checkout for ${item.title} - $${item.price}`)
+    setSelectedPaymentItem(item)
+    setShowPaymentModal(true)
   }
 
   const handleCheckout = () => {
@@ -1860,6 +1871,61 @@ const SeekerContent = ({ darkMode }) => {
 
   const getCartItemCount = () => {
     return cart.reduce((sum, item) => sum + item.quantity, 0)
+  }
+
+  // Payment processing functions
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method)
+    setPaymentForm({
+      cardNumber: '',
+      expiryDate: '',
+      cvv: '',
+      cardholderName: '',
+      walletType: 'paypal',
+      email: '',
+      phone: ''
+    })
+  }
+
+  const handlePaymentFormChange = (field, value) => {
+    setPaymentForm(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const processPayment = () => {
+    if (!selectedPaymentItem) return
+
+    // Basic validation
+    if (paymentMethod === 'card') {
+      if (!paymentForm.cardNumber || !paymentForm.expiryDate || !paymentForm.cvv || !paymentForm.cardholderName) {
+        alert('Please fill in all card details')
+        return
+      }
+    } else if (paymentMethod === 'wallet') {
+      if (!paymentForm.email) {
+        alert('Please enter your email address')
+        return
+      }
+    }
+
+    // Simulate payment processing
+    setTimeout(() => {
+      alert(`Payment successful! You have purchased "${selectedPaymentItem.title}" for $${selectedPaymentItem.price}. A confirmation email will be sent shortly.`)
+      setShowPaymentModal(false)
+      setSelectedPaymentItem(null)
+      setPaymentMethod('card')
+      setPaymentForm({
+        cardNumber: '',
+        expiryDate: '',
+        cvv: '',
+        cardholderName: '',
+        walletType: 'paypal',
+        email: '',
+        phone: ''
+      })
+    }, 1500)
   }
 
   // Filter content based on active tab and filters
@@ -3223,6 +3289,257 @@ const SeekerContent = ({ darkMode }) => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedPaymentItem && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
+          }`}>
+            <div className={`p-6 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between">
+                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Complete Purchase
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowPaymentModal(false)
+                    setSelectedPaymentItem(null)
+                  }}
+                  className={`p-2 rounded-lg transition-colors ${
+                    darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Order Summary */}
+              <div className={`p-4 rounded-lg mb-6 ${
+                darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+              }`}>
+                <h4 className={`font-semibold mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Order Summary
+                </h4>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={selectedPaymentItem.image}
+                    alt={selectedPaymentItem.title}
+                    className="w-12 h-12 rounded-lg object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/48x48/6366f1/white?text=' + encodeURIComponent(selectedPaymentItem.title.split(' ')[0])
+                    }}
+                  />
+                  <div className="flex-1">
+                    <p className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      {selectedPaymentItem.title}
+                    </p>
+                    <p className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
+                      Quantity: 1
+                    </p>
+                  </div>
+                  <p className={`font-bold text-lg ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    ${selectedPaymentItem.price}
+                  </p>
+                </div>
+              </div>
+
+              {/* Payment Method Selection */}
+              <div className="mb-6">
+                <h4 className={`font-semibold mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Payment Method
+                </h4>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'card', label: 'Card', icon: '💳' },
+                    { id: 'wallet', label: 'Wallet', icon: '💰' },
+                    { id: 'paypal', label: 'PayPal', icon: '🅿️' }
+                  ].map((method) => (
+                    <button
+                      key={method.id}
+                      onClick={() => handlePaymentMethodChange(method.id)}
+                      className={`p-3 rounded-lg border text-sm font-medium transition-all duration-300 ${
+                        paymentMethod === method.id
+                          ? (darkMode
+                            ? 'border-blue-400 bg-blue-500/20 text-blue-300'
+                            : 'border-[#00001a] bg-[#00001a]/5 text-[#00001a]')
+                          : (darkMode
+                            ? 'border-white/20 text-white/70 hover:border-white/40'
+                            : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
+                      }`}
+                    >
+                      <div className="text-lg mb-1">{method.icon}</div>
+                      {method.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Payment Form */}
+              <div className="space-y-4">
+                {paymentMethod === 'card' && (
+                  <>
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Cardholder Name
+                      </label>
+                      <input
+                        type="text"
+                        value={paymentForm.cardholderName}
+                        onChange={(e) => handlePaymentFormChange('cardholderName', e.target.value)}
+                        placeholder="John Doe"
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          darkMode
+                            ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                            : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Card Number
+                      </label>
+                      <input
+                        type="text"
+                        value={paymentForm.cardNumber}
+                        onChange={(e) => handlePaymentFormChange('cardNumber', e.target.value)}
+                        placeholder="1234 5678 9012 3456"
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          darkMode
+                            ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                            : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                        }`}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          Expiry Date
+                        </label>
+                        <input
+                          type="text"
+                          value={paymentForm.expiryDate}
+                          onChange={(e) => handlePaymentFormChange('expiryDate', e.target.value)}
+                          placeholder="MM/YY"
+                          className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                            darkMode
+                              ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                              : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          CVV
+                        </label>
+                        <input
+                          type="text"
+                          value={paymentForm.cvv}
+                          onChange={(e) => handlePaymentFormChange('cvv', e.target.value)}
+                          placeholder="123"
+                          className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                            darkMode
+                              ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                              : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {paymentMethod === 'wallet' && (
+                  <>
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Wallet Type
+                      </label>
+                      <select
+                        value={paymentForm.walletType}
+                        onChange={(e) => handlePaymentFormChange('walletType', e.target.value)}
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          darkMode
+                            ? 'bg-white/10 border-white/20 text-white'
+                            : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                        }`}
+                      >
+                        <option value="paypal">PayPal</option>
+                        <option value="apple">Apple Pay</option>
+                        <option value="google">Google Pay</option>
+                        <option value="crypto">Crypto Wallet</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={paymentForm.email}
+                        onChange={(e) => handlePaymentFormChange('email', e.target.value)}
+                        placeholder="your@email.com"
+                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                          darkMode
+                            ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                            : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                        }`}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {paymentMethod === 'paypal' && (
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      PayPal Email
+                    </label>
+                    <input
+                      type="email"
+                      value={paymentForm.email}
+                      onChange={(e) => handlePaymentFormChange('email', e.target.value)}
+                      placeholder="your@paypal.com"
+                      className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                          : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                      }`}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowPaymentModal(false)
+                    setSelectedPaymentItem(null)
+                  }}
+                  className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                      : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                  }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={processPayment}
+                  className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30'
+                      : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                  }`}
+                >
+                  Pay ${selectedPaymentItem.price}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
