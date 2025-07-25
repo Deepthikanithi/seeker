@@ -133,13 +133,13 @@ const SeekerSettings = ({ darkMode }) => {
             <button
               key={tab.id}
               onClick={() => setActiveSection(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                 activeSection === tab.id
                   ? darkMode
-                    ? 'bg-white/20 text-white shadow-lg'
+                    ? 'bg-[#00001a] text-white border border-blue-400/50 shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                     : 'bg-[#00001a] text-white shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
                   : darkMode
-                    ? 'bg-white/5 text-white/70'
+                    ? 'bg-[#00001a] text-white/70 border border-white/20 hover:text-white hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                     : 'bg-white text-gray-600 border border-gray-200 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
               }`}
             >
@@ -171,8 +171,8 @@ const SeekerSettings = ({ darkMode }) => {
                     onClick={() => setLanguage(lang.code)}
                     className={`p-3 rounded-lg border text-left transition-all duration-300 ${
                       language === lang.code
-                        ? (darkMode ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-[#00001a] text-white border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
-                        : (darkMode ? 'border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
+                        ? (darkMode ? 'bg-[#00001a] text-blue-400 border-blue-500/30 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]' : 'bg-[#00001a] text-white border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                        : (darkMode ? 'bg-[#00001a] border-white/20 text-white hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]' : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
                     }`}
                   >
                     <div className="font-medium">{lang.name}</div>
@@ -206,7 +206,7 @@ const SeekerSettings = ({ darkMode }) => {
                 {/* Email Alerts */}
                 <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                     : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -241,7 +241,7 @@ const SeekerSettings = ({ darkMode }) => {
                 {/* Calendar Reminders */}
                 <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                     : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -276,7 +276,7 @@ const SeekerSettings = ({ darkMode }) => {
                 {/* Push Notifications */}
                 <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                     : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -311,7 +311,7 @@ const SeekerSettings = ({ darkMode }) => {
                 {/* Message Notifications */}
                 <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                     : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -346,7 +346,7 @@ const SeekerSettings = ({ darkMode }) => {
                 {/* Weekly Digest */}
                 <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                     : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -381,7 +381,7 @@ const SeekerSettings = ({ darkMode }) => {
                 {/* Anonymous Pool Response */}
                 <div className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                   darkMode
-                    ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                     : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                 }`}>
                   <div className="flex items-center justify-between gap-3 sm:gap-4">
@@ -459,7 +459,7 @@ const SeekerSettings = ({ darkMode }) => {
                 ].map((item) => (
                   <div key={item.key} className={`p-3 sm:p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                      ? 'bg-[#00001a] border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                       : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="flex items-center justify-between gap-3 sm:gap-4">

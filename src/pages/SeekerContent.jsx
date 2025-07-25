@@ -7,7 +7,8 @@ import {
   Flag, UserPlus, UserCheck, FolderPlus, Folder, Settings, Grid, List,
   Calendar, Award, Shield, Crown, Zap, Gift, ShoppingBag,
   ExternalLink, Copy, MoreHorizontal, X, Plus, ChevronDown, ChevronUp,
-  Layers, Tag, TrendingUp, Users, Bell, BellOff, Volume2, VolumeX
+  Layers, Tag, TrendingUp, Users, Bell, BellOff, Volume2, VolumeX,
+  CreditCard, Wallet, DollarSign
 } from 'lucide-react'
 
 const SeekerContent = ({ darkMode }) => {
@@ -26,6 +27,12 @@ const SeekerContent = ({ darkMode }) => {
   const [showSolverProfile, setShowSolverProfile] = useState(false)
   const [selectedSolver, setSelectedSolver] = useState(null)
   const [showFolderModal, setShowFolderModal] = useState(false)
+  const [showSaveFolderModal, setShowSaveFolderModal] = useState(false)
+  const [contentToSave, setContentToSave] = useState(null)
+  const [showFolderMenu, setShowFolderMenu] = useState(null)
+  const [showRenameModal, setShowRenameModal] = useState(false)
+  const [folderToRename, setFolderToRename] = useState(null)
+  const [newFolderName, setNewFolderName] = useState('')
   const [showReportModal, setShowReportModal] = useState(false)
   const [showCommentsModal, setShowCommentsModal] = useState(false)
   const [selectedContentForComments, setSelectedContentForComments] = useState(null)
@@ -69,7 +76,6 @@ const SeekerContent = ({ darkMode }) => {
     { id: 'folder2', name: 'Node.js Resources', count: 8 },
     { id: 'folder3', name: 'AI/ML Papers', count: 15 }
   ])
-  const [newFolderName, setNewFolderName] = useState('')
   const [selectedFolderType, setSelectedFolderType] = useState('Saved Content')
 
   const tabs = [
@@ -1575,15 +1581,55 @@ const SeekerContent = ({ darkMode }) => {
   }
 
   const handleSaveContent = (contentId) => {
-    setSavedContent(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(contentId)) {
-        newSet.delete(contentId)
-      } else {
-        newSet.add(contentId)
+    // Find the content to save
+    const content = mockContent.find(c => c.id === contentId)
+    if (content) {
+      setContentToSave(content)
+      setShowSaveFolderModal(true)
+    }
+  }
+
+  const handleSaveToFolder = (folderId) => {
+    if (contentToSave) {
+      // Add to saved content
+      setSavedContent(prev => new Set([...prev, contentToSave.id]))
+
+      // Add to specific folder if selected
+      if (folderId && folderId !== 'default') {
+        setCustomFolders(prev => prev.map(folder =>
+          folder.id === folderId
+            ? { ...folder, count: folder.count + 1 }
+            : folder
+        ))
       }
-      return newSet
-    })
+
+      // Close modal and reset
+      setShowSaveFolderModal(false)
+      setContentToSave(null)
+
+      // Show success message
+      alert(`Content saved successfully!`)
+    }
+  }
+
+  const handleRenameFolder = (folder) => {
+    setFolderToRename(folder)
+    setNewFolderName(folder.name)
+    setShowRenameModal(true)
+    setShowFolderMenu(null)
+  }
+
+  const handleConfirmRename = () => {
+    if (folderToRename && newFolderName.trim()) {
+      setCustomFolders(prev => prev.map(folder =>
+        folder.id === folderToRename.id
+          ? { ...folder, name: newFolderName.trim() }
+          : folder
+      ))
+      setShowRenameModal(false)
+      setFolderToRename(null)
+      setNewFolderName('')
+    }
   }
 
   const handleFollowChannel = (solverId) => {
@@ -1611,6 +1657,20 @@ const SeekerContent = ({ darkMode }) => {
       alert('Transcript not available for this content')
     }
   }
+
+  // Close folder menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showFolderMenu && !event.target.closest('.folder-menu-container')) {
+        setShowFolderMenu(null)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showFolderMenu])
 
 
 
@@ -1849,6 +1909,7 @@ const SeekerContent = ({ darkMode }) => {
   }
 
   const handleBuyNow = (item) => {
+    console.log('Buy Now clicked for:', item.title) // Debug log
     setSelectedPaymentItem(item)
     setShowPaymentModal(true)
   }
@@ -2223,12 +2284,6 @@ const SeekerContent = ({ darkMode }) => {
                   New Folder
                 </button>
               )}
-
-              <div className={`text-xs px-2 py-1 rounded-lg ${
-                darkMode ? 'bg-[#00001a] border border-gray-800 text-white/60' : 'bg-white text-gray-500 border border-gray-200'
-              }`}>
-                {viewMode === 'grid' ? 'Grid View' : 'List View'}
-              </div>
             </div>
           </div>
 
@@ -2243,11 +2298,54 @@ const SeekerContent = ({ darkMode }) => {
                 }`}>
                   <div className="flex items-center justify-between mb-4">
                     <Folder className={`w-8 h-8 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
-                    <button className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
-                      darkMode ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600'
-                    }`}>
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
+                    <div className="relative folder-menu-container">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setShowFolderMenu(showFolderMenu === folder.id ? null : folder.id)
+                        }}
+                        className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+                          darkMode ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        <MoreHorizontal className="w-4 h-4" />
+                      </button>
+
+                      {/* Folder Menu */}
+                      {showFolderMenu === folder.id && (
+                        <div className={`absolute right-0 top-8 w-48 rounded-lg border shadow-lg z-10 ${
+                          darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200'
+                        }`}>
+                          <div className="p-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleRenameFolder(folder)
+                              }}
+                              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 ${
+                                darkMode ? 'text-white hover:bg-white/10' : 'text-[#00001a] hover:bg-gray-100'
+                              }`}
+                            >
+                              Rename Folder
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                if (confirm(`Are you sure you want to delete "${folder.name}"?`)) {
+                                  setCustomFolders(prev => prev.filter(f => f.id !== folder.id))
+                                }
+                                setShowFolderMenu(null)
+                              }}
+                              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 ${
+                                darkMode ? 'text-red-400 hover:bg-red-500/20' : 'text-[#00001a] hover:bg-gray-100'
+                              }`}
+                            >
+                              Delete Folder
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                     {folder.name}
@@ -3297,7 +3395,7 @@ const SeekerContent = ({ darkMode }) => {
       {showPaymentModal && selectedPaymentItem && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
-            darkMode ? 'bg-[#00001a] border-white/20' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
+            darkMode ? 'bg-[#00001a] border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
           }`}>
             <div className={`p-6 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
               <div className="flex items-center justify-between">
@@ -3320,8 +3418,8 @@ const SeekerContent = ({ darkMode }) => {
 
             <div className="p-6">
               {/* Order Summary */}
-              <div className={`p-4 rounded-lg mb-6 ${
-                darkMode ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'
+              <div className={`p-4 rounded-lg mb-6 transition-all duration-300 ${
+                darkMode ? 'bg-[#00001a] border border-white/10 hover:shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'bg-gray-50 border border-gray-200'
               }`}>
                 <h4 className={`font-semibold mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Order Summary
@@ -3356,27 +3454,30 @@ const SeekerContent = ({ darkMode }) => {
                 </h4>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: 'card', label: 'Card', icon: '💳' },
-                    { id: 'wallet', label: 'Wallet', icon: '💰' },
-                    { id: 'paypal', label: 'PayPal', icon: '🅿️' }
-                  ].map((method) => (
-                    <button
-                      key={method.id}
-                      onClick={() => handlePaymentMethodChange(method.id)}
-                      className={`p-3 rounded-lg border text-sm font-medium transition-all duration-300 ${
-                        paymentMethod === method.id
-                          ? (darkMode
-                            ? 'border-blue-400 bg-blue-500/20 text-blue-300'
-                            : 'border-[#00001a] bg-[#00001a]/5 text-[#00001a]')
-                          : (darkMode
-                            ? 'border-white/20 text-white/70 hover:border-white/40'
-                            : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
-                      }`}
-                    >
-                      <div className="text-lg mb-1">{method.icon}</div>
-                      {method.label}
-                    </button>
-                  ))}
+                    { id: 'card', label: 'Card', icon: CreditCard },
+                    { id: 'wallet', label: 'Wallet', icon: Wallet },
+                    { id: 'paypal', label: 'PayPal', icon: DollarSign }
+                  ].map((method) => {
+                    const IconComponent = method.icon
+                    return (
+                      <button
+                        key={method.id}
+                        onClick={() => handlePaymentMethodChange(method.id)}
+                        className={`p-3 rounded-lg border text-sm font-medium transition-all duration-300 ${
+                          paymentMethod === method.id
+                            ? (darkMode
+                              ? 'border-blue-400 bg-[#00001a] text-blue-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                              : 'border-[#00001a] bg-[#00001a]/5 text-[#00001a]')
+                            : (darkMode
+                              ? 'border-white/20 bg-[#00001a] text-white/70 hover:border-blue-400/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                              : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]')
+                        }`}
+                      >
+                        <IconComponent className="w-5 h-5 mx-auto mb-1" />
+                        {method.label}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -3395,7 +3496,7 @@ const SeekerContent = ({ darkMode }) => {
                         placeholder="John Doe"
                         className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                           darkMode
-                            ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                            ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                             : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       />
@@ -3411,7 +3512,7 @@ const SeekerContent = ({ darkMode }) => {
                         placeholder="1234 5678 9012 3456"
                         className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                           darkMode
-                            ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                            ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                             : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       />
@@ -3428,7 +3529,7 @@ const SeekerContent = ({ darkMode }) => {
                           placeholder="MM/YY"
                           className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                             darkMode
-                              ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                              ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                               : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                           }`}
                         />
@@ -3444,7 +3545,7 @@ const SeekerContent = ({ darkMode }) => {
                           placeholder="123"
                           className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                             darkMode
-                              ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                              ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                               : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                           }`}
                         />
@@ -3464,7 +3565,7 @@ const SeekerContent = ({ darkMode }) => {
                         onChange={(e) => handlePaymentFormChange('walletType', e.target.value)}
                         className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                           darkMode
-                            ? 'bg-white/10 border-white/20 text-white'
+                            ? 'bg-[#00001a] border-white/20 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                             : 'bg-white border-gray-200 text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       >
@@ -3485,7 +3586,7 @@ const SeekerContent = ({ darkMode }) => {
                         placeholder="your@email.com"
                         className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                           darkMode
-                            ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                            ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                             : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                         }`}
                       />
@@ -3505,7 +3606,7 @@ const SeekerContent = ({ darkMode }) => {
                       placeholder="your@paypal.com"
                       className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
                         darkMode
-                          ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
+                          ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                           : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                       }`}
                     />
@@ -3522,7 +3623,7 @@ const SeekerContent = ({ darkMode }) => {
                   }}
                   className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
                     darkMode
-                      ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                      ? 'bg-[#00001a] text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
                       : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                   }`}
                 >
@@ -3682,6 +3783,190 @@ const SeekerContent = ({ darkMode }) => {
                 >
                   <div className="w-4 h-4 bg-blue-700 rounded-sm"></div>
                   LinkedIn
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Save to Folder Modal */}
+      {showSaveFolderModal && contentToSave && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
+          }`}>
+            <div className={`p-6 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between">
+                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Save Content
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowSaveFolderModal(false)
+                    setContentToSave(null)
+                  }}
+                  className={`p-2 rounded-lg transition-colors ${
+                    darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
+                  }`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-4">
+                <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  {contentToSave.title}
+                </h4>
+                <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                  Choose where to save this content:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {/* Default Saved folder */}
+                <button
+                  onClick={() => handleSaveToFolder('default')}
+                  className={`w-full p-4 rounded-lg border text-left transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-[#00001a] border-white/20 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                      : 'bg-white border-gray-200 text-[#00001a] hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Bookmark className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Saved Content</div>
+                      <div className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                        Default saved items
+                      </div>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Custom folders */}
+                {customFolders.map((folder) => (
+                  <button
+                    key={folder.id}
+                    onClick={() => handleSaveToFolder(folder.id)}
+                    className={`w-full p-4 rounded-lg border text-left transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-[#00001a] border-white/20 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                        : 'bg-white border-gray-200 text-[#00001a] hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Folder className="w-5 h-5" />
+                      <div>
+                        <div className="font-medium">{folder.name}</div>
+                        <div className={`text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                          {folder.count} items
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+
+                {/* Create new folder option */}
+                <button
+                  onClick={() => {
+                    setShowSaveFolderModal(false)
+                    setShowFolderModal(true)
+                  }}
+                  className={`w-full p-4 rounded-lg border-2 border-dashed text-left transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/30 text-white/70 hover:border-blue-400/50 hover:text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                      : 'border-gray-300 text-gray-600 hover:border-[#00001a] hover:text-[#00001a]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Plus className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium">Create New Folder</div>
+                      <div className={`text-sm ${darkMode ? 'text-white/50' : 'text-gray-400'}`}>
+                        Organize your saved content
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rename Folder Modal */}
+      {showRenameModal && folderToRename && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+            darkMode ? 'bg-[#00001a] border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
+          }`}>
+            <div className={`p-6 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex items-center justify-between">
+                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Rename Folder
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowRenameModal(false)
+                    setFolderToRename(null)
+                    setNewFolderName('')
+                  }}
+                  className={`p-2 rounded-lg transition-colors ${
+                    darkMode ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-[#00001a] hover:bg-gray-100'
+                  }`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-4">
+                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                  Folder Name
+                </label>
+                <input
+                  type="text"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-[#00001a] border-white/20 text-white placeholder-white/50 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                  }`}
+                  placeholder="Enter folder name"
+                  onKeyDown={(e) => e.key === 'Enter' && handleConfirmRename()}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowRenameModal(false)
+                    setFolderToRename(null)
+                    setNewFolderName('')
+                  }}
+                  className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    darkMode
+                      ? 'bg-[#00001a] text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                      : 'bg-white text-[#00001a] border border-gray-200 hover:bg-gray-50 shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
+                  }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmRename}
+                  disabled={!newFolderName.trim()}
+                  className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    !newFolderName.trim()
+                      ? (darkMode ? 'bg-[#00001a] text-white/50 cursor-not-allowed border border-white/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
+                      : (darkMode ? 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-[#00001a] text-white hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                  }`}
+                >
+                  Rename
                 </button>
               </div>
             </div>

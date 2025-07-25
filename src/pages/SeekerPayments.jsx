@@ -925,24 +925,13 @@ const SeekerPayments = ({ darkMode }) => {
                 <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Subscriptions
                 </h3>
-                <button
-                  onClick={() => setShowSubscriptionModal(true)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${
-                    darkMode
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                      : 'bg-[#00001a] text-white border border-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.15)]'
-                  }`}
-                >
-                  <Plus className="w-4 h-4" />
-                  New Subscription
-                </button>
               </div>
 
               <div className="space-y-4">
                 {subscriptions.map((sub) => (
                   <div key={sub.id} className={`p-4 rounded-lg border transition-all duration-300 ${
                     darkMode
-                      ? 'border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                      ? 'bg-[#00001a] border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]'
                       : 'bg-white border-gray-200 shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)]'
                   }`}>
                     <div className="flex items-center justify-between">
@@ -977,14 +966,14 @@ const SeekerPayments = ({ darkMode }) => {
                           <div className="flex flex-wrap gap-1 mt-2">
                             {sub.features.slice(0, 3).map((feature, idx) => (
                               <span key={idx} className={`px-2 py-1 rounded text-xs ${
-                                darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-gray-600'
+                                darkMode ? 'bg-[#00001a] text-white/70 border border-white/20' : 'bg-gray-100 text-gray-600'
                               }`}>
                                 {feature}
                               </span>
                             ))}
                             {sub.features.length > 3 && (
                               <span className={`px-2 py-1 rounded text-xs ${
-                                darkMode ? 'bg-white/10 text-white/70' : 'bg-gray-100 text-gray-600'
+                                darkMode ? 'bg-[#00001a] text-white/70 border border-white/20' : 'bg-gray-100 text-gray-600'
                               }`}>
                                 +{sub.features.length - 3} more
                               </span>
@@ -1047,8 +1036,8 @@ const SeekerPayments = ({ darkMode }) => {
                 ].map((plan, index) => (
                   <div key={index} className={`relative p-6 rounded-lg border transition-all duration-300 ${
                     plan.popular
-                      ? (darkMode ? 'border-blue-400/50 bg-blue-500/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_4px_8px_rgba(0,0,26,0.2)] hover:shadow-[0_-4px_8px_rgba(0,0,26,0.2)]')
-                      : (darkMode ? 'border-white/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]')
+                      ? (darkMode ? 'border-blue-400/50 bg-[#00001a] hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]' : 'bg-white border-gray-200 shadow-[0_4px_8px_rgba(0,0,26,0.2)] hover:shadow-[0_-4px_8px_rgba(0,0,26,0.2)]')
+                      : (darkMode ? 'bg-[#00001a] border-white/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.8)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]')
                   }`}>
                     {plan.popular && (
                       <div className={`absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full text-xs font-medium ${
@@ -1090,8 +1079,8 @@ const SeekerPayments = ({ darkMode }) => {
                         }}
                         className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                           plan.popular
-                            ? (darkMode ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-[#00001a] text-white hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
-                            : (darkMode ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' : 'bg-white text-[#00001a] border border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)] shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
+                            ? (darkMode ? 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'bg-[#00001a] text-white hover:bg-gray-800 shadow-[0_2px_4px_rgba(0,0,26,0.15)]')
+                            : (darkMode ? 'bg-[#00001a] text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-white text-[#00001a] border border-gray-200 hover:shadow-[0_-2px_4px_rgba(0,0,26,0.1)] shadow-[0_2px_4px_rgba(0,0,26,0.1)]')
                         }`}>
                         Subscribe
                       </button>
@@ -1448,8 +1437,8 @@ const SeekerPayments = ({ darkMode }) => {
                       onClick={() => setAddMoneyAmount(amount.toString())}
                       className={`px-3 py-2 rounded-lg border transition-all duration-300 ${
                         addMoneyAmount === amount.toString()
-                          ? (darkMode ? 'border-white bg-white/10 text-white' : 'border-[#00001a] bg-[#00001a]/10 text-[#00001a]')
-                          : (darkMode ? 'border-white/20 text-white hover:bg-white/10' : 'border-gray-200 text-[#00001a] hover:bg-gray-50')
+                          ? (darkMode ? 'border-white bg-[#00001a] text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'border-[#00001a] bg-[#00001a]/10 text-[#00001a]')
+                          : (darkMode ? 'border-white/20 bg-[#00001a] text-white hover:shadow-[0_0_5px_rgba(59,130,246,0.2)]' : 'border-gray-200 text-[#00001a] hover:bg-gray-50')
                       }`}
                     >
                       {getCurrentCurrency().symbol}{amount}
@@ -1468,13 +1457,13 @@ const SeekerPayments = ({ darkMode }) => {
                         onClick={() => setSelectedPaymentMethod(method)}
                         className={`w-full p-3 rounded-lg border text-left transition-all duration-300 ${
                           selectedPaymentMethod?.id === method.id
-                            ? (darkMode ? 'border-white bg-white/10' : 'border-[#00001a] bg-[#00001a]/10')
-                            : (darkMode ? 'border-white/20 hover:bg-white/5' : 'border-gray-200 hover:bg-gray-50')
+                            ? (darkMode ? 'border-white bg-[#00001a] hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'border-[#00001a] bg-[#00001a]/10')
+                            : (darkMode ? 'border-white/20 bg-[#00001a] hover:shadow-[0_0_5px_rgba(59,130,246,0.2)]' : 'border-gray-200 hover:bg-gray-50')
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className={`p-2 rounded-lg ${
-                            darkMode ? 'bg-white/10' : 'bg-gray-100'
+                            darkMode ? 'bg-[#00001a] border border-white/20' : 'bg-gray-100'
                           }`}>
                             {method.type === 'card' && <CreditCard className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
                             {method.type === 'paypal' && <Mail className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />}
@@ -1507,8 +1496,8 @@ const SeekerPayments = ({ darkMode }) => {
                   disabled={!addMoneyAmount || !selectedPaymentMethod}
                   className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                     !addMoneyAmount || !selectedPaymentMethod
-                      ? (darkMode ? 'bg-white/10 text-white/50 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
-                      : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800' : 'bg-[#00001a] text-white hover:bg-gray-800')
+                      ? (darkMode ? 'bg-[#00001a] text-white/50 cursor-not-allowed border border-white/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
+                      : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-[#00001a] text-white hover:bg-gray-800')
                   }`}
                 >
                   Add Money
@@ -1634,8 +1623,8 @@ const SeekerPayments = ({ darkMode }) => {
                   disabled={!groupSplitAmount || selectedGroupMembers.length === 0}
                   className={`w-full px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                     !groupSplitAmount || selectedGroupMembers.length === 0
-                      ? (darkMode ? 'bg-white/10 text-white/50 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
-                      : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800' : 'bg-[#00001a] text-white hover:bg-gray-800')
+                      ? (darkMode ? 'bg-[#00001a] text-white/50 cursor-not-allowed border border-white/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
+                      : (darkMode ? 'bg-[#00001a] text-white hover:bg-gray-800 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-[#00001a] text-white hover:bg-gray-800')
                   }`}
                 >
                   Create Split Payment
