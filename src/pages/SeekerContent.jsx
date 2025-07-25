@@ -1672,7 +1672,29 @@ const SeekerContent = ({ darkMode }) => {
     }
   }, [showFolderMenu])
 
+  // Handle keyboard shortcuts (Escape key)
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        if (showPaymentModal) {
+          setShowPaymentModal(false)
+          setSelectedPaymentItem(null)
+        }
+        if (showRenameModal) {
+          setShowRenameModal(false)
+          setFolderToRename(null)
+          setNewFolderName('')
+        }
+        if (showSaveFolderModal) {
+          setShowSaveFolderModal(false)
+          setContentToSave(null)
+        }
+      }
+    }
 
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [showPaymentModal, showRenameModal, showSaveFolderModal])
 
   // Handle tag click for filtering
   const handleTagClick = (tag) => {
@@ -3393,11 +3415,20 @@ const SeekerContent = ({ darkMode }) => {
 
       {/* Payment Modal */}
       {showPaymentModal && selectedPaymentItem && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`max-w-md w-full rounded-lg border transition-all duration-300 ${
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowPaymentModal(false)
+              setSelectedPaymentItem(null)
+            }
+          }}
+        >
+          <div className={`max-w-md w-full max-h-[90vh] rounded-lg border transition-all duration-300 overflow-hidden flex flex-col ${
             darkMode ? 'bg-[#00001a] border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)]'
           }`}>
-            <div className={`p-6 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+            {/* Fixed Header */}
+            <div className={`flex-shrink-0 p-6 border-b ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
               <div className="flex items-center justify-between">
                 <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Complete Purchase
@@ -3416,7 +3447,8 @@ const SeekerContent = ({ darkMode }) => {
               </div>
             </div>
 
-            <div className="p-6">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
               {/* Order Summary */}
               <div className={`p-4 rounded-lg mb-6 transition-all duration-300 ${
                 darkMode ? 'bg-[#00001a] border border-white/10 hover:shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'bg-gray-50 border border-gray-200'
@@ -3615,7 +3647,11 @@ const SeekerContent = ({ darkMode }) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 mt-6">
+            </div>
+
+            {/* Fixed Footer */}
+            <div className={`flex-shrink-0 p-6 border-t ${darkMode ? 'border-white/10' : 'border-gray-200'}`}>
+              <div className="flex gap-3">
                 <button
                   onClick={() => {
                     setShowPaymentModal(false)
