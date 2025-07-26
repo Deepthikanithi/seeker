@@ -446,11 +446,11 @@ const SeekerProfile = ({ darkMode }) => {
                         : 'bg-white border-gray-200 text-[#00001a] disabled:bg-gray-50 hover:border-gray-300 hover:shadow-[0_2px_4px_rgba(0,0,26,0.1)] focus:border-gray-300 focus:shadow-[0_2px_4px_rgba(0,0,26,0.1)]'
                     }`}
                   >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                    <option value="Prefer not to say">Prefer not to say</option>
+                    <option value="" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Select Gender</option>
+                    <option value="Male" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Male</option>
+                    <option value="Female" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Female</option>
+                    <option value="Other" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Other</option>
+                    <option value="Prefer not to say" className={darkMode ? 'bg-[#00001a] text-white' : 'bg-white text-[#00001a]'}>Prefer not to say</option>
                   </select>
                 </div>
                 <div>

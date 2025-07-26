@@ -15,17 +15,36 @@ export const ThemeProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
     // Check localStorage for saved theme preference
     const saved = localStorage.getItem('darkMode')
-    return saved ? JSON.parse(saved) : false
+    const isDark = saved ? JSON.parse(saved) : false
+
+    // Apply theme immediately to prevent flash
+    if (isDark) {
+      document.body.classList.add('dark')
+    } else {
+      document.body.classList.remove('dark')
+    }
+
+    return isDark
   })
 
   // Update body class and localStorage when dark mode changes
   useEffect(() => {
+    // Add transition class to body for smooth theme switching
+    document.body.classList.add('theme-transition')
+
     if (darkMode) {
       document.body.classList.add('dark')
     } else {
       document.body.classList.remove('dark')
     }
     localStorage.setItem('darkMode', JSON.stringify(darkMode))
+
+    // Remove transition class after animation completes
+    const timer = setTimeout(() => {
+      document.body.classList.remove('theme-transition')
+    }, 300)
+
+    return () => clearTimeout(timer)
   }, [darkMode])
 
   const toggleDarkMode = () => {

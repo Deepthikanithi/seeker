@@ -47,14 +47,6 @@ const SeekerSessions = ({ darkMode }) => {
 
   // Main state management
   const [activeTab, setActiveTab] = useState('upcoming')
-
-  // Handle URL parameters
-  useEffect(() => {
-    const tabParam = searchParams.get('tab')
-    if (tabParam && ['upcoming', 'booking', 'podcast', 'history', 'anonymous', 'files', 'chat', 'live'].includes(tabParam)) {
-      setActiveTab(tabParam)
-    }
-  }, [searchParams])
   const [searchQuery, setSearchQuery] = useState('')
   const [solverSearchQuery, setSolverSearchQuery] = useState('')
   const [showBookingModal, setShowBookingModal] = useState(false)
@@ -82,6 +74,9 @@ const SeekerSessions = ({ darkMode }) => {
 
   // File management
   const [uploadedFiles, setUploadedFiles] = useState([])
+  const [openFileMenu, setOpenFileMenu] = useState(null)
+  const [showFileDetails, setShowFileDetails] = useState(null)
+  const [showShareModal, setShowShareModal] = useState(null)
 
   // Chat and communication
   const [chatMessages, setChatMessages] = useState([])
@@ -96,6 +91,26 @@ const SeekerSessions = ({ darkMode }) => {
   const [handRaised, setHandRaised] = useState(false)
   const [sessionReminders, setSessionReminders] = useState(true)
   const [selectedPlatform, setSelectedPlatform] = useState('platform')
+
+  // Handle URL parameters
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam && ['upcoming', 'booking', 'podcast', 'history', 'anonymous', 'files', 'chat', 'live'].includes(tabParam)) {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (openFileMenu && !event.target.closest('.file-menu-container')) {
+        setOpenFileMenu(null)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [openFileMenu])
 
   const tabs = [
     { id: 'upcoming', label: 'Upcoming Sessions', icon: Calendar, count: 3 },
@@ -229,34 +244,96 @@ const SeekerSessions = ({ darkMode }) => {
       name: 'React_Performance_Guide.pdf',
       size: '2.4 MB',
       type: 'pdf',
-      uploadedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      sharedBy: 'You'
+      uploadedAt: new Date('2025-07-23'),
+      sharedBy: 'You',
+      description: 'Comprehensive guide on React performance optimization techniques'
     },
     {
       id: 'F002',
       name: 'Node.js_Best_Practices.docx',
       size: '1.8 MB',
       type: 'doc',
-      uploadedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      sharedBy: 'Alex Chen'
+      uploadedAt: new Date('2025-07-19'),
+      sharedBy: 'Alex Chen',
+      description: 'Best practices for Node.js development and deployment'
     },
     {
       id: 'F003',
       name: 'Database_Schema_Design.zip',
       size: '5.2 MB',
       type: 'zip',
-      uploadedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-      sharedBy: 'You'
+      uploadedAt: new Date('2025-07-16'),
+      sharedBy: 'You',
+      description: 'Database schema design examples and templates'
     },
     {
       id: 'F004',
       name: 'CSS_Grid_Examples.html',
       size: '0.8 MB',
       type: 'html',
-      uploadedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-      sharedBy: 'Emma Wilson'
+      uploadedAt: new Date('2025-07-12'),
+      sharedBy: 'Emma Wilson',
+      description: 'Interactive CSS Grid layout examples and demos'
     }
   ]
+
+  // File action handlers
+  const handleFileAction = (action, file) => {
+    setOpenFileMenu(null)
+    switch (action) {
+      case 'view':
+        console.log('Viewing file:', file.name)
+        alert(`Opening ${file.name} for viewing...`)
+        break
+      case 'download':
+        console.log('Downloading file:', file.name)
+        alert(`Downloading ${file.name}...`)
+        break
+      case 'share':
+        setShowShareModal(file)
+        break
+      case 'details':
+        setShowFileDetails(file)
+        break
+      case 'delete':
+        if (window.confirm(`Are you sure you want to delete ${file.name}?`)) {
+          // Remove file from mockFiles array (in real app, this would be an API call)
+          console.log('Deleting file:', file.name)
+          alert(`${file.name} has been deleted successfully.`)
+          // In a real app, you would update the state to remove the file
+          // setMockFiles(prev => prev.filter(f => f.id !== file.id))
+        }
+        break
+      default:
+        break
+    }
+  }
+
+  // Share action handlers
+  const handleShareAction = (action, file) => {
+    setShowShareModal(null)
+    switch (action) {
+      case 'copyLink':
+        const fileLink = `${window.location.origin}/files/${file.id}`
+        navigator.clipboard.writeText(fileLink).then(() => {
+          alert('File link copied to clipboard!')
+        }).catch(() => {
+          alert('Failed to copy link')
+        })
+        break
+      case 'whatsapp':
+        const whatsappText = `Check out this file: ${file.name} - ${window.location.origin}/files/${file.id}`
+        window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, '_blank')
+        break
+      case 'gmail':
+        const gmailSubject = `Shared File: ${file.name}`
+        const gmailBody = `Hi,\n\nI'm sharing this file with you: ${file.name}\n\nYou can access it here: ${window.location.origin}/files/${file.id}\n\nBest regards`
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(gmailSubject)}&body=${encodeURIComponent(gmailBody)}`, '_blank')
+        break
+      default:
+        break
+    }
+  }
 
   // Mock solvers data for browsing
   const availableSolvers = [
@@ -1334,31 +1411,91 @@ const SeekerSessions = ({ darkMode }) => {
                 <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   Files & References ({mockFiles.length})
                 </h3>
-
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mockFiles.map((file) => (
-                  <div key={file.id} className={`group p-4 rounded-lg border cursor-pointer ${
+                  <div key={file.id} className={`group p-4 rounded-lg border relative ${
                     darkMode
                       ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300'
                       : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
                   }`}>
                     <div className="flex items-start justify-between mb-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        file.type === 'pdf'
-                          ? (darkMode ? 'bg-red-500/20' : 'bg-[#00001a]/10 border border-gray-200')
-                          : file.type === 'doc'
-                          ? (darkMode ? 'bg-blue-500/20' : 'bg-[#00001a]/10 border border-gray-200')
-                          : (darkMode ? 'bg-green-500/20' : 'bg-[#00001a]/10 border border-gray-200')
+                        darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'
                       }`}>
                         <FileText className={`w-5 h-5 ${
                           darkMode ? 'text-white/70' : 'text-[#00001a]'
                         }`} />
                       </div>
-                      <button className={`p-1 rounded hover:bg-white/10 ${darkMode ? 'text-white/50' : 'text-[#00001a]/50'}`}>
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
+                      <div className="relative file-menu-container">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setOpenFileMenu(openFileMenu === file.id ? null : file.id)
+                          }}
+                          className={`p-1 rounded transition-all duration-200 ${
+                            darkMode
+                              ? 'text-white/50 hover:text-white hover:bg-white/10'
+                              : 'text-[#00001a]/50 hover:text-[#00001a] hover:bg-[#00001a]/10'
+                          }`}
+                        >
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {openFileMenu === file.id && (
+                          <div className={`absolute right-0 top-8 w-48 rounded-lg border shadow-lg z-10 ${
+                            darkMode
+                              ? 'bg-[#00001a] border-gray-800'
+                              : 'bg-white border-gray-200'
+                          }`}>
+                            <div className="py-1">
+                              <button
+                                onClick={() => handleFileAction('view', file)}
+                                className={`w-full px-4 py-2 text-left text-sm transition-colors ${
+                                  darkMode
+                                    ? 'text-white hover:bg-white/10'
+                                    : 'text-[#00001a] hover:bg-[#00001a]/10'
+                                }`}
+                              >
+                                View File
+                              </button>
+                              <button
+                                onClick={() => handleFileAction('share', file)}
+                                className={`w-full px-4 py-2 text-left text-sm transition-colors ${
+                                  darkMode
+                                    ? 'text-white hover:bg-white/10'
+                                    : 'text-[#00001a] hover:bg-[#00001a]/10'
+                                }`}
+                              >
+                                Share
+                              </button>
+                              <button
+                                onClick={() => handleFileAction('details', file)}
+                                className={`w-full px-4 py-2 text-left text-sm transition-colors ${
+                                  darkMode
+                                    ? 'text-white hover:bg-white/10'
+                                    : 'text-[#00001a] hover:bg-[#00001a]/10'
+                                }`}
+                              >
+                                File Details
+                              </button>
+                              <hr className={`my-1 ${darkMode ? 'border-gray-800' : 'border-gray-200'}`} />
+                              <button
+                                onClick={() => handleFileAction('delete', file)}
+                                className={`w-full px-4 py-2 text-left text-sm transition-colors ${
+                                  darkMode
+                                    ? 'text-red-400 hover:bg-red-500/10'
+                                    : 'text-red-600 hover:bg-red-50'
+                                }`}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <h4 className={`font-medium mb-1 text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
@@ -1370,13 +1507,10 @@ const SeekerSessions = ({ darkMode }) => {
 
                     <div className="flex gap-2">
                       <button
-                        onClick={() => {
-                          console.log('Viewing file:', file.name)
-                          alert(`Opening ${file.name} for viewing...`)
-                        }}
-                        className={`w-full px-3 py-1 rounded text-xs font-medium transition-all duration-300 ${
+                        onClick={() => handleFileAction('view', file)}
+                        className={`w-full px-3 py-2 rounded text-xs font-medium transition-all duration-300 ${
                           darkMode
-                            ? 'bg-[#00001a] border border-blue-500 text-blue-400 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]'
+                            ? 'bg-white text-[#00001a] hover:bg-white/90'
                             : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
                         }`}
                       >
@@ -1385,6 +1519,224 @@ const SeekerSessions = ({ darkMode }) => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* File Details Modal */}
+          {showFileDetails && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className={`w-full max-w-md rounded-lg border ${
+                darkMode
+                  ? 'bg-[#00001a] border-gray-800'
+                  : 'bg-white border-gray-200'
+              }`}>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      File Details
+                    </h3>
+                    <button
+                      onClick={() => setShowFileDetails(null)}
+                      className={`p-1 rounded transition-colors ${
+                        darkMode
+                          ? 'text-white/50 hover:text-white hover:bg-white/10'
+                          : 'text-[#00001a]/50 hover:text-[#00001a] hover:bg-[#00001a]/10'
+                      }`}
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                        File Name
+                      </label>
+                      <p className={`text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {showFileDetails.name}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                        File Size
+                      </label>
+                      <p className={`text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {showFileDetails.size}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                        Uploaded Date
+                      </label>
+                      <p className={`text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {showFileDetails.uploadedAt.toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                        Shared By
+                      </label>
+                      <p className={`text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {showFileDetails.sharedBy}
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                        Description
+                      </label>
+                      <p className={`text-sm ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {showFileDetails.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 mt-6">
+                    <button
+                      onClick={() => {
+                        handleFileAction('view', showFileDetails)
+                        setShowFileDetails(null)
+                      }}
+                      className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-all duration-300 ${
+                        darkMode
+                          ? 'bg-white text-[#00001a] hover:bg-white/90'
+                          : 'bg-[#00001a] text-white hover:bg-[#00001a]/90'
+                      }`}
+                    >
+                      View File
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleFileAction('download', showFileDetails)
+                        setShowFileDetails(null)
+                      }}
+                      className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-all duration-300 border ${
+                        darkMode
+                          ? 'border-gray-800 text-white hover:bg-white/10'
+                          : 'border-gray-300 text-[#00001a] hover:bg-[#00001a]/10'
+                      }`}
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Share Modal */}
+          {showShareModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className={`w-full max-w-md rounded-lg border ${
+                darkMode
+                  ? 'bg-[#00001a] border-gray-800'
+                  : 'bg-white border-gray-200'
+              }`}>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      Share link
+                    </h3>
+                    <button
+                      onClick={() => setShowShareModal(null)}
+                      className={`p-1 rounded transition-colors ${
+                        darkMode
+                          ? 'text-white/50 hover:text-white hover:bg-white/10'
+                          : 'text-[#00001a]/50 hover:text-[#00001a] hover:bg-[#00001a]/10'
+                      }`}
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Copy Link Section */}
+                  <div className="mb-6">
+                    <div className={`flex items-center gap-3 p-3 rounded-lg border ${
+                      darkMode ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-gray-50'
+                    }`}>
+                      <div className={`p-2 rounded ${darkMode ? 'bg-white/10' : 'bg-[#00001a]/10'}`}>
+                        <Share2 className={`w-4 h-4 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                      </div>
+                      <div className="flex-1">
+                        <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                          {`${window.location.origin}/files/${showShareModal.id}`}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleShareAction('copyLink', showShareModal)}
+                        className={`p-2 rounded transition-colors ${
+                          darkMode
+                            ? 'text-white/70 hover:text-white hover:bg-white/10'
+                            : 'text-[#00001a]/70 hover:text-[#00001a] hover:bg-[#00001a]/10'
+                        }`}
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Share Options */}
+                  <div>
+                    <h4 className={`text-sm font-medium mb-3 ${darkMode ? 'text-white/70' : 'text-[#00001a]/70'}`}>
+                      Share using
+                    </h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <button
+                        onClick={() => handleShareAction('whatsapp', showShareModal)}
+                        className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-colors ${
+                          darkMode
+                            ? 'hover:bg-white/10'
+                            : 'hover:bg-[#00001a]/10'
+                        }`}
+                      >
+                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                          <MessageSquare className="w-5 h-5 text-white" />
+                        </div>
+                        <span className={`text-xs ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          WhatsApp
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleShareAction('gmail', showShareModal)}
+                        className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-colors ${
+                          darkMode
+                            ? 'hover:bg-white/10'
+                            : 'hover:bg-[#00001a]/10'
+                        }`}
+                      >
+                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                          <Send className="w-5 h-5 text-white" />
+                        </div>
+                        <span className={`text-xs ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          Gmail
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleShareAction('copyLink', showShareModal)}
+                        className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-colors ${
+                          darkMode
+                            ? 'hover:bg-white/10'
+                            : 'hover:bg-[#00001a]/10'
+                        }`}
+                      >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          darkMode ? 'bg-white/20' : 'bg-[#00001a]/20'
+                        }`}>
+                          <Share2 className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-[#00001a]'}`} />
+                        </div>
+                        <span className={`text-xs ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          Copy Link
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}

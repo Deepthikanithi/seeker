@@ -60,7 +60,7 @@ const SeekerSidebar = ({ darkMode, setDarkMode, setIsAuthenticated }) => {
         {!isCollapsed && (
           <h1 className={`text-xl font-bold transition-all duration-500 ${
             darkMode ? 'text-white' : 'text-[#00001a]'
-          }`}>SynapSeeker</h1>
+          }`}>SynapMentor</h1>
         )}
         <button
           className={`p-2 transition-all duration-300 hover:scale-110 ${

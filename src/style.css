@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Prevent flash of unstyled content during theme switch */
+html {
+  color-scheme: light dark;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Enhanced theme transition for body */
+body.theme-transition {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Override transitions for elements that shouldn't animate */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
 /* Line clamp utilities */
 .line-clamp-1 {
   overflow: hidden;
@@ -22,6 +48,44 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+}
+
+/* Responsive utilities */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    gap: 2rem;
+  }
+}
+
+/* Prevent layout shift */
+.content-card {
+  contain: layout style;
+  will-change: transform;
+}
+
+/* Better button responsiveness */
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .action-buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Glassmorphism Variables */
@@ -300,6 +364,18 @@ body.dark {
 /* Global text color overrides for light mode */
 body:not(.dark) .text-gray-600 {
   color: rgba(0, 0, 26, 0.7) !important;
+}
+
+/* Dark mode select option styling */
+body.dark select option {
+  background-color: #00001a !important;
+  color: white !important;
+}
+
+/* Light mode select option styling for consistency */
+body:not(.dark) select option {
+  background-color: white !important;
+  color: #00001a !important;
 }
 
 /* Notification animations */

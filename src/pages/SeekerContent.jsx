@@ -2267,12 +2267,12 @@ const SeekerContent = ({ darkMode }) => {
         {/* Enhanced Content Grid */}
         <div className="mt-8"></div>
         <div
-          className={`p-4 sm:p-6 border relative overflow-hidden transition-all duration-300 ${
+          className={`p-3 sm:p-4 md:p-6 border relative overflow-hidden transition-all duration-300 ${
             darkMode
               ? 'rounded-lg bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
               : 'rounded-lg bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
           }`}
-          style={{ minHeight: '600px' }} // Ensure enough space for dropdowns to open downward
+          style={{ minHeight: '500px' }} // Ensure enough space for dropdowns to open downward
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
             <h3 className={`text-base sm:text-lg font-semibold break-words ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
@@ -2379,9 +2379,9 @@ const SeekerContent = ({ darkMode }) => {
               ))}
             </div>
           ) : (
-            <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6' : 'space-y-3 sm:space-y-4'}`}>
+            <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6' : 'space-y-4'}`}>
               {filteredContent.map((content) => (
-                <div key={content.id} className={`group rounded-lg border transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full min-h-[350px] sm:min-h-[400px] ${
+                <div key={content.id} className={`group rounded-lg border transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full min-h-[320px] sm:min-h-[380px] w-full ${
                   darkMode
                     ? 'bg-[#00001a] border-gray-800 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]'
                     : 'bg-white border-gray-200 shadow-[0_3px_6px_rgba(0,0,26,0.15)] hover:shadow-[0_-3px_6px_rgba(0,0,26,0.15)]'
@@ -2424,46 +2424,53 @@ const SeekerContent = ({ darkMode }) => {
                   </div>
 
                   {/* Content Info */}
-                  <div className="p-4 sm:p-6 flex flex-col flex-1 justify-between">
+                  <div className="p-3 sm:p-4 md:p-6 flex flex-col flex-1 justify-between">
                     {/* Main Content */}
                     <div className="flex-1">
                       {/* Title */}
-                      <h3 className={`text-xl font-bold mb-3 line-clamp-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      <h3 className={`text-lg sm:text-xl font-bold mb-2 sm:mb-3 line-clamp-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                         {content.title}
                       </h3>
 
                       {/* Description */}
-                      <p className={`text-sm mb-4 line-clamp-3 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                      <p className={`text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                         {content.description || 'Deep dive into modern programming concepts and best practices.'}
                       </p>
 
                       {/* Category and Type */}
-                      <div className="flex items-center gap-2 mb-4">
-                        <span className={`text-sm font-medium ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
+                      <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                        <span className={`text-xs sm:text-sm font-medium truncate ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
                           {content.category} • {content.type.charAt(0).toUpperCase() + content.type.slice(1)}
                         </span>
                       </div>
 
                       {/* Tags */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {content.tags.slice(0, 3).map((tag, index) => (
+                      <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
+                        {content.tags.slice(0, 2).map((tag, index) => (
                           <span
                             key={index}
-                            className={`px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
+                            className={`px-2 py-1 rounded text-xs font-medium truncate max-w-[80px] sm:max-w-none ${
                               darkMode ? 'bg-[#00001a] border border-gray-800 text-white/70' : 'bg-gray-100 text-gray-600'
                             }`}
                           >
                             {tag}
                           </span>
                         ))}
+                        {content.tags.length > 2 && (
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            darkMode ? 'bg-[#00001a] border border-gray-800 text-white/70' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            +{content.tags.length - 2}
+                          </span>
+                        )}
                       </div>
 
                       {/* Stats */}
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm mb-4 gap-2">
-                        <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                           <span className={`flex items-center gap-1 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
-                            <Eye className="w-4 h-4" />
-                            {formatViews(content.views)}
+                            <Eye className="w-4 h-4 flex-shrink-0" />
+                            <span className="text-xs sm:text-sm">{formatViews(content.views)}</span>
                           </span>
                           <button
                             onClick={(e) => {
@@ -2477,9 +2484,9 @@ const SeekerContent = ({ darkMode }) => {
                             }`}
                           >
                             <Heart
-                              className={`w-4 h-4 ${likedContent.has(content.id) ? 'fill-current' : ''}`}
+                              className={`w-4 h-4 flex-shrink-0 ${likedContent.has(content.id) ? 'fill-current' : ''}`}
                             />
-                            {content.likes + (likedContent.has(content.id) ? 1 : 0)}
+                            <span className="text-xs sm:text-sm">{content.likes + (likedContent.has(content.id) ? 1 : 0)}</span>
                           </button>
                           <button
                             onClick={(e) => {
@@ -2490,28 +2497,30 @@ const SeekerContent = ({ darkMode }) => {
                               darkMode ? 'text-white/60 hover:text-white' : 'text-gray-500 hover:text-[#00001a]'
                             }`}
                           >
-                            <MessageCircle className="w-4 h-4" />
-                            {content.comments}
+                            <MessageCircle className="w-4 h-4 flex-shrink-0" />
+                            <span className="text-xs sm:text-sm">{content.comments}</span>
                           </button>
                         </div>
-                        <span className={`${darkMode ? 'text-white/60' : 'text-gray-500'} text-xs sm:text-sm`}>
+                        <span className={`${darkMode ? 'text-white/60' : 'text-gray-500'} text-xs sm:text-sm flex-shrink-0`}>
                           {getTimeAgo(content.createdAt)}
                         </span>
                       </div>
                     </div>
 
                     {/* Action Buttons - Always at bottom */}
-                    <div className="flex flex-wrap items-center gap-2 mt-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-2 mt-4">
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           handleLikeContent(content.id)
                         }}
-                        className={`flex-1 min-w-[70px] px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 border ${
+                        className={`w-full px-1 py-2 rounded-lg font-medium transition-all duration-300 text-center flex items-center justify-center ${
                           likedContent.has(content.id)
-                            ? (darkMode ? 'bg-[#00001a] text-white border-gray-800' : 'bg-gray-100 text-[#00001a] border-gray-300')
-                            : (darkMode ? 'border-gray-800 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'border-gray-300 text-gray-700 hover:bg-gray-50')
+                            ? (darkMode ? 'bg-[#00001a] text-white border border-white/20' : 'bg-gray-100 text-[#00001a]')
+                            : (darkMode ? 'text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:border-blue-400/50' : 'bg-[#00001a] text-white shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:bg-[#00001a]/90 hover:shadow-[0_4px_8px_rgba(0,0,26,0.15)]')
                         }`}
+                        style={{ fontSize: 'clamp(0.65rem, 2.5vw, 0.875rem)' }}
+                        title={likedContent.has(content.id) ? "Unlike this content" : "Like this content"}
                       >
                         Like
                       </button>
@@ -2521,11 +2530,13 @@ const SeekerContent = ({ darkMode }) => {
                           e.stopPropagation()
                           handleShowShare(content)
                         }}
-                        className={`flex-1 min-w-[70px] px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        className={`w-full px-1 py-2 rounded-lg font-medium transition-all duration-300 text-center flex items-center justify-center ${
                           darkMode
-                            ? 'bg-[#00001a] text-white'
-                            : 'bg-[#00001a] text-white'
+                            ? 'text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:border-blue-400/50'
+                            : 'bg-white text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:bg-gray-50 hover:shadow-[0_4px_8px_rgba(0,0,26,0.15)]'
                         }`}
+                        style={{ fontSize: 'clamp(0.65rem, 2.5vw, 0.875rem)' }}
+                        title="Share this content"
                       >
                         Share
                       </button>
@@ -2535,13 +2546,31 @@ const SeekerContent = ({ darkMode }) => {
                           e.stopPropagation()
                           handleSaveContent(content.id)
                         }}
-                        className={`flex-1 min-w-[70px] px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 border ${
+                        className={`w-full px-1 py-2 rounded-lg font-medium transition-all duration-300 text-center flex items-center justify-center ${
                           savedContent.has(content.id)
-                            ? (darkMode ? 'bg-[#00001a] text-white border-gray-800' : 'bg-gray-100 text-[#00001a] border-gray-300')
-                            : (darkMode ? 'border-gray-800 text-white hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'border-gray-300 text-gray-700 hover:bg-gray-50')
+                            ? (darkMode ? 'bg-[#00001a] text-white border border-white/20' : 'bg-gray-100 text-[#00001a]')
+                            : (darkMode ? 'text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:border-blue-400/50' : 'bg-[#00001a] text-white shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:bg-[#00001a]/90 hover:shadow-[0_4px_8px_rgba(0,0,26,0.15)]')
                         }`}
+                        style={{ fontSize: 'clamp(0.65rem, 2.5vw, 0.875rem)' }}
+                        title={savedContent.has(content.id) ? "Remove from saved" : "Save this content"}
                       >
                         {savedContent.has(content.id) ? 'Saved' : 'Save'}
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleReportContent(content)
+                        }}
+                        className={`w-full px-1 py-2 rounded-lg font-medium transition-all duration-300 text-center flex items-center justify-center ${
+                          darkMode
+                            ? 'text-white border border-white/20 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:border-blue-400/50'
+                            : 'bg-white text-[#00001a] shadow-[0_2px_4px_rgba(0,0,26,0.1)] hover:bg-gray-50 hover:shadow-[0_4px_8px_rgba(0,0,26,0.15)]'
+                        }`}
+                        style={{ fontSize: 'clamp(0.65rem, 2.5vw, 0.875rem)' }}
+                        title="Report this content"
+                      >
+                        Report
                       </button>
                     </div>
 
