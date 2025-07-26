@@ -35,6 +35,14 @@ const SeekerExplore = ({ darkMode }) => {
   const [showGiftModal, setShowGiftModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [selectedSolver, setSelectedSolver] = useState(null)
+  const [showSolverProfile, setShowSolverProfile] = useState(false)
+  const [selectedSolverForProfile, setSelectedSolverForProfile] = useState(null)
+  const [showBookingModal, setShowBookingModal] = useState(false)
+  const [selectedSolverForBooking, setSelectedSolverForBooking] = useState(null)
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('')
+  const [bookingTopic, setBookingTopic] = useState('')
+  const [bookingDescription, setBookingDescription] = useState('')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('credit_card')
 
   // Filter states
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All')
@@ -142,11 +150,23 @@ const SeekerExplore = ({ darkMode }) => {
   }
 
   const handleBookNow = (solverId) => {
-    navigate(`/sessions?book=${solverId}`)
+    const solver = solvers.find(s => s.id === solverId)
+    if (solver) {
+      setSelectedSolverForBooking(solver)
+      setShowBookingModal(true)
+      setSelectedTimeSlot('')
+      setBookingTopic('')
+      setBookingDescription('')
+      setSelectedPaymentMethod('credit_card')
+    }
   }
 
   const handleViewProfile = (solverId) => {
-    navigate(`/profile/${solverId}`)
+    const solver = solvers.find(s => s.id === solverId)
+    if (solver) {
+      setSelectedSolverForProfile(solver)
+      setShowSolverProfile(true)
+    }
   }
 
   const handleGiftSession = (solver = null) => {
@@ -859,13 +879,14 @@ const SeekerExplore = ({ darkMode }) => {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleGiftSession(solver)}
-                    className={`w-4 h-4 rounded-full flex items-center justify-center ${
-                      darkMode ? 'bg-yellow-500/20' : 'bg-[#00001a]/10'
+                    className={`p-1 rounded-lg transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30'
+                        : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'
                     }`}
+                    title="Gift a session"
                   >
-                    <div className={`w-2 h-2 rounded-full ${
-                      darkMode ? 'bg-yellow-400' : 'bg-[#00001a]'
-                    }`} />
+                    <Gift size={12} />
                   </button>
                   <button
                     onClick={(e) => {
@@ -930,8 +951,9 @@ const SeekerExplore = ({ darkMode }) => {
 
               {/* Location and Rate */}
               <div className="flex items-center justify-between mb-4">
-                <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
-                  📍 {solver.location}
+                <div className={`flex items-center gap-1 text-sm ${darkMode ? 'text-gray-400' : 'text-[#00001a]/60'}`}>
+                  <MapPin size={14} className={darkMode ? 'text-gray-400' : 'text-[#00001a]/60'} />
+                  {solver.location}
                 </div>
                 <div className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
                   ${solver.hourlyRate}/hr
@@ -1371,6 +1393,423 @@ const SeekerExplore = ({ darkMode }) => {
           </div>
         )}
 
+        {/* Booking Modal */}
+        {showBookingModal && selectedSolverForBooking && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className={`max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-lg ${
+              darkMode ? 'bg-[#00001a] border border-white/20' : 'bg-white border border-gray-200'
+            }`}>
+              {/* Header */}
+              <div className={`p-6 border-b ${darkMode ? 'border-white/20' : 'border-gray-200'}`}>
+                <div className="flex items-center justify-between">
+                  <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Book Session with {selectedSolverForBooking.name}
+                  </h3>
+                  <button
+                    onClick={() => setShowBookingModal(false)}
+                    className={`p-2 rounded-lg transition-all duration-300 ${
+                      darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Booking Content */}
+              <div className="p-6 space-y-6">
+                {/* Solver Info */}
+                <div className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold ${
+                    darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-200 text-[#00001a]'
+                  }`}>
+                    {selectedSolverForBooking.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      {selectedSolverForBooking.name}
+                    </h4>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {selectedSolverForBooking.title}
+                    </p>
+                    <p className={`text-sm font-medium ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
+                      ${selectedSolverForBooking.hourlyRate}/hour
+                    </p>
+                  </div>
+                </div>
+
+                {/* Time Slot Selection */}
+                <div>
+                  <label className={`block text-sm font-medium mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Select Time Slot *
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      'Today 2:00 PM',
+                      'Today 4:00 PM',
+                      'Tomorrow 10:00 AM',
+                      'Tomorrow 2:00 PM',
+                      'Tomorrow 6:00 PM',
+                      'Dec 28, 9:00 AM'
+                    ].map((slot) => (
+                      <button
+                        key={slot}
+                        onClick={() => setSelectedTimeSlot(slot)}
+                        className={`p-3 rounded-lg text-sm font-medium transition-all duration-300 ${
+                          selectedTimeSlot === slot
+                            ? (darkMode
+                                ? 'bg-blue-500/30 text-blue-400 border border-blue-500/50'
+                                : 'bg-[#00001a] text-white border border-[#00001a]')
+                            : (darkMode
+                                ? 'bg-white/5 text-white border border-white/20 hover:bg-white/10'
+                                : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100')
+                        }`}
+                      >
+                        {slot}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Topic */}
+                <div>
+                  <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Session Topic *
+                  </label>
+                  <input
+                    type="text"
+                    value={bookingTopic}
+                    onChange={(e) => setBookingTopic(e.target.value)}
+                    placeholder="e.g., React Performance Optimization, API Design Review..."
+                    className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-white/5 border-white/20 text-white placeholder-gray-400 focus:border-blue-400/50 focus:bg-white/10'
+                        : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-[#00001a]/50 focus:bg-gray-50'
+                    }`}
+                  />
+                </div>
+
+                {/* Description (Optional) */}
+                <div>
+                  <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Additional Details (Optional)
+                  </label>
+                  <textarea
+                    value={bookingDescription}
+                    onChange={(e) => setBookingDescription(e.target.value)}
+                    placeholder="Provide any additional context, specific questions, or goals for this session..."
+                    rows={4}
+                    className={`w-full px-4 py-3 rounded-lg border transition-all duration-300 resize-none ${
+                      darkMode
+                        ? 'bg-white/5 border-white/20 text-white placeholder-gray-400 focus:border-blue-400/50 focus:bg-white/10'
+                        : 'bg-white border-gray-200 text-[#00001a] placeholder-gray-500 focus:border-[#00001a]/50 focus:bg-gray-50'
+                    }`}
+                  />
+                </div>
+
+                {/* Payment Method */}
+                <div>
+                  <label className={`block text-sm font-medium mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Payment Method
+                  </label>
+                  <div className="space-y-3">
+                    {[
+                      { id: 'credit_card', name: 'Credit Card', icon: '💳' },
+                      { id: 'paypal', name: 'PayPal', icon: '🅿️' },
+                      { id: 'apple_pay', name: 'Apple Pay', icon: '🍎' },
+                      { id: 'google_pay', name: 'Google Pay', icon: '🔵' }
+                    ].map((method) => (
+                      <label
+                        key={method.id}
+                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
+                          selectedPaymentMethod === method.id
+                            ? (darkMode
+                                ? 'bg-blue-500/20 border border-blue-500/30'
+                                : 'bg-blue-50 border border-blue-200')
+                            : (darkMode
+                                ? 'bg-white/5 border border-white/20 hover:bg-white/10'
+                                : 'bg-gray-50 border border-gray-200 hover:bg-gray-100')
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value={method.id}
+                          checked={selectedPaymentMethod === method.id}
+                          onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                          className="sr-only"
+                        />
+                        <span className="text-lg">{method.icon}</span>
+                        <span className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                          {method.name}
+                        </span>
+                        {selectedPaymentMethod === method.id && (
+                          <div className={`ml-auto w-2 h-2 rounded-full ${
+                            darkMode ? 'bg-blue-400' : 'bg-blue-500'
+                          }`} />
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pricing Summary */}
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Session (1 hour)
+                    </span>
+                    <span className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      ${selectedSolverForBooking.hourlyRate}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Platform fee
+                    </span>
+                    <span className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                      $5
+                    </span>
+                  </div>
+                  <div className={`border-t pt-2 ${darkMode ? 'border-white/20' : 'border-gray-200'}`}>
+                    <div className="flex justify-between items-center">
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        Total
+                      </span>
+                      <span className={`font-bold text-lg ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        ${selectedSolverForBooking.hourlyRate + 5}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setShowBookingModal(false)}
+                    className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                        : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200'
+                    }`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!selectedTimeSlot || !bookingTopic.trim()) {
+                        alert('Please select a time slot and enter a topic')
+                        return
+                      }
+
+                      // Simulate booking process
+                      alert(`Session booked successfully!\n\nSolver: ${selectedSolverForBooking.name}\nTime: ${selectedTimeSlot}\nTopic: ${bookingTopic}\nTotal: $${selectedSolverForBooking.hourlyRate + 5}`)
+                      setShowBookingModal(false)
+                    }}
+                    disabled={!selectedTimeSlot || !bookingTopic.trim()}
+                    className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      (!selectedTimeSlot || !bookingTopic.trim())
+                        ? (darkMode ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-gray-500 cursor-not-allowed')
+                        : (darkMode
+                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                            : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90')
+                    }`}
+                  >
+                    Book Session - ${selectedSolverForBooking.hourlyRate + 5}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Solver Profile Modal */}
+        {showSolverProfile && selectedSolverForProfile && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className={`max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-lg ${
+              darkMode ? 'bg-[#00001a] border border-white/20' : 'bg-white border border-gray-200'
+            }`}>
+              {/* Header */}
+              <div className={`p-6 border-b ${darkMode ? 'border-white/20' : 'border-gray-200'}`}>
+                <div className="flex items-center justify-between">
+                  <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Solver Profile
+                  </h3>
+                  <button
+                    onClick={() => setShowSolverProfile(false)}
+                    className={`p-2 rounded-lg transition-all duration-300 ${
+                      darkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Profile Content */}
+              <div className="p-6">
+                <div className="flex items-start gap-4 mb-6">
+                  {/* Avatar */}
+                  <div className={`w-20 h-20 rounded-xl flex items-center justify-center text-2xl font-bold ${
+                    darkMode ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-200 text-[#00001a]'
+                  }`}>
+                    {selectedSolverForProfile.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+
+                  {/* Basic Info */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {selectedSolverForProfile.name}
+                      </h4>
+                      {selectedSolverForProfile.verified && (
+                        <Shield className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-[#00001a]'}`} />
+                      )}
+                      <div className={`w-3 h-3 rounded-full ${
+                        selectedSolverForProfile.isOnline
+                          ? (darkMode ? 'bg-green-400' : 'bg-green-500')
+                          : (darkMode ? 'bg-gray-500' : 'bg-gray-400')
+                      }`} />
+                    </div>
+                    <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      {selectedSolverForProfile.title}
+                    </p>
+                    <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {selectedSolverForProfile.company}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Star className={`w-4 h-4 ${darkMode ? 'text-yellow-400' : 'text-yellow-500'}`} />
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {selectedSolverForProfile.rating}
+                      </span>
+                    </div>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {selectedSolverForProfile.reviews} reviews
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Users className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-blue-500'}`} />
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {selectedSolverForProfile.sessions}
+                      </span>
+                    </div>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      sessions
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Clock className={`w-4 h-4 ${darkMode ? 'text-green-400' : 'text-green-500'}`} />
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {selectedSolverForProfile.responseTime}
+                      </span>
+                    </div>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      response time
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <MapPin className={`w-4 h-4 ${darkMode ? 'text-purple-400' : 'text-purple-500'}`} />
+                      <span className={`font-semibold ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        ${selectedSolverForProfile.hourlyRate}
+                      </span>
+                    </div>
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      per hour
+                    </p>
+                  </div>
+                </div>
+
+                {/* Skills */}
+                <div className="mb-6">
+                  <h5 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Skills & Expertise
+                  </h5>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSolverForProfile.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          darkMode
+                            ? 'bg-blue-500/20 text-blue-400'
+                            : 'bg-blue-50 text-blue-600'
+                        }`}
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Availability */}
+                <div className="mb-6">
+                  <h5 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                    Availability
+                  </h5>
+                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${
+                        selectedSolverForProfile.isOnline
+                          ? (darkMode ? 'bg-green-400' : 'bg-green-500')
+                          : (darkMode ? 'bg-gray-500' : 'bg-gray-400')
+                      }`} />
+                      <span className={`font-medium ${darkMode ? 'text-white' : 'text-[#00001a]'}`}>
+                        {selectedSolverForProfile.isOnline ? 'Available now' : 'Currently offline'}
+                      </span>
+                    </div>
+                    {!selectedSolverForProfile.isOnline && selectedSolverForProfile.availableIn && (
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Available in {selectedSolverForProfile.availableIn}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      handleBookNow(selectedSolverForProfile.id)
+                      setShowSolverProfile(false)
+                    }}
+                    className={`flex-1 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
+                        : 'bg-[#00001a] text-white border border-[#00001a] hover:bg-[#00001a]/90'
+                    }`}
+                  >
+                    Book Session
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleGiftSession(selectedSolverForProfile)
+                      setShowSolverProfile(false)
+                    }}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      darkMode
+                        ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30'
+                        : 'bg-yellow-50 text-yellow-600 border border-yellow-200 hover:bg-yellow-100'
+                    }`}
+                  >
+                    <Gift size={16} className="inline mr-2" />
+                    Gift
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

@@ -756,10 +756,10 @@ const SeekerDashboard = ({ darkMode }) => {
                   {analyticsData.streakDays.slice(-7).map((day, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full ${
+                      className={`w-3 h-3 rounded-sm transition-all duration-300 ${
                         day.completed
-                          ? (darkMode ? 'bg-white/70' : 'bg-[#00001a]')
-                          : (darkMode ? 'bg-white/20' : 'bg-gray-300')
+                          ? (darkMode ? 'bg-green-400/80 shadow-[0_0_4px_rgba(34,197,94,0.4)]' : 'bg-[#00001a] shadow-[0_0_4px_rgba(0,0,26,0.3)]')
+                          : (darkMode ? 'bg-white/10 border border-white/20' : 'bg-gray-200 border border-gray-300')
                       }`}
                       title={`${day.date} - ${day.completed ? 'Completed' : 'Missed'}`}
                     />
@@ -1252,8 +1252,8 @@ const SeekerDashboard = ({ darkMode }) => {
                       >
                         {day}
                         {hasBooking && (
-                          <div className={`absolute w-1 h-1 rounded-full bottom-1 ${
-                            darkMode ? 'bg-white/70' : 'bg-[#00001a]'
+                          <div className={`absolute w-1.5 h-1.5 rounded-sm bottom-0.5 ${
+                            darkMode ? 'bg-blue-400 shadow-[0_0_2px_rgba(59,130,246,0.6)]' : 'bg-[#00001a] shadow-[0_0_2px_rgba(0,0,26,0.4)]'
                           }`} />
                         )}
                       </div>
